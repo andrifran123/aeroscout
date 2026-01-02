@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AeroVacancies | Browse Roles</title>
+  <title>AeroScout | Browse Roles</title>
   <style>
     :root{
       --nav:#0b2a6f;
@@ -145,7 +145,7 @@
       background: rgba(255,255,255,.10);
       border: 1px solid rgba(255,255,255,.18);
       border-radius: 999px;
-      padding: 10px 12px;
+      padding: 14px 18px;
       backdrop-filter: blur(10px);
     }
     .pill input, .pill select{
@@ -154,7 +154,7 @@
       border:none;
       outline:none;
       color:#fff;
-      font-size: 14px;
+      font-size: 15px;
     }
     .pill select option{color:#111}
     .pill .icon{width:18px;height:18px;opacity:.9;flex:0 0 auto}
@@ -806,11 +806,7 @@
         <header class="topbar">
           <div class="topbar-row">
             <div class="brand">
-              <div class="logo" aria-hidden="true"></div>
-              <div>
-                AeroVacancies
-                <div style="font-size:12px;opacity:.85;font-weight:600">Find your next cockpit chapter</div>
-              </div>
+              <a href="index.html" style="text-decoration:none;color:white;font-size:1.4rem;font-weight:800;letter-spacing:0.5px;">AEROSCOUT</a>
             </div>
 
             <div class="pill">
@@ -844,9 +840,7 @@
             </button>
 
             <div class="meta" style="grid-column: 1 / -1;">
-              <span id="count">0 roles found</span>
-              <span style="opacity:.6">•</span>
-              <span id="stamp">Updated just now</span>
+              <span id="count" style="font-size:15px;font-weight:700;">Active pilot jobs as of <span id="gmtTime"></span>: <span id="jobCount">0</span></span>
             </div>
           </div>
 
@@ -949,9 +943,18 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    // Supabase configuration
+    const SUPABASE_URL = 'https://ziboktbmbyjbhifsdypa.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY';
+
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     // Premium state (in production this would come from user auth/subscription)
     let isPremium = false;
+    let isLoggedIn = false;
 
     // Pilot's profile (in production this comes from user database)
     const PILOT_PROFILE = {
@@ -1443,14 +1446,32 @@
 
     // Premium unlock button
     const premiumLock = el("premiumLock");
-    el("unlockBtn").addEventListener("click", () => {
+    el("unlockBtn").addEventListener("click", async () => {
+      // Check if user is logged in
+      const { data: { session } } = await supabaseClient.auth.getSession();
+
+      if (!session) {
+        // User not logged in - redirect to login
+        alert("Please log in to access premium features");
+        window.location.href = "login.html";
+        return;
+      }
+
+      // User is logged in - for demo: toggle premium state
       // In production: redirect to payment/subscription page
-      // For demo: toggle premium state
       isPremium = true;
+      isLoggedIn = true;
       premiumLock.classList.add("hidden");
       updateMatchCount();
       apply();
     });
+
+    // Check login status on page load
+    async function checkLoginStatus() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      isLoggedIn = !!session;
+    }
+    checkLoginStatus();
 
     function updatePremiumUI() {
       if (isPremium) {
@@ -1739,8 +1760,11 @@
         </article>
       `).join("");
 
-      el("count").textContent = `${list.length} roles found`;
-      el("stamp").textContent = `Updated ${new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"})}`;
+      // Update job count and GMT time
+      el("jobCount").textContent = list.length;
+      const now = new Date();
+      const gmtTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' }) + ' GMT';
+      el("gmtTime").textContent = gmtTime;
     }
 
     // Tile filter state

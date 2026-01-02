@@ -1,0 +1,1931 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AeroVacancies | Browse Roles</title>
+  <style>
+    :root{
+      --nav:#0b2a6f;
+      --nav2:#081a45;
+      --text:#0e1830;
+      --muted:#6b7890;
+      --accent:#1b66ff;
+      --accent2:#00b7a8;
+
+      --shadow: 0 18px 46px rgba(13, 36, 90, .14);
+      --softShadow: 0 10px 26px rgba(13, 36, 90, .10);
+
+      --radius:22px;
+      --maxw:1540px;
+
+      --borderSoft: rgba(255,255,255,.22);
+      --innerStroke: rgba(12, 28, 64, .05);
+      --lineSoft: rgba(210,222,245,.55);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:#07183d;
+    }
+
+    /* ✅ AIRPLANE BACKGROUND THAT READS AS "WING + SKY" */
+    .stage{
+      min-height:100%;
+      position:relative;
+      overflow:hidden;
+      background:#07183d; /* fallback */
+    }
+
+    /* Photo layer (blurred slightly so UI is readable but still clearly a photo) */
+    .stage::before{
+      content:"";
+      position:fixed;
+      inset:-24px; /* extend so blur doesn’t show edges */
+      z-index:0;
+
+      /* IMPORTANT: This image is DIFFERENT from the one you posted. */
+      background-image: url("https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?auto=format&fit=crop&w=2600&q=80");
+      background-size: cover;
+      background-position: 78% center; /* push wing into the visible right side */
+      background-repeat:no-repeat;
+
+      filter: blur(2.5px) saturate(1.15) contrast(1.05);
+      transform: scale(1.03);
+    }
+
+    /* Overlay layer (lighter than before so the wing/sky is visible) */
+    .stage::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+
+      background:
+        radial-gradient(1100px 700px at 70% 15%, rgba(255,255,255,.22), transparent 62%),
+        radial-gradient(900px 600px at 20% 25%, rgba(27,102,255,.14), transparent 62%),
+        radial-gradient(900px 600px at 85% 35%, rgba(0,183,168,.10), transparent 62%),
+        linear-gradient(180deg, rgba(7,24,61,.55), rgba(255,255,255,.10) 55%, rgba(255,255,255,.20));
+    }
+
+    .shell{
+      max-width: 1900px;
+      margin: 0 auto;
+      padding: 22px 18px 0;
+      position:relative;
+      z-index:2; /* above background layers */
+      min-height: 100vh;
+    }
+
+    .frame{
+      background: rgba(255,255,255,.78);
+      border: 1px solid var(--borderSoft);
+      border-bottom: none;
+      border-radius: calc(var(--radius) + 10px) calc(var(--radius) + 10px) 0 0;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 12px;
+      padding-bottom: 0;
+      min-height: calc(100vh - 22px);
+    }
+
+    .topbar{
+      background: linear-gradient(90deg, var(--nav), var(--nav2));
+      border-radius: 18px;
+      padding: 14px 14px;
+      color:#fff;
+      box-shadow: var(--softShadow);
+      position:sticky;
+      top:14px;
+      z-index:10;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .topbar-row{
+      display:grid;
+      grid-template-columns: 1fr 1.7fr 1fr auto;
+      gap:12px;
+      align-items:center;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:.2px;
+      white-space:nowrap;
+    }
+    .logo{
+      width:34px;height:34px;
+      border-radius:10px;
+      background:
+        radial-gradient(circle at 30% 30%, #ffffff, rgba(255,255,255,.0) 55%),
+        linear-gradient(135deg, rgba(27,102,255,1), rgba(0,183,168,1));
+      box-shadow: 0 6px 18px rgba(0,0,0,.18);
+      position:relative;
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:9px 8px 9px 8px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,.55);
+    }
+
+    .pill{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 999px;
+      padding: 10px 12px;
+      backdrop-filter: blur(10px);
+    }
+    .pill input, .pill select{
+      width:100%;
+      background: transparent;
+      border:none;
+      outline:none;
+      color:#fff;
+      font-size: 14px;
+    }
+    .pill select option{color:#111}
+    .pill .icon{width:18px;height:18px;opacity:.9;flex:0 0 auto}
+
+    .btn{
+      background: linear-gradient(135deg, #ffffff, #dbe8ff);
+      color: #0b2a6f;
+      border:none;
+      border-radius: 999px;
+      padding: 11px 14px;
+      font-weight:800;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+      transition: transform .12s ease, filter .12s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{transform: translateY(-1px); filter: brightness(1.02);}
+    .btn:active{transform: translateY(0); filter: brightness(.98);}
+
+    .meta{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+      font-size:13px;
+      opacity:.92;
+      white-space:nowrap;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 300px 1fr;
+      gap:16px;
+      margin-top:14px;
+    }
+
+    .panel{
+      background: rgba(255,255,255,.86);
+      border: 1px solid var(--borderSoft);
+      border-radius: var(--radius);
+      box-shadow: var(--softShadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .panel::before{
+      content:"";
+      position:absolute; inset:0;
+      border-radius: inherit;
+      box-shadow: inset 0 0 0 1px var(--innerStroke);
+      pointer-events:none;
+    }
+
+    .filters{ padding:20px; }
+
+    /* Profile Summary Card */
+    .profile-summary {
+      background: #0a192f;
+      color: white;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    .profile-label {
+      font-size: 11px;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .profile-val {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 4px 0 12px 0;
+      display: block;
+    }
+    .profile-summary .eligible-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .profile-summary .eligible-toggle label {
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .profile-summary input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* Section Titles */
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0a192f;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .section-title span {
+      font-weight: 500;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    /* Filter Tiles */
+    .tile-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .filter-tile {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+    }
+    .filter-tile:hover {
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
+    .filter-tile.active {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Range Slider */
+    .range-section {
+      margin: 20px 0;
+    }
+    .range-slider {
+      width: 100%;
+      margin: 10px 0;
+      cursor: pointer;
+      -webkit-appearance: none;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      outline: none;
+    }
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border: 3px solid #3b82f6;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .range-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: white;
+      border: 3px solid #3b82f6;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    /* Result Bar */
+    .result-bar {
+      margin-top: 20px;
+      background: #3b82f6;
+      color: white;
+      padding: 14px;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      transition: background 0.15s ease;
+      border: none;
+      width: 100%;
+    }
+    .result-bar:hover {
+      background: #2563eb;
+    }
+    .result-count {
+      background: rgba(255,255,255,0.2);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .clear-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px dashed #3b82f6;
+      color: #3b82f6;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.15s ease;
+      margin-top: 10px;
+    }
+    .clear-btn:hover {
+      background: #eff6ff;
+    }
+
+    /* Eligibility Delta Slider */
+    .delta-section {
+      background: #fef9e7;
+      border: 1px solid #f9e79f;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    /* Premium Lock Overlay */
+    .premium-lock {
+      position: absolute;
+      inset: 0;
+      background: rgba(254, 249, 231, 0.85);
+      backdrop-filter: blur(3px);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      z-index: 5;
+    }
+    .premium-lock.hidden {
+      display: none;
+    }
+    .premium-lock-icon {
+      font-size: 20px;
+    }
+    .premium-lock-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: #7d6608;
+    }
+    .premium-unlock-btn {
+      background: linear-gradient(135deg, #f4d03f, #e9b32a);
+      color: #5a4a00;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .premium-unlock-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(244, 208, 63, 0.4);
+    }
+
+    /* Premium badge styling */
+    .premium-badge {
+      background: linear-gradient(135deg, #f4d03f, #e9b32a);
+      color: #5a4a00;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      text-transform: uppercase;
+    }
+    .delta-section .section-title {
+      margin-bottom: 8px;
+      color: #7d6608;
+    }
+    .delta-section .section-title span {
+      color: #b7950b;
+      font-weight: 700;
+    }
+    .delta-slider {
+      width: 100%;
+      margin: 8px 0;
+      cursor: pointer;
+      -webkit-appearance: none;
+      height: 6px;
+      background: linear-gradient(90deg, #f9e79f 0%, #f4d03f 100%);
+      border-radius: 3px;
+      outline: none;
+    }
+    .delta-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border: 3px solid #f4d03f;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .delta-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: white;
+      border: 3px solid #f4d03f;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .delta-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #7d6608;
+    }
+
+    /* Eligibility Badges */
+    .eligibility-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .eligibility-badge.eligible {
+      background: #d4edda;
+      color: #155724;
+    }
+    .eligibility-badge.within-reach {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .eligibility-badge.not-eligible {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    /* Eligibility badge with tooltip */
+    .eligibility-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .eligibility-badge.clickable {
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    .eligibility-badge.clickable:hover {
+      transform: scale(1.05);
+    }
+
+    /* Breakdown Tooltip */
+    .eligibility-tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: white;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      min-width: 220px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .eligibility-wrapper:hover .eligibility-tooltip,
+    .eligibility-tooltip.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    .eligibility-tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #1e293b;
+    }
+    .tooltip-title {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+    .tooltip-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 6px 0;
+    }
+    .tooltip-label {
+      color: #94a3b8;
+    }
+    .tooltip-value {
+      font-weight: 600;
+    }
+    .tooltip-value.met {
+      color: #4ade80;
+    }
+    .tooltip-value.short {
+      color: #fbbf24;
+    }
+    .tooltip-value.missing {
+      color: #f87171;
+    }
+    .tooltip-gap {
+      font-size: 10px;
+      opacity: 0.7;
+      margin-left: 6px;
+    }
+
+    .results-head{ padding:14px 14px 0; }
+
+    .banner{
+      height:150px;
+      border-radius: 18px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.30);
+      box-shadow: 0 12px 26px rgba(13,36,90,.10);
+      background:
+        linear-gradient(90deg, rgba(11,42,111,.82), rgba(11,42,111,.22)),
+        radial-gradient(900px 260px at 80% 50%, rgba(255,255,255,.25), transparent 65%),
+        linear-gradient(180deg, #6fb1ff, #d4f0ff 55%, rgba(255,255,255,.85));
+      display:flex;
+      align-items:flex-end;
+      padding:16px;
+      color:#fff;
+    }
+    .banner .tag{
+      background: rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.22);
+      border-radius:999px;
+      padding:7px 10px;
+      font-weight:800;
+      font-size:12px;
+      letter-spacing:.3px;
+      width:max-content;
+    }
+    .banner h2{ margin:8px 0 0; font-size:18px; line-height:1.2; }
+    .banner p{ margin:6px 0 0; opacity:.9; font-size:13px; max-width: 74ch; }
+
+    .cards{ padding:14px; display:grid; gap:10px; }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 70px 1fr 160px;
+      grid-template-rows: auto auto auto;
+      gap: 8px 16px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    .card.visa-sponsor {
+      background: #f1f8e9;
+      border-color: #a5d6a7;
+    }
+
+    .company-logo {
+      grid-row: 1 / span 2;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 22px;
+      color: #0b2a6f;
+    }
+    .company-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .job-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+      color: #1e293b;
+      align-self: center;
+    }
+
+    .attributes {
+      display: flex;
+      gap: 16px;
+      color: #64748b;
+      font-size: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .attr-item b {
+      color: #334155;
+    }
+    .attr-pill {
+      background: #e3f2fd;
+      color: #1565c0;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .attr-pill.green {
+      background: white;
+      color: #2e7d32;
+      border: 1.5px solid #4caf50;
+    }
+
+    .apply-container {
+      text-align: right;
+      grid-column: 3;
+      grid-row: 1;
+      align-self: center;
+    }
+    .apply-btn {
+      background: #0b2a6f;
+      color: white;
+      padding: 10px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      transition: background 0.15s ease;
+    }
+    .apply-btn:hover {
+      background: #081a45;
+    }
+
+    .stats-row {
+      grid-column: 2;
+      display: flex;
+      gap: 40px;
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px dashed #e2e8f0;
+    }
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+    }
+    .stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #94a3b8;
+      font-weight: 700;
+    }
+    .stat-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .expand-link {
+      grid-column: 3;
+      grid-row: 3;
+      text-align: right;
+      color: #64748b;
+      font-size: 13px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      align-self: end;
+    }
+    .expand-link:hover {
+      color: #334155;
+      text-decoration: underline;
+    }
+    .arrow-v {
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      margin-bottom: 4px;
+    }
+
+    .save-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #f5f5f5;
+      border: none;
+      cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 0 16px 0 12px;
+      transition: background 0.15s ease;
+    }
+    .save-btn:hover {
+      background: #e0e0e0;
+    }
+    .save-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: #666;
+      stroke-width: 2;
+    }
+    .save-btn:hover svg {
+      stroke: #333;
+    }
+
+    .mobile-toggle{ display:none; margin-top:12px; width:100%; }
+
+    @media (max-width: 980px){
+      .topbar-row{grid-template-columns: 1fr; }
+      .meta{justify-content:flex-start}
+      .grid{grid-template-columns: 1fr;}
+      .mobile-toggle{display:block;}
+      .card{ grid-template-columns: 52px 1fr; }
+      .stats{ display:none; }
+      .stage::before, .stage::after{ position:absolute; }
+    }
+
+    .svg{display:block}
+  </style>
+</head>
+
+<body>
+  <div class="stage">
+    <div class="shell">
+      <div class="frame">
+        <header class="topbar">
+          <div class="topbar-row">
+            <div class="brand">
+              <div class="logo" aria-hidden="true"></div>
+              <div>
+                AeroVacancies
+                <div style="font-size:12px;opacity:.85;font-weight:600">Find your next cockpit chapter</div>
+              </div>
+            </div>
+
+            <div class="pill">
+              <svg class="icon svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M21 21l-4.2-4.2m1.7-5.3a7 7 0 11-14 0 7 7 0 0114 0z" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <input id="q" placeholder="Search position, operator, aircraft…" />
+            </div>
+
+            <div class="pill">
+              <svg class="icon svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 21s7-4.6 7-11a7 7 0 10-14 0c0 6.4 7 11 7 11z" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 11.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="white" stroke-width="2"/>
+              </svg>
+              <select id="loc">
+                <option value="">Any location</option>
+                <option>United States</option>
+                <option>Europe</option>
+                <option>Middle East</option>
+                <option>Asia</option>
+                <option>Oceania</option>
+              </select>
+            </div>
+
+            <button class="btn" id="searchBtn" type="button">
+              <svg class="icon svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M10 18a8 8 0 100-16 8 8 0 000 16z" stroke="#0b2a6f" stroke-width="2"/>
+                <path d="M21 21l-4.35-4.35" stroke="#0b2a6f" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Search
+            </button>
+
+            <div class="meta" style="grid-column: 1 / -1;">
+              <span id="count">0 roles found</span>
+              <span style="opacity:.6">•</span>
+              <span id="stamp">Updated just now</span>
+            </div>
+          </div>
+
+          <button class="btn mobile-toggle" id="toggleFilters" type="button">Toggle Filters</button>
+        </header>
+
+        <main class="grid">
+          <aside class="panel" id="filtersPanel">
+            <div class="filters">
+              <!-- Profile Summary Card -->
+              <div class="profile-summary">
+                <span class="profile-label">Your Experience</span>
+                <span class="profile-val" id="profileDisplay">1,200h Total · CPL · A320</span>
+                <div class="eligible-toggle">
+                  <input type="checkbox" id="eligibleOnly">
+                  <label for="eligibleOnly">Show eligible only</label>
+                </div>
+              </div>
+
+              <!-- Eligibility Delta Slider (Premium Feature) -->
+              <div class="delta-section">
+                <div class="premium-lock" id="premiumLock">
+                  <span class="premium-lock-icon">🔒</span>
+                  <span class="premium-lock-text">Premium Feature</span>
+                  <button class="premium-unlock-btn" id="unlockBtn">Upgrade to Pro</button>
+                </div>
+                <div class="section-title">Jobs within reach <span class="premium-badge">Pro</span> <span id="deltaLabel" style="margin-left:auto;">≤ 500 hrs away</span></div>
+                <input type="range" class="delta-slider" id="deltaSlider" min="0" max="3000" step="100" value="500">
+                <div class="delta-labels">
+                  <span>Eligible now</span>
+                  <span>3,000 hrs away</span>
+                </div>
+                <!-- Include blockers toggle -->
+                <div class="blocker-toggle" style="margin-top:12px; padding-top:10px; border-top:1px dashed #f9e79f;">
+                  <label style="display:flex; align-items:center; gap:8px; font-size:11px; color:#7d6608; cursor:pointer;">
+                    <input type="checkbox" id="includeBlockers" style="width:14px; height:14px;">
+                    <span>Include jobs with blockers</span>
+                  </label>
+                  <div style="font-size:10px; color:#b7950b; margin-top:4px; margin-left:22px;">Show type ratings & licenses I don't have</div>
+                </div>
+              </div>
+
+              <!-- Type Preference -->
+              <div class="section-title">Type Preference</div>
+              <div class="tile-group">
+                <div class="filter-tile" data-filter="ntr" id="ntrTile">NTR</div>
+                <div class="filter-tile" data-filter="typed" id="typedTile">Type-Rated</div>
+              </div>
+
+              <!-- License -->
+              <div class="section-title">License</div>
+              <div class="tile-group">
+                <div class="filter-tile" data-filter="atpl" id="atplTile">ATPL</div>
+                <div class="filter-tile" data-filter="cpl" id="cplTile">CPL</div>
+                <div class="filter-tile" data-filter="fatpl" id="fatplTile">fATPL</div>
+                <div class="filter-tile" data-filter="instructor" id="instructorTile">Instructor</div>
+              </div>
+
+              <!-- Employer -->
+              <div class="section-title">Employer</div>
+              <div class="tile-group">
+                <div class="filter-tile" data-filter="airline" id="airlineTile">Airline</div>
+                <div class="filter-tile" data-filter="bizav" id="bizavTile">BizAv</div>
+                <div class="filter-tile" data-filter="training" id="trainingTile">Training</div>
+                <div class="filter-tile" data-filter="gov" id="govTile">Government</div>
+              </div>
+
+              <!-- Perks -->
+              <div class="section-title">Perks</div>
+              <div class="tile-group">
+                <div class="filter-tile" data-filter="visa" id="visaTile">Visa Sponsor</div>
+                <div class="filter-tile" data-filter="direct" id="directTile">Direct Entry</div>
+                <div class="filter-tile" data-filter="remote" id="remoteTile">Home-Based</div>
+              </div>
+
+              <!-- Flight Time Range -->
+              <div class="section-title">Total Flight Time <span id="ftLabel">0 - 10,000+</span></div>
+              <div class="range-section">
+                <input type="range" class="range-slider" id="ftSlider" min="0" max="10000" step="100" value="10000">
+                <div class="range-labels">
+                  <span>0 hrs</span>
+                  <span>10,000+</span>
+                </div>
+              </div>
+
+              <!-- Result Bar -->
+              <button class="result-bar" id="applyBtn" type="button">
+                <span>Show Results</span>
+                <span class="result-count" id="matchCount">6 Jobs</span>
+              </button>
+              <button class="clear-btn" id="clearBtn" type="button">Clear all</button>
+            </div>
+          </aside>
+
+          <section class="panel">
+            <div class="cards" id="cards"></div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Premium state (in production this would come from user auth/subscription)
+    let isPremium = false;
+
+    // Pilot's profile (in production this comes from user database)
+    const PILOT_PROFILE = {
+      totalHours: 1200,
+      picHours: 400,
+      typeRatings: ['A320'],  // Aircraft types the pilot is rated on
+      typeTime: { 'A320': 200 },  // Hours on each type
+      license: 'CPL',  // Current license: PPL < CPL < ATPL
+      workRights: ['EU', 'USA']  // Countries where pilot can legally work
+    };
+
+    // License hierarchy (higher = more senior)
+    const LICENSE_LEVELS = {
+      'PPL': 1,
+      'CPL': 2,
+      'fATPL': 3,
+      'ATPL': 4,
+      'ATP': 4  // US equivalent of ATPL
+    };
+
+    const JOBS = [
+      {
+        "id": 1,
+        "title": "*NEW* - A330 Captains - Exciting Opportunity in West Africa!",
+        "org": "SkyWest Charter",
+        "location": "Confidential",
+        "chips": ["A330", "Airline"],
+        "featured": true,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 1000,
+        "pic": 1000,
+        "requiredType": "A330",
+        "minTypeTime": 0,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=skywest.com&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=416481"
+      },
+      {
+        "id": 2,
+        "title": "*NEW* - A330 TRI - URGENT HIRING in West Africa!",
+        "org": "SkyWest Charter",
+        "location": "Confidential",
+        "chips": ["A330", "Airline"],
+        "featured": true,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 1000,
+        "pic": 1000,
+        "requiredType": "A330",
+        "minTypeTime": 0,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=skywest.com&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=416482"
+      },
+      {
+        "id": 3,
+        "title": "*NEW* - Q400 Captains - Exciting Opportunity in West Africa!",
+        "org": "SkyWest Charter",
+        "location": "Confidential",
+        "chips": ["Q400", "Airline"],
+        "featured": true,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 1000,
+        "pic": 1000,
+        "requiredType": "Q400",
+        "minTypeTime": 0,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=skywest.com&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=416483"
+      },
+      {
+        "id": 4,
+        "title": "*NEW Position* A320 Captain- South East Asia",
+        "org": "Southwest Airlines",
+        "location": "Confidential",
+        "chips": ["A320", "Airline"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 1500,
+        "pic": 0,
+        "requiredType": "A320",
+        "minTypeTime": 0,
+        "workRegion": "International",
+        "logo": "https://cdn.phenompeople.com/CareerConnectResources/prod/SOUTUS/social/southwest-og-1565089931535-1608309835398.png",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=415663"
+      },
+      {
+        "id": 5,
+        "title": "A320 Captains - Vietnam Airlines",
+        "org": "Vietnam Airlines",
+        "location": "Vietnam",
+        "chips": ["A320", "Airline", "Type-rated"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "typed",
+        "employer": "airline",
+        "flightTime": 3500,
+        "pic": 1000,
+        "requiredType": "A320",
+        "minTypeTime": 500,
+        "workRegion": "Asia",
+        "logo": "https://www.vietnamairlines.com/content/dam/vna/logos/logo-vna.png",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=417768"
+      },
+      {
+        "id": 6,
+        "title": "Air Peace - EMB195 Captains",
+        "org": "Air Peace",
+        "location": "Confidential",
+        "chips": ["EMB195", "Airline", "Type-rated"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "typed",
+        "employer": "airline",
+        "flightTime": 5000,
+        "pic": 1000,
+        "requiredType": "EMB195",
+        "minTypeTime": 500,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=flyairpeace.com&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=417853"
+      },
+      {
+        "id": 7,
+        "title": "Avion Express - A320 ICAO Captains & FO",
+        "org": "Avion Express",
+        "location": "Other",
+        "chips": ["A320", "Airline"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 3000,
+        "pic": 0,
+        "requiredType": "A320",
+        "minTypeTime": 0,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=avionexpress.aero&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=418867"
+      },
+      {
+        "id": 8,
+        "title": "Peach Aviation - Salary Increase and Joining Bonus!",
+        "org": "Peach Aviation",
+        "location": "Japan",
+        "chips": ["A320", "Airline"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 4000,
+        "pic": 1500,
+        "requiredType": "A320",
+        "minTypeTime": 0,
+        "workRegion": "Asia",
+        "logo": "https://recruit.flypeach.com/en/common/img/ogp.jpg",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=419178"
+      },
+      {
+        "id": 9,
+        "title": "*NEW* - Q400 TRI - URGENT HIRING in West Africa!",
+        "org": "SkyWest Charter",
+        "location": "Confidential",
+        "chips": ["Q400", "Airline"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 1000,
+        "pic": 1000,
+        "requiredType": "Q400",
+        "minTypeTime": 0,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=skywest.com&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=419894"
+      },
+      {
+        "id": 10,
+        "title": "Avion Express - A320 EASA First Officers",
+        "org": "Avion Express",
+        "location": "Other",
+        "chips": ["A320", "Airline"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 0,
+        "pic": 0,
+        "requiredType": "A320",
+        "minTypeTime": 0,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=avionexpress.aero&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=418868"
+      },
+      {
+        "id": 11,
+        "title": "Vietnam Airlines - B787 Captains",
+        "org": "Vietnam Airlines",
+        "location": "Vietnam",
+        "chips": ["B787", "Airline", "Type-rated"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "typed",
+        "employer": "airline",
+        "flightTime": 5000,
+        "pic": 1000,
+        "requiredType": "B787",
+        "minTypeTime": 500,
+        "workRegion": "Asia",
+        "logo": "https://www.vietnamairlines.com/content/dam/vna/logos/logo-vna.png",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=420664"
+      },
+      {
+        "id": 12,
+        "title": "B777 Captains - Air Peace",
+        "org": "Air Peace",
+        "location": "Confidential",
+        "chips": ["B777", "Airline", "Type-rated"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "typed",
+        "employer": "airline",
+        "flightTime": 5000,
+        "pic": 1000,
+        "requiredType": "B777",
+        "minTypeTime": 500,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=flyairpeace.com&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=420981"
+      },
+      {
+        "id": 13,
+        "title": "Peach Aviation - NTR Captains - Salary Increase and Joining Bonus!",
+        "org": "Peach Aviation",
+        "location": "Japan",
+        "chips": ["A320", "Airline"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 4000,
+        "pic": 1500,
+        "requiredType": "A320",
+        "minTypeTime": 0,
+        "workRegion": "Asia",
+        "logo": "https://recruit.flypeach.com/en/common/img/ogp.jpg",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=419180"
+      },
+      {
+        "id": 14,
+        "title": "NEW HIRING ALERT | A320 Captains & First Officers | Eurasia Region",
+        "org": "German Regional Airlines",
+        "location": "Confidential",
+        "chips": ["A320", "Airline"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 3500,
+        "pic": 1500,
+        "requiredType": "A320",
+        "minTypeTime": 0,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=germanairlines.com&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=421252"
+      },
+      {
+        "id": 15,
+        "title": "B787 First Officers- Vietnam Airlines",
+        "org": "Vietnam Airlines",
+        "location": "Vietnam",
+        "chips": ["B787", "Airline", "Type-rated"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "typed",
+        "employer": "airline",
+        "flightTime": 1500,
+        "pic": 0,
+        "requiredType": "B787",
+        "minTypeTime": 500,
+        "workRegion": "Asia",
+        "logo": "https://www.vietnamairlines.com/content/dam/vna/logos/logo-vna.png",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=422031"
+      },
+      {
+        "id": 16,
+        "title": "SriLankan Airlines - A320 & A330 First Officers",
+        "org": "SriLankan Airlines",
+        "location": "Sri Lanka",
+        "chips": ["A320", "Airline", "Type-rated"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "typed",
+        "employer": "airline",
+        "flightTime": 1500,
+        "pic": 0,
+        "requiredType": "A320",
+        "minTypeTime": 500,
+        "workRegion": "International",
+        "logo": "https://www.srilankan.com/assets/img/logo-ul.png",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=420814"
+      },
+      {
+        "id": 17,
+        "title": "AJET - A320 Captains",
+        "org": "AJet",
+        "location": "Turkey",
+        "chips": ["A320", "Airline"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 4000,
+        "pic": 0,
+        "requiredType": "A320",
+        "minTypeTime": 0,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=ajet.com&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=419419"
+      },
+      {
+        "id": 18,
+        "title": "AJET - B737NG / Max Captain",
+        "org": "AJet",
+        "location": "Turkey",
+        "chips": ["B737", "Airline"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "standard",
+        "employer": "airline",
+        "flightTime": 4000,
+        "pic": 0,
+        "requiredType": "B737",
+        "minTypeTime": 0,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=ajet.com&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=421960"
+      },
+      {
+        "id": 19,
+        "title": "A350 Captains & First Officers - Asian Flag Carrier",
+        "org": "Asiana Airlines",
+        "location": "Confidential",
+        "chips": ["A350", "Airline", "Type-rated"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "typed",
+        "employer": "airline",
+        "flightTime": 5000,
+        "pic": 1000,
+        "requiredType": "A350",
+        "minTypeTime": 500,
+        "workRegion": "International",
+        "logo": "https://www.google.com/s2/favicons?domain=flyasiana.com&sz=128",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=421806"
+      },
+      {
+        "id": 20,
+        "title": "Wizz Air - UK",
+        "org": "Wizz Air",
+        "location": "United Kingdom",
+        "chips": ["A320", "Airline", "Type-rated"],
+        "featured": false,
+        "visa": false,
+        "direct": false,
+        "remote": false,
+        "license": "ATPL",
+        "type": "typed",
+        "employer": "airline",
+        "flightTime": 3500,
+        "pic": 1000,
+        "requiredType": "A320",
+        "minTypeTime": 500,
+        "workRegion": "International",
+        "logo": "https://airhex.com/images/airline-logos/wizz-air.png",
+        "applyUrl": "https://fci.aero/job-list/?ja-job=422737"
+      }
+    ];
+
+    const el = (id) => document.getElementById(id);
+
+    const ftSlider = el("ftSlider");
+    const ftLabel = el("ftLabel");
+
+    function syncFT(){
+      const val = Number(ftSlider.value);
+      ftLabel.textContent = val >= 10000 ? '0 - 10,000+' : '0 - ' + val.toLocaleString();
+    }
+
+    ftSlider.addEventListener("input", syncFT);
+
+    // Delta slider
+    const deltaSlider = el("deltaSlider");
+    const deltaLabel = el("deltaLabel");
+
+    function syncDelta() {
+      const val = Number(deltaSlider.value);
+      if (val === 0) {
+        deltaLabel.textContent = "Eligible only";
+      } else {
+        deltaLabel.textContent = `≤ ${val.toLocaleString()} hrs away`;
+      }
+    }
+
+    deltaSlider.addEventListener("input", () => {
+      syncDelta();
+      updateMatchCount();
+    });
+
+    // Eligible only checkbox
+    const eligibleOnlyCheckbox = el("eligibleOnly");
+    eligibleOnlyCheckbox.addEventListener("change", () => {
+      if (eligibleOnlyCheckbox.checked) {
+        deltaSlider.value = 0;
+        syncDelta();
+      }
+      updateMatchCount();
+    });
+
+    // Include blockers checkbox (premium feature)
+    const includeBlockersCheckbox = el("includeBlockers");
+    includeBlockersCheckbox.addEventListener("change", () => {
+      updateMatchCount();
+    });
+
+    // Premium unlock button
+    const premiumLock = el("premiumLock");
+    el("unlockBtn").addEventListener("click", () => {
+      // In production: redirect to payment/subscription page
+      // For demo: toggle premium state
+      isPremium = true;
+      premiumLock.classList.add("hidden");
+      updateMatchCount();
+      apply();
+    });
+
+    function updatePremiumUI() {
+      if (isPremium) {
+        premiumLock.classList.add("hidden");
+      } else {
+        premiumLock.classList.remove("hidden");
+      }
+    }
+
+    function updateMatchCount() {
+      const filtered = getFilteredJobs();
+      el("matchCount").textContent = `${filtered.length} Jobs`;
+    }
+
+    function badgeHTML(chips, featured){
+      const chipEls = chips.map(c => `<span class="chip">${c}</span>`).join("");
+      const feat = featured ? `<span class="chip green">Featured</span>` : "";
+      return feat + chipEls;
+    }
+
+    function iconLetter(name){
+      const s = (name || "A").trim();
+      return (s[0] || "A").toUpperCase();
+    }
+
+    /**
+     * Calculate the eligibility delta for a job
+     * Returns an object with all the gaps between pilot profile and job requirements
+     *
+     * Key concepts:
+     * - ttGap/picGap/typeTimeGap = hours the pilot is short (can be built up over time)
+     * - hasType = whether pilot has the required type rating (hard blocker if missing)
+     * - hasLicense = whether pilot has the required license level (hard blocker if missing)
+     * - hasWorkRights = whether pilot can legally work in that region (hard blocker if missing)
+     * - hoursGap = the largest hours gap (used for "within X hours" slider)
+     * - hasBlocker = true if any hard blocker exists (type/license/work rights)
+     */
+    function calculateDelta(job) {
+      const pilot = PILOT_PROFILE;
+
+      // 1. Total Time Delta - how many hours short?
+      const ttGap = Math.max(0, job.flightTime - pilot.totalHours);
+      const ttMet = pilot.totalHours >= job.flightTime;
+
+      // 2. PIC Time Delta - how many PIC hours short?
+      const picGap = Math.max(0, job.pic - pilot.picHours);
+      const picMet = pilot.picHours >= job.pic;
+
+      // 3. Type Rating Check
+      const needsType = job.requiredType !== null;
+      const hasType = needsType ? pilot.typeRatings.includes(job.requiredType) : true;
+      const missingTypeBlocker = needsType && !hasType;
+
+      // 4. Type Time Gap (only if pilot HAS the type rating)
+      // If they have the type, check if they have enough hours ON that type
+      let typeTimeGap = 0;
+      let typeTimeMet = true;
+      if (needsType && hasType && job.minTypeTime > 0) {
+        const pilotTypeTime = pilot.typeTime[job.requiredType] || 0;
+        typeTimeGap = Math.max(0, job.minTypeTime - pilotTypeTime);
+        typeTimeMet = pilotTypeTime >= job.minTypeTime;
+      }
+
+      // 5. License Check - is pilot's license sufficient?
+      const jobLicenseLevel = LICENSE_LEVELS[job.license] || 0;
+      const pilotLicenseLevel = LICENSE_LEVELS[pilot.license] || 0;
+      const hasLicense = pilotLicenseLevel >= jobLicenseLevel;
+      const missingLicenseBlocker = !hasLicense;
+
+      // 6. Work Rights Check - can pilot legally work in this region?
+      // If job provides visa sponsorship, work rights are not required
+      const needsWorkRights = !job.visa && job.workRegion;
+      const hasWorkRights = !needsWorkRights || pilot.workRights.includes(job.workRegion);
+      const missingWorkRightsBlocker = needsWorkRights && !hasWorkRights;
+
+      // 7. The "hours gap" includes TT, PIC, and type time (things you can fly toward)
+      // Hard blockers (missing type, license, work rights) are NOT included
+      const hoursGap = Math.max(ttGap, picGap, typeTimeGap);
+
+      // 8. Any hard blocker present?
+      const hasBlocker = missingTypeBlocker || missingLicenseBlocker || missingWorkRightsBlocker;
+
+      // 9. Overall eligibility = ALL requirements must be met
+      const isEligible = ttMet && picMet && typeTimeMet && !hasBlocker;
+
+      return {
+        // Hours gaps (can be worked toward)
+        ttGap,
+        ttMet,
+        picGap,
+        picMet,
+        typeTimeGap,
+        typeTimeMet,
+        hoursGap,           // Max of TT, PIC, and type time gaps
+
+        // Type rating
+        needsType,
+        hasType,
+        missingTypeBlocker,
+
+        // License
+        hasLicense,
+        missingLicenseBlocker,
+        jobLicense: job.license,
+        pilotLicense: pilot.license,
+
+        // Work rights
+        needsWorkRights,
+        hasWorkRights,
+        missingWorkRightsBlocker,
+        workRegion: job.workRegion,
+        visaSponsored: job.visa,
+
+        // Overall blockers
+        hasBlocker,         // TRUE = at least one hard blocker exists
+        isEligible,
+
+        // For display in tooltip
+        pilotTT: pilot.totalHours,
+        jobTT: job.flightTime,
+        pilotPIC: pilot.picHours,
+        jobPIC: job.pic,
+        pilotTypeTime: pilot.typeTime[job.requiredType] || 0,
+        requiredType: job.requiredType,
+        minTypeTime: job.minTypeTime
+      };
+    }
+
+    /**
+     * Generate the eligibility badge HTML with tooltip breakdown
+     */
+    function getEligibilityBadge(job) {
+      // For non-premium users, show a teaser badge that prompts upgrade
+      if (!isPremium) {
+        return '<span class="eligibility-badge" style="background:#f3f4f6;color:#9ca3af;cursor:pointer;" title="Upgrade to Pro to see eligibility">🔒 Eligibility</span>';
+      }
+
+      const delta = calculateDelta(job);
+
+      // Determine tooltip title based on status
+      let tooltipTitle = 'Requirements Breakdown';
+      if (delta.isEligible) {
+        tooltipTitle = '✓ You meet all requirements';
+      } else if (delta.hasBlocker) {
+        tooltipTitle = '🔴 Blocker(s) found';
+      }
+
+      // Build the tooltip content with all checks
+      const tooltipHTML = `
+        <div class="eligibility-tooltip">
+          <div class="tooltip-title">${tooltipTitle}</div>
+
+          <div class="tooltip-row">
+            <span class="tooltip-label">Total Time</span>
+            <span class="tooltip-value ${delta.ttMet ? 'met' : 'short'}">
+              ${delta.pilotTT.toLocaleString()} / ${delta.jobTT.toLocaleString()}
+              ${!delta.ttMet ? `<span class="tooltip-gap">(${delta.ttGap.toLocaleString()} short)</span>` : ''}
+            </span>
+          </div>
+
+          <div class="tooltip-row">
+            <span class="tooltip-label">PIC Time</span>
+            <span class="tooltip-value ${delta.picMet ? 'met' : 'short'}">
+              ${delta.pilotPIC.toLocaleString()} / ${delta.jobPIC.toLocaleString()}
+              ${!delta.picMet ? `<span class="tooltip-gap">(${delta.picGap.toLocaleString()} short)</span>` : ''}
+            </span>
+          </div>
+
+          ${delta.needsType ? `
+          <div class="tooltip-row">
+            <span class="tooltip-label">Type Rating</span>
+            <span class="tooltip-value ${delta.hasType ? 'met' : 'missing'}">
+              ${delta.hasType ? `✓ ${delta.requiredType}` : `🔴 Need ${delta.requiredType}`}
+            </span>
+          </div>
+          ${delta.hasType && delta.minTypeTime > 0 ? `
+          <div class="tooltip-row">
+            <span class="tooltip-label">Time on Type</span>
+            <span class="tooltip-value ${delta.typeTimeMet ? 'met' : 'short'}">
+              ${delta.pilotTypeTime.toLocaleString()} / ${delta.minTypeTime.toLocaleString()}
+              ${!delta.typeTimeMet ? `<span class="tooltip-gap">(${delta.typeTimeGap.toLocaleString()} short)</span>` : ''}
+            </span>
+          </div>
+          ` : ''}
+          ` : `
+          <div class="tooltip-row">
+            <span class="tooltip-label">Type Rating</span>
+            <span class="tooltip-value met">Not required ✓</span>
+          </div>
+          `}
+
+          <div class="tooltip-row">
+            <span class="tooltip-label">License</span>
+            <span class="tooltip-value ${delta.hasLicense ? 'met' : 'missing'}">
+              ${delta.hasLicense ? `✓ ${delta.pilotLicense}` : `🔴 Need ${delta.jobLicense}`}
+            </span>
+          </div>
+
+          <div class="tooltip-row">
+            <span class="tooltip-label">Work Rights</span>
+            <span class="tooltip-value ${delta.hasWorkRights ? 'met' : 'missing'}">
+              ${delta.visaSponsored ? '✓ Visa sponsored' : delta.hasWorkRights ? `✓ ${delta.workRegion}` : `🔴 No rights (${delta.workRegion})`}
+            </span>
+          </div>
+        </div>
+      `;
+
+      // Determine badge style based on eligibility
+      let badgeClass, badgeText;
+
+      if (delta.isEligible) {
+        // All requirements met
+        badgeClass = 'eligible';
+        badgeText = '✓ Eligible';
+      } else if (delta.missingTypeBlocker) {
+        // HARD BLOCKER: Missing type rating
+        badgeClass = 'not-eligible';
+        badgeText = `🔴 Need ${delta.requiredType}`;
+      } else if (delta.missingLicenseBlocker) {
+        // HARD BLOCKER: Missing license
+        badgeClass = 'not-eligible';
+        badgeText = `🔴 Need ${delta.jobLicense}`;
+      } else if (delta.missingWorkRightsBlocker) {
+        // HARD BLOCKER: No work rights
+        badgeClass = 'not-eligible';
+        badgeText = `🔴 No work rights`;
+      } else if (delta.hoursGap <= 500) {
+        // Close on hours (within 500 hrs)
+        badgeClass = 'within-reach';
+        badgeText = `🟡 ${delta.hoursGap.toLocaleString()} hrs to go`;
+      } else {
+        // Far on hours
+        badgeClass = 'not-eligible';
+        badgeText = `${delta.hoursGap.toLocaleString()} hrs to go`;
+      }
+
+      return `
+        <span class="eligibility-wrapper">
+          <span class="eligibility-badge ${badgeClass} clickable">${badgeText}</span>
+          ${tooltipHTML}
+        </span>
+      `;
+    }
+
+    function render(list){
+      const cards = el("cards");
+      cards.innerHTML = list.map(j => `
+        <article class="card${j.visa ? ' visa-sponsor' : ''}" style="position:relative;">
+          <button class="save-btn" title="Save job">
+            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </button>
+
+          <div class="company-logo">
+            <img src="${j.logo}" alt="${j.org}" onerror="this.parentElement.textContent='${iconLetter(j.org)}'">
+          </div>
+
+          <h2 class="job-title">${j.title}</h2>
+
+          <div class="apply-container">
+            <a href="#" class="apply-btn">Apply Now</a>
+          </div>
+
+          <div class="attributes">
+            <span class="attr-item"><b>Aircraft:</b> <span class="attr-pill">${j.chips[0] || 'N/A'}</span></span>
+            <span class="attr-item"><b>Location:</b> <span class="attr-pill">${j.location}</span></span>
+            ${j.type === "typed" ? '<span class="attr-pill">Type-rated</span>' : '<span class="attr-pill green">Non-type rated</span>'}
+            ${j.visa ? '<span class="attr-pill green"><b>Visa sponsor</b></span>' : ''}
+            ${getEligibilityBadge(j)}
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-box">
+              <span class="stat-label">Total Time</span>
+              <span class="stat-value">${j.flightTime.toLocaleString()} hrs</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">PIC Time</span>
+              <span class="stat-value">${j.pic.toLocaleString()} hrs</span>
+            </div>
+          </div>
+
+          <a href="#" class="expand-link">
+            See job description
+            <div class="arrow-v"></div>
+          </a>
+        </article>
+      `).join("");
+
+      el("count").textContent = `${list.length} roles found`;
+      el("stamp").textContent = `Updated ${new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"})}`;
+    }
+
+    // Tile filter state
+    const tileFilters = {
+      ntr: false, typed: false,
+      atpl: false, cpl: false, fatpl: false, instructor: false,
+      airline: false, bizav: false, training: false, gov: false,
+      visa: false, direct: false, remote: false
+    };
+
+    // Toggle tile active state
+    document.querySelectorAll('.filter-tile').forEach(tile => {
+      tile.addEventListener('click', () => {
+        const filter = tile.dataset.filter;
+        tileFilters[filter] = !tileFilters[filter];
+        tile.classList.toggle('active');
+        updateMatchCount();
+      });
+    });
+
+    function getFilters(){
+      const q = el("q").value.trim().toLowerCase();
+      const loc = el("loc").value;
+
+      const perks = {
+        visa: tileFilters.visa,
+        direct: tileFilters.direct,
+        remote: tileFilters.remote
+      };
+
+      const license = {
+        atpl: tileFilters.atpl,
+        cpl: tileFilters.cpl,
+        fatpl: tileFilters.fatpl
+      };
+
+      const type = {
+        typed: tileFilters.typed,
+        ntr: tileFilters.ntr
+      };
+
+      const employer = {
+        airline: tileFilters.airline,
+        bizav: tileFilters.bizav,
+        training: tileFilters.training,
+        gov: tileFilters.gov
+      };
+
+      const maxFT = Number(ftSlider.value || 10000);
+      const maxDelta = Number(deltaSlider.value);
+      const eligibleOnly = eligibleOnlyCheckbox.checked;
+      const includeBlockers = includeBlockersCheckbox.checked;
+
+      return { q, loc, perks, license, type, employer, maxFT, maxDelta, eligibleOnly, includeBlockers };
+    }
+
+    function matchesAny(map){
+      const any = Object.values(map).some(Boolean);
+      return { any, map };
+    }
+
+    function getFilteredJobs(){
+      const f = getFilters();
+      const lic = matchesAny(f.license);
+      const typ = matchesAny(f.type);
+      const emp = matchesAny(f.employer);
+      const perk = matchesAny(f.perks);
+
+      return JOBS.filter(j => {
+        if (f.q){
+          const blob = `${j.title} ${j.org} ${j.location} ${j.chips.join(" ")}`.toLowerCase();
+          if (!blob.includes(f.q)) return false;
+        }
+        if (f.loc && !j.location.includes(f.loc)) return false;
+        if (j.flightTime > f.maxFT) return false;
+
+        // Delta/Eligibility filter - only applies for premium users
+        if (isPremium) {
+          const delta = calculateDelta(j);
+
+          // "Eligible only" checkbox - must meet ALL requirements
+          if (f.eligibleOnly && !delta.isEligible) return false;
+
+          // Delta slider - "show jobs within X hours"
+          if (f.maxDelta < 3000) { // Only filter if slider is not at max
+
+            // If job has hard blockers (missing type/license/work rights)
+            if (delta.hasBlocker) {
+              // Exclude blockers UNLESS the "include blockers" toggle is on
+              if (!f.includeBlockers) return false;
+              // If including blockers, still filter by hours gap for planning purposes
+            }
+
+            // Filter by hours gap (TT, PIC, type time)
+            if (delta.hoursGap > f.maxDelta) return false;
+          }
+        }
+
+        // Perks - if any selected, job must match at least one
+        if (perk.any){
+          const matches =
+            (f.perks.visa && j.visa) ||
+            (f.perks.direct && j.direct) ||
+            (f.perks.remote && j.remote);
+          if (!matches) return false;
+        }
+
+        // License - if any selected, job must match at least one
+        if (lic.any){
+          const ok =
+            (f.license.atpl && (j.license === "ATPL" || j.license === "ATP")) ||
+            (f.license.cpl && j.license === "CPL") ||
+            (f.license.fatpl && j.license === "IATRA");
+          if (!ok) return false;
+        }
+
+        // Type - if any selected, job must match at least one
+        if (typ.any){
+          const matches =
+            (f.type.typed && j.type === "typed") ||
+            (f.type.ntr && j.type === "ntr");
+          if (!matches) return false;
+        }
+
+        // Employer - if any selected, job must match at least one
+        if (emp.any){
+          const matches =
+            (f.employer.airline && j.employer === "airline") ||
+            (f.employer.bizav && j.employer === "bizav") ||
+            (f.employer.training && j.employer === "training") ||
+            (f.employer.gov && j.employer === "gov");
+          if (!matches) return false;
+        }
+
+        return true;
+      });
+    }
+
+    function apply(){
+      const filtered = getFilteredJobs();
+      render(filtered);
+      updateMatchCount();
+    }
+
+    function clearAll(){
+      el("q").value = "";
+      el("loc").value = "";
+      el("eligibleOnly").checked = false;
+
+      // Clear all tile filters
+      Object.keys(tileFilters).forEach(key => tileFilters[key] = false);
+      document.querySelectorAll('.filter-tile').forEach(tile => tile.classList.remove('active'));
+
+      ftSlider.value = 10000;
+      syncFT();
+
+      // Reset delta slider and blockers toggle
+      deltaSlider.value = 500;
+      syncDelta();
+      includeBlockersCheckbox.checked = false;
+
+      render(JOBS);
+      updateMatchCount();
+    }
+
+    // Update match count on any filter change
+    document.querySelectorAll('.filters input').forEach(input => {
+      input.addEventListener('change', updateMatchCount);
+    });
+    ftSlider.addEventListener('input', updateMatchCount);
+
+    el("applyBtn").addEventListener("click", apply);
+    el("clearBtn").addEventListener("click", clearAll);
+    el("searchBtn").addEventListener("click", apply);
+    el("q").addEventListener("keydown", (e) => { if (e.key === "Enter") apply(); });
+
+    el("toggleFilters").addEventListener("click", () => {
+      const p = el("filtersPanel");
+      p.style.display = (p.style.display === "none") ? "" : "none";
+    });
+
+    syncFT();
+    syncDelta();
+    updatePremiumUI();
+    render(JOBS);
+  </script>
+</body>
+</html>

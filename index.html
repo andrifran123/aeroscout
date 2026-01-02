@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroScout | Global Aviation Database</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0B1C3E;
+            --electric-blue: #00C2FF;
+            --white: #ffffff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-navy);
+            color: var(--white);
+            overflow: hidden;
+        }
+
+        h1, h2 { font-family: 'Outfit', sans-serif; margin: 0; }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 1.2rem 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(11, 28, 62, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo { font-weight: 800; font-size: 1.6rem; letter-spacing: -0.5px; }
+
+        /* --- Hero Section --- */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(to right, rgba(11, 28, 62, 0.95) 20%, rgba(11, 28, 62, 0.5) 100%), 
+                        url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1950&q=80') center/cover;
+            padding: 0;
+            position: relative;
+        }
+
+        .hero-container {
+            padding: 160px 10% 0;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            white-space: nowrap;
+            margin-bottom: 10px;
+            text-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content h2 {
+            font-size: 2.2rem;
+            color: var(--electric-blue);
+            font-weight: 300;
+            margin-bottom: 2.5rem;
+            letter-spacing: 1px;
+        }
+
+        /* --- Why Us List --- */
+        .why-us-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 3rem 0;
+        }
+
+        .why-us-list li {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            font-weight: 300;
+        }
+
+        .why-us-list li::before {
+            content: "";
+            width: 25px;
+            height: 1px;
+            background: var(--electric-blue);
+            margin-right: 20px;
+        }
+
+        /* --- Buttons --- */
+        .cta-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 1.1rem 3rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-explore {
+            background: var(--white);
+            color: var(--primary-navy);
+        }
+
+        .btn-explore:hover {
+            background: var(--electric-blue);
+            transform: translateY(-2px);
+        }
+
+        .btn-login {
+            background: transparent;
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-login:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- Compact White Stats Bar (Your New Stats) --- */
+        .telemetry-strip {
+            background: var(--white);
+            padding: 1.2rem 2%;
+            display: flex;
+            justify-content: space-around;
+            width: 55%; /* Keep it narrow as requested */
+            margin: 0 auto;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+            z-index: 2;
+        }
+
+        .stat-item { text-align: center; flex: 1; }
+        
+        .stat-val { 
+            font-size: 1.6rem; 
+            font-weight: 700; 
+            color: var(--primary-navy); 
+            display: block; 
+            font-family: 'Outfit'; 
+        }
+        
+        .stat-label { 
+            font-size: 0.65rem; 
+            text-transform: uppercase; 
+            color: #64748b; 
+            letter-spacing: 1.2px; 
+            margin-top: 2px; 
+            font-weight: 600;
+        }
+
+        @media (max-width: 1200px) {
+            .hero-content h1 { font-size: 3rem; white-space: normal; }
+            .telemetry-strip { width: 90%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">AEROSCOUT</div>
+        <div style="font-size: 0.7rem; letter-spacing: 2px; color: rgba(255,255,255,0.5);">GLOBAL OPERATIONS CENTER</div>
+    </nav>
+
+    <header>
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Largest job database in the world</h1>
+                <h2>For pilots and cabin crew</h2>
+                
+                <ul class="why-us-list">
+                    <li>24/7 monitoring of 500+ global recruitment sites.</li>
+                    <li>Real-time tracking of direct carrier portals.</li>
+                    <li>Advanced filtering for type ratings and region.</li>
+                    <li>No middle-men. Direct application links only.</li>
+                </ul>
+
+                <div class="cta-group">
+                    <a href="#" class="btn btn-login">Login</a>
+                    <a href="#" class="btn btn-explore">Explore Jobs</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="telemetry-strip">
+            <div class="stat-item">
+                <span class="stat-val">7,000+</span>
+                <span class="stat-label">Live Vacancies</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val">700+</span>
+                <span class="stat-label">Airlines Tracked</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val">Real-Time</span>
+                <span class="stat-label">Market Tracking</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val">24/7</span>
+                <span class="stat-label">Active Scans</span>
+            </div>
+        </div>
+    </header>
+
+</body>
+</html>

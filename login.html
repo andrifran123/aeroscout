@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | AeroScout Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #0066FF; /* Corporate blue, not neon */
+            --navy-dark: #0B1C3E;
+            --white: #ffffff;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            /* Using the high-res wing photo with a more natural, professional overlay */
+            background: linear-gradient(rgba(11, 28, 62, 0.4), rgba(11, 28, 62, 0.6)), 
+                        url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        /* --- The Authentic Card --- */
+        .login-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 440px;
+            padding: 48px;
+            /* Using a sharper, real-world shadow instead of a soft glow */
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.25), 
+                        0 18px 36px -18px rgba(0, 0, 0, 0.3);
+            border-radius: 4px; /* Professional sharp edges, not "bubbly" */
+            border-top: 4px solid var(--primary-blue); /* Strong brand accent */
+        }
+
+        .header {
+            margin-bottom: 36px;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--navy-dark);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo::before {
+            content: "";
+            width: 12px; height: 12px;
+            background: var(--primary-blue);
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            color: var(--navy-dark);
+            letter-spacing: -0.02em;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            color: var(--navy-dark);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 2px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            outline: none;
+            background: #fafafa;
+        }
+
+        input:focus {
+            border-color: var(--primary-blue);
+            background: #fff;
+            box-shadow: 0 0 0 1px var(--primary-blue);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--navy-dark);
+            color: white;
+            border: none;
+            border-radius: 2px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-blue);
+        }
+
+        .footer-links {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        #alert-box {
+            display: none;
+            padding: 12px 16px;
+            border-radius: 2px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        #alert-box.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        #alert-box.success {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="header">
+            <div class="logo">AeroScout</div>
+            <h1>Intelligence Login</h1>
+        </div>
+
+        <div id="alert-box"></div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="name@airline.com" required>
+            </div>
+
+            <div class="form-group">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <label style="margin-bottom: 0;">Password</label>
+                    <a href="#" style="font-size: 0.7rem; color: var(--primary-blue); text-decoration: none; font-weight: 600;">Forgot Password?</a>
+                </div>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Authenticate</button>
+        </form>
+
+        <div class="footer-links">
+            No account? <a href="signup.html">Register Profile</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // --- CONFIGURATION ---
+        const SUPABASE_URL = 'https://ziboktbmbyjbhifsdypa.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY';
+
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const form = document.getElementById('login-form');
+        const alertBox = document.getElementById('alert-box');
+
+        function showAlert(message, type) {
+            alertBox.innerText = message;
+            alertBox.className = type;
+            alertBox.style.display = 'block';
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.querySelector('.btn-submit');
+
+            // Loading state
+            btn.innerText = "Authenticating...";
+            btn.style.opacity = "0.7";
+            alertBox.style.display = 'none';
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+
+                if (error) throw error;
+
+                // Success
+                showAlert("Login successful!", "success");
+                btn.innerText = "Success!";
+
+            } catch (error) {
+                showAlert(error.message || "Login failed. Please try again.", "error");
+                btn.innerText = "Authenticate";
+                btn.style.opacity = "1";
+            }
+        });
+    </script>
+
+</body>
+</html>

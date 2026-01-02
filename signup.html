@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | AeroScout</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #fcfcfc;
+            --sidebar-grey: #f5f7f9;
+            --border-light: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --accent-blue: #0055ff;
+            --success: #00b894;
+            --error: #d63031;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+        }
+
+        /* --- Technical Navbar --- */
+        nav {
+            padding: 1.5rem 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-light);
+            background: white;
+        }
+
+        .logo {
+            font-family: 'Outfit';
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        /* --- Main Layout --- */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            min-height: 85vh;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        /* Left Side: Career Trajectory (Technical) */
+        .trajectory-section {
+            padding: 80px 15% 80px 20%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            font-family: 'Outfit';
+            font-size: 3.5rem;
+            line-height: 1;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .market-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* --- The Timeline (AOC to Big Leagues) --- */
+        .step {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 40px;
+        }
+
+        .step::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--text-primary);
+            background: white;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .step::after {
+            content: "";
+            position: absolute;
+            left: 6px;
+            top: 17px;
+            bottom: -40px;
+            width: 1px;
+            background: var(--border-light);
+        }
+
+        .step:last-child::after { display: none; }
+
+        .step-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; }
+        .step-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+
+        /* Right Side: Signup Form */
+        .form-section {
+            background-color: var(--sidebar-grey);
+            border-left: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Technical Grid Overlay */
+        .form-section::before {
+            content: "";
+            position: absolute;
+            width: 100%; height: 100%;
+            background-image: radial-gradient(var(--border-light) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.5;
+        }
+
+        .signup-card {
+            position: relative;
+            z-index: 1;
+            background: white;
+            padding: 3rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-light);
+        }
+
+        .signup-card h2 {
+            font-family: 'Outfit';
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .signup-card .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.85rem;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background: var(--bg-main);
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.1);
+        }
+
+        .password-hint {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.4rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.9rem;
+            background: var(--text-primary);
+            color: white;
+            border: 1px solid var(--text-primary);
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .links {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .links a:hover {
+            color: var(--accent-blue);
+        }
+
+        #alert-box {
+            display: none;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        #alert-box.error {
+            background: #ffebeb;
+            color: var(--error);
+            border: 1px solid #ffcccc;
+        }
+
+        #alert-box.success {
+            background: #e6fff5;
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        /* --- Footer Stats (Clean & Industrial) --- */
+        .bottom-strip {
+            display: flex;
+            justify-content: space-around;
+            padding: 2rem 8%;
+            background: white;
+        }
+
+        .stat-box { text-align: left; }
+        .stat-num { font-family: 'Outfit'; font-size: 1.8rem; font-weight: 700; display: block; }
+        .stat-lab { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .trajectory-section {
+                padding: 60px 10%;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+            .form-section {
+                border-left: none;
+                border-top: 1px solid var(--border-light);
+                padding: 60px 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="sida.html" class="logo">AEROSCOUT</a>
+        <div style="font-size: 0.75rem; font-weight: 600;">ACCESS: GLOBAL DATABASE</div>
+    </nav>
+
+    <div class="main-container">
+        <section class="trajectory-section">
+            <span class="market-tag">Market Coverage: Industrial</span>
+            <h1>From your local AOC Holder <br>to the Big Leagues.</h1>
+
+            <div class="step">
+                <div class="step-title">Local AOC Holders</div>
+                <div class="step-desc">Monitoring private flight departments and small charter operators often invisible to the public market.</div>
+            </div>
+
+            <div class="step">
+                <div class="step-title">Regional Logistics</div>
+                <div class="step-desc">Tracking specialized cargo and medevac units across secondary regional airports.</div>
+            </div>
+
+            <div class="step">
+                <div class="step-title">Global Carriers</div>
+                <div class="step-desc">Direct feeds from major international legacy airlines and long-haul fleets.</div>
+            </div>
+        </section>
+
+        <section class="form-section">
+            <div class="signup-card">
+                <h2>Create Account</h2>
+                <p class="subtitle">Join thousands of aviation professionals.</p>
+
+                <div id="alert-box"></div>
+
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="pilot@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Create a password" required minlength="6">
+                        <p class="password-hint">Must be at least 6 characters</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" placeholder="Confirm your password" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Create Account</button>
+                </form>
+
+                <div class="links">
+                    Already have an account? <a href="login.html">Sign In</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="bottom-strip">
+        <div class="stat-box">
+            <span class="stat-num">7,000+</span>
+            <span class="stat-lab">Live Vacancies</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-num">700+</span>
+            <span class="stat-lab">Airlines Tracked</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-num">Real-Time</span>
+            <span class="stat-lab">Market Tracking</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-num">24/7</span>
+            <span class="stat-lab">Active Scans</span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // --- CONFIGURATION ---
+        const SUPABASE_URL = 'https://ziboktbmbyjbhifsdypa.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY';
+
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const form = document.getElementById('signup-form');
+        const alertBox = document.getElementById('alert-box');
+
+        function showAlert(message, type) {
+            alertBox.innerText = message;
+            alertBox.className = type;
+            alertBox.style.display = 'block';
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const btn = document.querySelector('.btn-submit');
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                showAlert("Passwords do not match.", "error");
+                return;
+            }
+
+            // Loading State
+            btn.innerText = "Creating Account...";
+            btn.style.opacity = "0.7";
+            alertBox.style.display = 'none';
+
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                });
+
+                if (error) throw error;
+
+                // Check if email confirmation is required
+                if (data.user && data.user.identities && data.user.identities.length === 0) {
+                    showAlert("This email is already registered. Please sign in instead.", "error");
+                    btn.innerText = "Create Account";
+                    btn.style.opacity = "1";
+                    return;
+                }
+
+                // Success
+                showAlert("Account created! Check your email to confirm your account, then sign in.", "success");
+                btn.innerText = "Account Created!";
+                btn.disabled = true;
+
+            } catch (error) {
+                showAlert(error.message || "Failed to create account. Please try again.", "error");
+                btn.innerText = "Create Account";
+                btn.style.opacity = "1";
+            }
+        });
+    </script>
+
+</body>
+</html>

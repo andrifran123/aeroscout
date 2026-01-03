@@ -54,7 +54,7 @@
         }
 
         .hero-container {
-            padding: 160px 10% 0;
+            padding: 340px 10% 0; /* Pushed lower as requested */
             max-width: 1400px;
             width: 100%;
         }
@@ -75,7 +75,7 @@
             letter-spacing: 1px;
         }
 
-        /* --- Why Us List --- */
+        /* --- List Section --- */
         .why-us-list {
             list-style: none;
             padding: 0;
@@ -92,11 +92,10 @@
         }
 
         .why-us-list li::before {
-            content: "";
-            width: 25px;
-            height: 1px;
-            background: var(--electric-blue);
+            content: "-";
+            color: var(--electric-blue);
             margin-right: 20px;
+            font-weight: bold;
         }
 
         /* --- Buttons --- */
@@ -137,13 +136,13 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
-        /* --- Compact White Stats Bar (Your New Stats) --- */
+        /* --- Stats Bar --- */
         .telemetry-strip {
             background: var(--white);
             padding: 1.2rem 2%;
             display: flex;
             justify-content: space-around;
-            width: 55%; /* Keep it narrow as requested */
+            width: 55%; 
             margin: 0 auto;
             border-radius: 12px 12px 0 0;
             box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
@@ -189,10 +188,10 @@
                 <h2>For pilots and cabin crew</h2>
                 
                 <ul class="why-us-list">
-                    <li>24/7 monitoring of 500+ global recruitment sites.</li>
-                    <li>Real-time tracking of direct carrier portals.</li>
-                    <li>Advanced filtering for type ratings and region.</li>
-                    <li>No middle-men. Direct application links only.</li>
+                    <li><strong>Multi-Channel Intelligence.</strong>&nbsp;Real-time aggregation of airline portals, LinkedIn, and global career boards.</li>
+                    <li><strong>&nbsp;From your Local AOC to Global Giants.</strong>&nbsp;Finding the roles other boards don't have.</li>
+                    <li>24/7 monitoring of 700+ global recruitment sites.</li>
+                    <li>Get an instant email alert when your job is advertised.</li>
                 </ul>
 
                 <div class="cta-group">

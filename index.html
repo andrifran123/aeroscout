@@ -20,12 +20,12 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--primary-navy);
             color: var(--white);
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         h1, h2 { font-family: 'Outfit', sans-serif; margin: 0; }
 
-        /* --- Navigation --- */
+        /* --- Navigation (Desktop) --- */
         nav {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -41,7 +41,7 @@
 
         .logo { font-weight: 800; font-size: 1.6rem; letter-spacing: -0.5px; }
 
-        /* --- Hero Section --- */
+        /* --- Hero Section (Desktop) --- */
         header {
             height: 100vh;
             display: flex;
@@ -54,7 +54,7 @@
         }
 
         .hero-container {
-            padding: 340px 10% 0; /* Pushed lower as requested */
+            padding: 340px 10% 0; 
             max-width: 1400px;
             width: 100%;
         }
@@ -75,7 +75,6 @@
             letter-spacing: 1px;
         }
 
-        /* --- List Section --- */
         .why-us-list {
             list-style: none;
             padding: 0;
@@ -98,11 +97,7 @@
             font-weight: bold;
         }
 
-        /* --- Buttons --- */
-        .cta-group {
-            display: flex;
-            gap: 20px;
-        }
+        .cta-group { display: flex; gap: 20px; }
 
         .btn {
             padding: 1.1rem 3rem;
@@ -116,27 +111,9 @@
             letter-spacing: 1px;
         }
 
-        .btn-explore {
-            background: var(--white);
-            color: var(--primary-navy);
-        }
+        .btn-explore { background: var(--white); color: var(--primary-navy); }
+        .btn-login { background: transparent; color: var(--white); border: 1px solid rgba(255, 255, 255, 0.5); }
 
-        .btn-explore:hover {
-            background: var(--electric-blue);
-            transform: translateY(-2px);
-        }
-
-        .btn-login {
-            background: transparent;
-            color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-
-        .btn-login:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* --- Stats Bar --- */
         .telemetry-strip {
             background: var(--white);
             padding: 1.2rem 2%;
@@ -145,172 +122,95 @@
             width: 55%; 
             margin: 0 auto;
             border-radius: 12px 12px 0 0;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
             z-index: 2;
         }
 
         .stat-item { text-align: center; flex: 1; }
-        
-        .stat-val { 
-            font-size: 1.6rem; 
-            font-weight: 700; 
-            color: var(--primary-navy); 
-            display: block; 
-            font-family: 'Outfit'; 
-        }
-        
-        .stat-label { 
-            font-size: 0.65rem; 
-            text-transform: uppercase; 
-            color: #64748b; 
-            letter-spacing: 1.2px; 
-            margin-top: 2px; 
-            font-weight: 600;
-        }
+        .stat-val { font-size: 1.6rem; font-weight: 700; color: var(--primary-navy); display: block; font-family: 'Outfit'; }
+        .stat-label { font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 600; }
 
-        @media (max-width: 1200px) {
-            .hero-content h1 { font-size: 3rem; white-space: normal; }
-            .telemetry-strip { width: 90%; }
-        }
-
-        /* Mobile Responsive */
+        /* --- MOBILE OPTIMIZATION --- */
         @media (max-width: 768px) {
             body, html {
-                overflow-x: hidden;
                 overflow-y: auto;
                 height: auto;
             }
 
+            nav {
+                position: relative;
+                padding: 1.5rem 6%;
+                background: var(--primary-navy);
+                flex-direction: column;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }
+
+            .logo { font-size: 1.4rem; margin-bottom: 4px; }
+
             header {
                 height: auto;
                 min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-            }
-
-            nav {
-                position: relative;
-                padding: 12px 6%;
-                flex-direction: column;
-                gap: 2px;
-                text-align: center;
-                background: var(--primary-navy);
-                flex-shrink: 0;
-            }
-
-            .logo { font-size: 1.2rem; }
-
-            nav div {
-                font-size: 0.55rem;
-                opacity: 0.5;
-                letter-spacing: 1.5px;
+                background: linear-gradient(rgba(11, 28, 62, 0.9), rgba(11, 28, 62, 0.9)), 
+                            url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=60') center/cover;
             }
 
             .hero-container {
-                padding: 20px 6%;
-                flex: 1;
-                display: flex;
-                align-items: center;
-            }
-
-            .hero-content {
-                width: 100%;
+                padding: 40px 8%;
+                text-align: left;
             }
 
             .hero-content h1 {
-                font-size: 1.4rem;
+                font-size: 2.2rem;
                 white-space: normal;
-                line-height: 1.25;
-                margin-bottom: 6px;
+                line-height: 1.1;
+                margin-bottom: 12px;
             }
 
             .hero-content h2 {
-                font-size: 0.95rem;
-                margin-bottom: 16px;
-            }
-
-            .why-us-list {
-                margin: 0 0 16px 0;
-                padding: 0;
-                list-style: none;
+                font-size: 1.1rem;
+                margin-bottom: 24px;
             }
 
             .why-us-list li {
-                font-size: 0.8rem;
-                margin-bottom: 8px;
-                line-height: 1.4;
-                padding-left: 16px;
-                position: relative;
-                display: block;
+                font-size: 0.95rem;
+                margin-bottom: 14px;
+                align-items: flex-start;
             }
 
             .why-us-list li::before {
-                content: "-";
-                color: var(--electric-blue);
-                position: absolute;
-                left: 0;
-                font-weight: bold;
+                margin-right: 12px;
             }
 
             .cta-group {
                 flex-direction: column;
-                gap: 8px;
+                width: 100%;
+                gap: 12px;
             }
 
             .btn {
-                padding: 12px 20px;
-                font-size: 0.8rem;
-                text-align: center;
                 width: 100%;
+                text-align: center;
+                padding: 1.2rem;
                 box-sizing: border-box;
             }
 
             .telemetry-strip {
                 width: 100%;
-                padding: 0;
+                margin-top: 50px;
+                border-radius: 0;
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                border-radius: 0;
-                margin: 0;
-                box-shadow: none;
-                flex-shrink: 0;
+                gap: 1px;
+                background: #e2e8f0; /* Color for the grid lines */
+                padding: 0;
             }
 
             .stat-item {
-                padding: 14px 8px;
-                border-top: 1px solid #e2e8f0;
+                background: white;
+                padding: 20px 10px;
             }
 
-            .stat-item:nth-child(odd) {
-                border-right: 1px solid #e2e8f0;
-            }
-
-            .stat-val {
-                font-size: 1.15rem;
-            }
-
-            .stat-label {
-                font-size: 0.5rem;
-                margin-top: 2px;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .hero-content h1 {
-                font-size: 1.25rem;
-            }
-
-            .hero-content h2 {
-                font-size: 0.85rem;
-            }
-
-            .why-us-list li {
-                font-size: 0.75rem;
-            }
-
-            .stat-val {
-                font-size: 1rem;
-            }
+            .stat-val { font-size: 1.3rem; }
+            .stat-label { font-size: 0.6rem; letter-spacing: 1px; }
         }
     </style>
 </head>
@@ -324,14 +224,14 @@
     <header>
         <div class="hero-container">
             <div class="hero-content">
-                <h1>Largest job database in the world</h1>
+                <h1>Largest job database<br>in the world</h1>
                 <h2>For pilots and cabin crew</h2>
                 
                 <ul class="why-us-list">
-                    <li>Real-time aggregation of airline portals, LinkedIn, and global career boards.</li>
-                    <li>From local AOC to global giants - finding roles other boards don't have.</li>
-                    <li>24/7 monitoring of 700+ global recruitment sites.</li>
-                    <li>Get an email alert when your job is advertised.</li>
+                    <li>Real-time aggregation of airline portals.</li>
+                    <li>24/7 monitoring of 700+ global sites.</li>
+                    <li>Finding roles other boards don't have.</li>
+                    <li>Instant match email alerts.</li>
                 </ul>
 
                 <div class="cta-group">

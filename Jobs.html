@@ -1064,41 +1064,59 @@
     // Jobs will be loaded from Supabase
     let JOBS = [];
 
-    // Fetch jobs from Supabase
+    // Fetch jobs from Supabase with company data (for logos)
     async function fetchJobs() {
       try {
+        // Join jobs with companies to get logo and company name
         const { data, error } = await supabaseClient
           .from('jobs')
-          .select('*');
+          .select(`
+            *,
+            companies (
+              id,
+              name,
+              logo_url,
+              country
+            )
+          `)
+          .eq('is_active', true);
 
         if (error) {
           console.error('Error fetching jobs:', error);
           return [];
         }
 
+        console.log('Fetched jobs from Supabase:', data);
+
         // Map Supabase fields to our expected format
-        return data.map(job => ({
-          id: job.id,
-          title: job.title || job.job_title || '',
-          org: job.org || job.company || job.organization || '',
-          location: job.location || 'Confidential',
-          chips: job.chips || [job.aircraft_type, job.employer_type].filter(Boolean) || [],
-          featured: job.featured || false,
-          visa: job.visa || job.visa_sponsor || false,
-          direct: job.direct || job.direct_entry || false,
-          remote: job.remote || job.home_based || false,
-          license: job.license || job.required_license || 'ATPL',
-          type: job.type || job.job_type || 'standard',
-          employer: job.employer || job.employer_type || 'airline',
-          flightTime: job.flightTime || job.flight_time || job.total_time || 0,
-          pic: job.pic || job.pic_time || 0,
-          requiredType: job.requiredType || job.required_type || job.aircraft_type || '',
-          minTypeTime: job.minTypeTime || job.min_type_time || 0,
-          workRegion: job.workRegion || job.work_region || 'International',
-          logo: job.logo || job.logo_url || '',
-          applyUrl: job.applyUrl || job.apply_url || job.url || '#',
-          description: job.description || ''
-        }));
+        return data.map(job => {
+          const company = job.companies || {};
+          return {
+            id: job.id,
+            title: job.title || '',
+            org: company.name || 'Unknown Company',
+            location: job.location || 'Confidential',
+            chips: [job.aircraft, job.rank].filter(Boolean),
+            featured: false,
+            visa: job.visa_sponsorship || false,
+            direct: false,
+            remote: false,
+            license: 'ATPL',
+            type: job.type_rated ? 'typed' : 'standard',
+            employer: 'airline',
+            flightTime: job.total_hours || 0,
+            pic: job.pic_hours || 0,
+            requiredType: job.aircraft || '',
+            minTypeTime: 0,
+            workRegion: company.country || 'International',
+            logo: company.logo_url || '',
+            applyUrl: job.url || '#',
+            description: job.description || '',
+            rank: job.rank || '',
+            aircraft: job.aircraft || '',
+            roster: job.roster || ''
+          };
+        });
       } catch (err) {
         console.error('Failed to fetch jobs:', err);
         return [];

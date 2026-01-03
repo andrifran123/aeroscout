@@ -233,9 +233,12 @@
 
                 if (error) throw error;
 
-                // Success
-                showAlert("Login successful!", "success");
+                // Success - redirect to Jobs page
+                showAlert("Login successful! Redirecting...", "success");
                 btn.innerText = "Success!";
+                setTimeout(() => {
+                    window.location.href = "Jobs.html";
+                }, 1000);
 
             } catch (error) {
                 showAlert(error.message || "Login failed. Please try again.", "error");

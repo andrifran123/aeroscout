@@ -1064,21 +1064,54 @@
     // Jobs will be loaded from Supabase
     let JOBS = [];
 
-    // Fetch jobs from Supabase with company data (for logos)
+    // Fetch all companies with logos for matching
+    let allCompanies = [];
+
+    async function fetchCompanies() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('companies')
+          .select('id, name, logo_url, country')
+          .not('logo_url', 'is', null);
+
+        if (error) {
+          console.error('Error fetching companies:', error);
+          return [];
+        }
+        return data || [];
+      } catch (err) {
+        console.error('Failed to fetch companies:', err);
+        return [];
+      }
+    }
+
+    // Find matching company by searching for company name in job title
+    function findCompanyForJob(jobTitle, companies) {
+      const titleLower = jobTitle.toLowerCase();
+
+      // Sort by name length descending to match longer names first (e.g., "Vietnam Airlines" before "Air")
+      const sorted = [...companies].sort((a, b) => b.name.length - a.name.length);
+
+      for (const company of sorted) {
+        const nameLower = company.name.toLowerCase();
+        if (titleLower.includes(nameLower)) {
+          return company;
+        }
+      }
+      return null;
+    }
+
+    // Fetch jobs from Supabase with company logos
     async function fetchJobs() {
       try {
-        // Join jobs with companies to get logo and company name
+        // First fetch all companies with logos
+        allCompanies = await fetchCompanies();
+        console.log('Loaded', allCompanies.length, 'companies with logos');
+
+        // Fetch all active jobs
         const { data, error } = await supabaseClient
           .from('jobs')
-          .select(`
-            *,
-            companies (
-              id,
-              name,
-              logo_url,
-              country
-            )
-          `)
+          .select('*')
           .eq('is_active', true);
 
         if (error) {
@@ -1086,15 +1119,33 @@
           return [];
         }
 
-        console.log('Fetched jobs from Supabase:', data);
+        console.log('Fetched', data.length, 'jobs from Supabase');
 
-        // Map Supabase fields to our expected format
+        // Map Supabase fields and match with company logos
         return data.map(job => {
-          const company = job.companies || {};
+          // Try to find matching company by name in job title
+          const matchedCompany = findCompanyForJob(job.title, allCompanies);
+
+          // Extract airline name from title (e.g., "B787 First Officers- Vietnam Airlines" -> "Vietnam Airlines")
+          let orgName = 'Unknown Airline';
+          if (matchedCompany) {
+            orgName = matchedCompany.name;
+          } else {
+            // Try to extract from title after " - " or similar patterns
+            const patterns = [/ - ([^-]+)$/, / [-–] ([^-–]+)$/, /^([^-–]+) [-–]/];
+            for (const pattern of patterns) {
+              const match = job.title.match(pattern);
+              if (match) {
+                orgName = match[1].trim();
+                break;
+              }
+            }
+          }
+
           return {
             id: job.id,
             title: job.title || '',
-            org: company.name || 'Unknown Company',
+            org: orgName,
             location: job.location || 'Confidential',
             chips: [job.aircraft, job.rank].filter(Boolean),
             featured: false,
@@ -1108,8 +1159,8 @@
             pic: job.pic_hours || 0,
             requiredType: job.aircraft || '',
             minTypeTime: 0,
-            workRegion: company.country || 'International',
-            logo: company.logo_url || '',
+            workRegion: matchedCompany?.country || job.location || 'International',
+            logo: matchedCompany?.logo_url || '',
             applyUrl: job.url || '#',
             description: job.description || '',
             rank: job.rank || '',

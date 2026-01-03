@@ -2070,18 +2070,6 @@
     // Load More button
     el("loadMoreBtn").addEventListener("click", loadMore);
 
-    // Alert button - redirect to signup if not logged in
-    el("alertBtn").addEventListener("click", async () => {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        alert("Sign up to set job alerts");
-        window.location.href = "signup.html";
-        return;
-      }
-      // In production: open job alerts settings modal
-      alert("Job alerts feature coming soon!");
-    });
-
     el("toggleFilters").addEventListener("click", () => {
       const p = el("filtersPanel");
       p.style.display = (p.style.display === "none") ? "" : "none";

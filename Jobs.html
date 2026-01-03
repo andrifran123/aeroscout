@@ -192,6 +192,7 @@
       grid-template-columns: 300px 1fr;
       gap:16px;
       margin-top:14px;
+      align-items:start;
     }
 
     .panel{
@@ -210,7 +211,8 @@
       pointer-events:none;
     }
 
-    .filters{ padding:20px; position:sticky; top:20px; max-height:calc(100vh - 40px); overflow-y:auto; }
+    .filters{ padding:20px; }
+    #filtersPanel{ position:sticky; top:20px; align-self:start; max-height:calc(100vh - 40px); overflow-y:auto; }
 
     /* Profile Summary Card */
     .profile-summary {

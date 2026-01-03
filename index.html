@@ -172,6 +172,98 @@
             .hero-content h1 { font-size: 3rem; white-space: normal; }
             .telemetry-strip { width: 90%; }
         }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body, html { overflow-x: hidden; }
+
+            nav {
+                padding: 1rem 5%;
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+
+            nav div { font-size: 0.6rem; }
+
+            .hero-container {
+                padding: 120px 5% 0;
+            }
+
+            .hero-content h1 {
+                font-size: 1.8rem;
+                white-space: normal;
+                line-height: 1.2;
+            }
+
+            .hero-content h2 {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .why-us-list li {
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+
+            .why-us-list li::before {
+                margin-right: 12px;
+            }
+
+            .cta-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .btn {
+                padding: 1rem 2rem;
+                font-size: 0.85rem;
+                text-align: center;
+                width: 100%;
+            }
+
+            .telemetry-strip {
+                width: 95%;
+                padding: 1rem;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .stat-item {
+                flex: 1 1 45%;
+                min-width: 80px;
+            }
+
+            .stat-val {
+                font-size: 1.2rem;
+            }
+
+            .stat-label {
+                font-size: 0.55rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-container {
+                padding: 100px 4% 0;
+            }
+
+            .hero-content h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero-content h2 {
+                font-size: 1rem;
+            }
+
+            .why-us-list li {
+                font-size: 0.8rem;
+            }
+
+            .stat-item {
+                flex: 1 1 100%;
+            }
+        }
     </style>
 </head>
 <body>

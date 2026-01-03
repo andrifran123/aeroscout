@@ -275,11 +275,12 @@
                 box-sizing: border-box;
             }
 
-            /* Stats Bar - Clean Grid */
+            /* Stats Bar - 2x2 Grid */
             .telemetry-strip {
                 width: 100%;
-                padding: 20px 12px;
-                flex-wrap: wrap;
+                padding: 0;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
                 gap: 0;
                 border-radius: 0;
                 margin: 0;
@@ -287,16 +288,16 @@
             }
 
             .stat-item {
-                flex: 1 1 50%;
-                padding: 14px 8px;
+                padding: 16px 10px;
                 border-bottom: 1px solid #e2e8f0;
-            }
-
-            .stat-item:nth-child(odd) {
                 border-right: 1px solid #e2e8f0;
             }
 
-            .stat-item:nth-last-child(-n+2) {
+            .stat-item:nth-child(2n) {
+                border-right: none;
+            }
+
+            .stat-item:nth-child(n+3) {
                 border-bottom: none;
             }
 
@@ -353,8 +354,8 @@
                 <h2>For pilots and cabin crew</h2>
                 
                 <ul class="why-us-list">
-                    <li><strong>Multi-Channel Intelligence.</strong>&nbsp;Real-time aggregation of airline portals, LinkedIn, and global career boards.</li>
-                    <li><strong>&nbsp;From your Local AOC to Global Giants.</strong>&nbsp;Finding the roles other boards don't have.</li>
+                    <li>Real-time aggregation of airline portals, LinkedIn, and global career boards.</li>
+                    <li>From your local AOC to global giants - finding the roles other boards don't have.</li>
                     <li>24/7 monitoring of 700+ global recruitment sites.</li>
                     <li>Get an instant email alert when your job is advertised.</li>
                 </ul>

@@ -1041,19 +1041,19 @@
       .result-bar {
         border-radius: 8px;
         padding: 14px;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: 0;
-        border-radius: 0;
-        z-index: 1002;
+        margin-top: 20px;
       }
 
       .clear-btn {
         border-radius: 8px;
         padding: 12px;
-        margin-bottom: 60px;
+      }
+
+      /* Lock body scroll when filters open */
+      body.filters-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
       }
 
       /* Main content area */
@@ -2098,7 +2098,14 @@
     el("loadMoreBtn").addEventListener("click", loadMore);
 
     // Toggle filters panel
+    let scrollPosition = 0;
+
     function openFilters() {
+      // Save scroll position and lock body
+      scrollPosition = window.pageYOffset;
+      document.body.classList.add("filters-open");
+      document.body.style.top = `-${scrollPosition}px`;
+
       const p = el("filtersPanel");
       const closeBtn = el("closeFilters");
       p.classList.add("show");
@@ -2107,6 +2114,11 @@
     }
 
     function closeFilters() {
+      // Unlock body and restore scroll
+      document.body.classList.remove("filters-open");
+      document.body.style.top = "";
+      window.scrollTo(0, scrollPosition);
+
       const p = el("filtersPanel");
       const closeBtn = el("closeFilters");
       p.classList.remove("show");
@@ -2127,6 +2139,13 @@
     if (el("closeFilters")) {
       el("closeFilters").addEventListener("click", closeFilters);
     }
+
+    // Also close filters when clicking "Show Results"
+    el("applyBtn").addEventListener("click", () => {
+      if (window.innerWidth <= 768) {
+        closeFilters();
+      }
+    });
 
     syncFT();
     syncDelta();

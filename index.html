@@ -176,14 +176,14 @@
         /* Mobile Responsive */
         @media (max-width: 768px) {
             body, html {
-                overflow: hidden;
-                height: 100%;
-                height: 100dvh;
+                overflow-x: hidden;
+                overflow-y: auto;
+                height: auto;
             }
 
             header {
-                height: 100%;
-                height: 100dvh;
+                height: auto;
+                min-height: 100vh;
                 display: flex;
                 flex-direction: column;
             }

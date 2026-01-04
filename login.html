@@ -101,5 +101,56 @@
             Don't have access? <a href="signup.html">Request Account</a>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://ziboktbmbyjbhifsdypa.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY';
+
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const form = document.getElementById('login-form');
+        const alertBox = document.getElementById('alert-box');
+
+        function showAlert(message, type) {
+            alertBox.textContent = message;
+            alertBox.className = type;
+            alertBox.style.display = 'block';
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.querySelector('.btn-submit');
+
+            btn.textContent = 'Authenticating...';
+            btn.disabled = true;
+            alertBox.style.display = 'none';
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+
+                if (error) throw error;
+
+                showAlert('Login successful! Redirecting...', 'success');
+
+                // Redirect to Jobs page after successful login
+                setTimeout(() => {
+                    window.location.href = 'Jobs.html';
+                }, 1000);
+
+            } catch (error) {
+                showAlert(error.message || 'Login failed. Please try again.', 'error');
+                btn.textContent = 'Authenticate';
+                btn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>

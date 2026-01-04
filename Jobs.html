@@ -701,7 +701,7 @@
       border: 1px solid #e2e8f0;
       padding: 20px 24px;
       display: grid;
-      grid-template-columns: 70px 1fr 160px;
+      grid-template-columns: 90px 1fr 160px;
       grid-template-rows: auto auto auto;
       gap: 8px 16px;
       transition: all 0.2s ease;
@@ -718,13 +718,13 @@
 
     .company-logo {
       grid-row: 1 / span 2;
-      width: 60px;
-      height: 60px;
+      width: 80px;
+      height: 80px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 22px;
+      font-size: 26px;
       color: #0b2a6f;
     }
     .company-logo img {
@@ -834,6 +834,7 @@
       justify-content: flex-end;
       gap: 8px;
       align-self: end;
+      cursor: pointer;
     }
     .expand-link:hover {
       color: #334155;
@@ -846,6 +847,39 @@
       border-bottom: 2px solid currentColor;
       transform: rotate(45deg);
       margin-bottom: 4px;
+      transition: transform 0.2s ease;
+    }
+    .expand-link.expanded .arrow-v {
+      transform: rotate(-135deg);
+      margin-bottom: 0;
+      margin-top: 4px;
+    }
+
+    /* Expandable job description section */
+    .job-description {
+      grid-column: 1 / -1;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      background: #f8fafc;
+      border-radius: 10px;
+      margin-top: 0;
+    }
+    .job-description.expanded {
+      max-height: 200px;
+      padding: 16px 20px;
+      margin-top: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .job-description-content {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #475569;
+    }
+    .job-description-content:empty::before {
+      content: "No description available for this position.";
+      color: #94a3b8;
+      font-style: italic;
     }
 
     .save-btn {
@@ -1643,6 +1677,22 @@
       return (s[0] || "A").toUpperCase();
     }
 
+    // Toggle job description expand/collapse
+    function toggleDescription(expandLink) {
+      const card = expandLink.closest('.card');
+      const descriptionDiv = card.querySelector('.job-description');
+
+      expandLink.classList.toggle('expanded');
+      descriptionDiv.classList.toggle('expanded');
+
+      // Update link text
+      if (expandLink.classList.contains('expanded')) {
+        expandLink.childNodes[0].textContent = 'Hide description ';
+      } else {
+        expandLink.childNodes[0].textContent = 'See job description ';
+      }
+    }
+
     /**
      * Calculate the eligibility delta for a job
      * Returns an object with all the gaps between pilot profile and job requirements
@@ -1911,10 +1961,14 @@
             </div>` : ''}
           </div>
 
-          <a href="#" class="expand-link">
+          <div class="expand-link" onclick="toggleDescription(this)">
             See job description
             <div class="arrow-v"></div>
-          </a>
+          </div>
+
+          <div class="job-description">
+            <div class="job-description-content">${j.description || ''}</div>
+          </div>
         </article>
       `).join("");
 

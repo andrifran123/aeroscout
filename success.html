@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Pro | AeroScout</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066FF;
+            --navy-dark: #0B1C3E;
+            --success-green: #10B981;
+            --gold: #F4D03F;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #0B1C3E 0%, #1a365d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .success-card {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--success-green), #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .pro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--gold), #e9b32a);
+            color: #5a4a00;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            color: var(--navy-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .features {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .features h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--success-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon svg {
+            width: 14px;
+            height: 14px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .feature-text {
+            font-size: 0.95rem;
+            color: var(--navy-dark);
+        }
+
+        .btn-primary {
+            display: inline-block;
+            width: 100%;
+            padding: 1rem;
+            background: var(--navy-dark);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-blue);
+        }
+
+        .receipt-link {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .receipt-link a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+            .success-card { padding: 2rem 1.5rem; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-card">
+        <div class="success-icon">
+            <svg viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+
+        <div class="pro-badge">
+            <span>PRO</span> Member
+        </div>
+
+        <h1>Welcome to AeroScout Pro!</h1>
+        <p class="subtitle">Your payment was successful. You now have full access to all premium features.</p>
+
+        <div class="features">
+            <h3>Your Pro Benefits</h3>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="feature-text">Eligibility matching for all jobs</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="feature-text">"Jobs within reach" slider</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="feature-text">Detailed requirements breakdown</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="feature-text">Priority email alerts</span>
+            </div>
+        </div>
+
+        <a href="Jobs.html" class="btn-primary">Start Exploring Jobs</a>
+
+        <p class="receipt-link">
+            A receipt has been sent to your email.
+        </p>
+    </div>
+</body>
+</html>

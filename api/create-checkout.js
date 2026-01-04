@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
       metadata: {
         supabase_user_id: userId,
       },
-      success_url: `${process.env.SITE_URL || 'https://aeroscout.net'}/Jobs.html?payment=success`,
+      success_url: `${process.env.SITE_URL || 'https://aeroscout.net'}/success.html`,
       cancel_url: `${process.env.SITE_URL || 'https://aeroscout.net'}/Jobs.html?payment=cancelled`,
     });
 

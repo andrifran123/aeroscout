@@ -1556,7 +1556,7 @@
       updateMatchCount();
     });
 
-    // Premium unlock button
+    // Premium unlock button - Stripe integration
     const premiumLock = el("premiumLock");
     el("unlockBtn").addEventListener("click", async () => {
       // Check if user is logged in
@@ -1569,19 +1569,88 @@
         return;
       }
 
-      // User is logged in - for demo: toggle premium state
-      // In production: redirect to payment/subscription page
-      isPremium = true;
-      isLoggedIn = true;
-      premiumLock.classList.add("hidden");
-      updateMatchCount();
-      apply();
+      // User is logged in - redirect to Stripe Checkout
+      try {
+        el("unlockBtn").textContent = "Loading...";
+        el("unlockBtn").disabled = true;
+
+        const response = await fetch('/api/create-checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: session.user.id,
+            userEmail: session.user.email,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.url) {
+          // Redirect to Stripe Checkout
+          window.location.href = data.url;
+        } else {
+          throw new Error(data.error || 'Failed to create checkout session');
+        }
+      } catch (error) {
+        console.error('Checkout error:', error);
+        alert('Failed to start checkout. Please try again.');
+        el("unlockBtn").textContent = "Upgrade to Pro";
+        el("unlockBtn").disabled = false;
+      }
     });
 
-    // Check login status on page load
+    // Check login status and premium status on page load
     async function checkLoginStatus() {
       const { data: { session } } = await supabaseClient.auth.getSession();
       isLoggedIn = !!session;
+
+      if (session) {
+        // Check if user has premium status
+        const { data: profile } = await supabaseClient
+          .from('profiles')
+          .select('is_premium')
+          .eq('id', session.user.id)
+          .single();
+
+        if (profile && profile.is_premium) {
+          isPremium = true;
+          premiumLock.classList.add("hidden");
+          updateMatchCount();
+        }
+      }
+
+      // Handle payment success/cancel redirects
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentStatus = urlParams.get('payment');
+
+      if (paymentStatus === 'success') {
+        // Remove query param from URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+
+        // Show success message and refresh premium status
+        alert('Payment successful! Welcome to AeroScout Pro!');
+
+        // Re-check premium status (webhook may have already updated it)
+        if (session) {
+          const { data: profile } = await supabaseClient
+            .from('profiles')
+            .select('is_premium')
+            .eq('id', session.user.id)
+            .single();
+
+          if (profile && profile.is_premium) {
+            isPremium = true;
+            premiumLock.classList.add("hidden");
+            updateMatchCount();
+            apply();
+          }
+        }
+      } else if (paymentStatus === 'cancelled') {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        alert('Payment was cancelled. You can upgrade anytime.');
+      }
     }
     checkLoginStatus();
 

@@ -741,6 +741,15 @@
       align-self: center;
     }
 
+    .airline-name {
+      margin-left: 16px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #6366f1;
+      font-style: italic;
+      letter-spacing: 0.5px;
+    }
+
     .attributes {
       display: flex;
       gap: 16px;
@@ -1099,6 +1108,13 @@
         padding-right: 70px;
       }
 
+      .airline-name {
+        display: block;
+        margin-left: 0;
+        margin-top: 4px;
+        font-size: 12px;
+      }
+
       /* Apply button - top right corner */
       .apply-container {
         position: absolute;
@@ -1197,6 +1213,7 @@
 
       .card { padding: 12px; }
       .job-title { font-size: 13px; padding-right: 65px; }
+      .airline-name { font-size: 11px; }
 
       .company-logo { width: 36px; height: 36px; }
 
@@ -1912,7 +1929,7 @@
             <img src="${j.logo}" alt="${j.org}" onerror="this.parentElement.textContent='${iconLetter(j.org)}'">
           </div>
 
-          <h2 class="job-title">${j.title}</h2>
+          <h2 class="job-title">${j.title}<span class="airline-name">${j.org}</span></h2>
 
           <div class="apply-container">
             <a href="${j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer">Apply Now</a>

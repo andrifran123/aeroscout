@@ -1,6 +1,10 @@
-const Stripe = require('stripe');
+const { createClient } = require('@supabase/supabase-js');
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Supabase client
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -23,27 +27,25 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Missing userId or userEmail' });
     }
 
-    // Create Stripe Checkout Session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'subscription', // Use 'payment' for one-time purchase
-      customer_email: userEmail,
-      line_items: [
-        {
-          price: process.env.STRIPE_PRICE_ID, // Your Stripe Price ID
-          quantity: 1,
-        },
-      ],
-      metadata: {
-        supabase_user_id: userId,
-      },
-      success_url: `${process.env.SITE_URL || 'https://aeroscout.net'}/success.html`,
-      cancel_url: `${process.env.SITE_URL || 'https://aeroscout.net'}/Jobs.html?payment=cancelled`,
-    });
+    // Lemon Squeezy checkout URL with pre-filled email and custom data
+    const variantId = process.env.LEMONSQUEEZY_VARIANT_ID;
+    const storeId = process.env.LEMONSQUEEZY_STORE_ID || 'aeroscout';
 
-    res.status(200).json({ url: session.url });
+    // Build checkout URL with parameters
+    const checkoutUrl = new URL(`https://${storeId}.lemonsqueezy.com/checkout/buy/${variantId}`);
+
+    // Pre-fill customer email
+    checkoutUrl.searchParams.set('checkout[email]', userEmail);
+
+    // Pass Supabase user ID in custom data for webhook
+    checkoutUrl.searchParams.set('checkout[custom][supabase_user_id]', userId);
+
+    // Redirect URLs
+    checkoutUrl.searchParams.set('checkout[success_url]', `${process.env.SITE_URL || 'https://aeroscout.net'}/success.html`);
+
+    res.status(200).json({ url: checkoutUrl.toString() });
   } catch (error) {
-    console.error('Stripe checkout error:', error);
+    console.error('Checkout error:', error);
     res.status(500).json({ error: error.message });
   }
 };

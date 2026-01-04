@@ -1,7 +1,5 @@
-const Stripe = require('stripe');
+const crypto = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Supabase client with service role key for admin operations
 const supabase = createClient(
@@ -9,7 +7,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Disable body parsing - Stripe needs raw body for signature verification
+// Disable body parsing - we need raw body for signature verification
 module.exports.config = {
   api: {
     bodyParser: false,
@@ -24,44 +22,70 @@ async function buffer(readable) {
   return Buffer.concat(chunks);
 }
 
+function verifySignature(payload, signature, secret) {
+  const hmac = crypto.createHmac('sha256', secret);
+  const digest = hmac.update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const buf = await buffer(req);
-  const sig = req.headers['stripe-signature'];
+  const rawBody = buf.toString('utf8');
+  const signature = req.headers['x-signature'];
 
-  let event;
-
-  try {
-    event = stripe.webhooks.constructEvent(
-      buf,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
-  } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+  // Verify webhook signature
+  if (!signature) {
+    console.error('Missing webhook signature');
+    return res.status(400).json({ error: 'Missing signature' });
   }
 
-  // Handle the event
-  switch (event.type) {
-    case 'checkout.session.completed': {
-      const session = event.data.object;
-      const userId = session.metadata.supabase_user_id;
-      const customerId = session.customer;
-      const subscriptionId = session.subscription;
+  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
 
+  try {
+    const isValid = verifySignature(rawBody, signature, secret);
+    if (!isValid) {
+      console.error('Invalid webhook signature');
+      return res.status(400).json({ error: 'Invalid signature' });
+    }
+  } catch (err) {
+    console.error('Signature verification error:', err.message);
+    return res.status(400).json({ error: 'Signature verification failed' });
+  }
+
+  let event;
+  try {
+    event = JSON.parse(rawBody);
+  } catch (err) {
+    console.error('Invalid JSON:', err.message);
+    return res.status(400).json({ error: 'Invalid JSON' });
+  }
+
+  const eventName = event.meta?.event_name;
+  const customData = event.meta?.custom_data || {};
+  const userId = customData.supabase_user_id;
+
+  console.log(`Received Lemon Squeezy event: ${eventName}`);
+
+  // Handle the event
+  switch (eventName) {
+    case 'order_created':
+    case 'subscription_created': {
       if (userId) {
+        const subscriptionId = event.data?.id;
+        const customerEmail = event.data?.attributes?.user_email;
+
         // Update user's premium status in Supabase
         const { error } = await supabase
           .from('profiles')
           .upsert({
             id: userId,
             is_premium: true,
-            stripe_customer_id: customerId,
-            stripe_subscription_id: subscriptionId,
+            lemonsqueezy_subscription_id: String(subscriptionId),
+            lemonsqueezy_customer_email: customerEmail,
             premium_since: new Date().toISOString(),
           }, { onConflict: 'id' });
 
@@ -70,18 +94,20 @@ module.exports = async (req, res) => {
         } else {
           console.log(`User ${userId} upgraded to premium`);
         }
+      } else {
+        console.log('No supabase_user_id in custom data');
       }
       break;
     }
 
-    case 'customer.subscription.deleted': {
-      const subscription = event.data.object;
+    case 'subscription_cancelled': {
+      const subscriptionId = event.data?.id;
 
       // Find user by subscription ID and remove premium
       const { data: profile } = await supabase
         .from('profiles')
         .select('id')
-        .eq('stripe_subscription_id', subscription.id)
+        .eq('lemonsqueezy_subscription_id', String(subscriptionId))
         .single();
 
       if (profile) {
@@ -95,15 +121,8 @@ module.exports = async (req, res) => {
       break;
     }
 
-    case 'invoice.payment_failed': {
-      const invoice = event.data.object;
-      console.log(`Payment failed for customer ${invoice.customer}`);
-      // Optionally notify user or handle failed payment
-      break;
-    }
-
     default:
-      console.log(`Unhandled event type: ${event.type}`);
+      console.log(`Unhandled event type: ${eventName}`);
   }
 
   res.status(200).json({ received: true });

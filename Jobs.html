@@ -616,7 +616,7 @@
     .banner h2{ margin:8px 0 0; font-size:18px; line-height:1.2; }
     .banner p{ margin:6px 0 0; opacity:.9; font-size:13px; max-width: 74ch; }
 
-    .cards{ padding:14px; display:grid; gap:10px; }
+    .cards{ padding:10px; display:grid; gap:8px; }
 
     /* Load More Section */
     .load-more-container {
@@ -697,15 +697,15 @@
 
     .card {
       background: white;
-      border-radius: 16px;
+      border-radius: 12px;
       border: 1px solid #e2e8f0;
-      padding: 20px 24px;
+      padding: 14px 18px;
       display: grid;
-      grid-template-columns: 90px 1fr 160px;
+      grid-template-columns: 70px 1fr 140px;
       grid-template-rows: auto auto auto;
-      gap: 8px 16px;
+      gap: 4px 12px;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.08);
     }
     .card:hover {
       transform: translateY(-2px);
@@ -718,13 +718,13 @@
 
     .company-logo {
       grid-row: 1 / span 2;
-      width: 80px;
-      height: 80px;
+      width: 60px;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 26px;
+      font-size: 22px;
       color: #0b2a6f;
     }
     .company-logo img {
@@ -734,7 +734,7 @@
     }
 
     .job-title {
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 700;
       margin: 0;
       color: #1e293b;
@@ -742,22 +742,22 @@
     }
 
     .airline-name {
-      margin-left: 48px;
-      font-size: 14px;
+      margin-left: 12px;
+      font-size: 12px;
       font-weight: 500;
       color: #475569;
       letter-spacing: 0.3px;
       background: rgba(71, 85, 105, 0.06);
-      padding: 4px 12px;
-      border-radius: 6px;
+      padding: 2px 8px;
+      border-radius: 4px;
       border: 1px solid rgba(71, 85, 105, 0.15);
     }
 
     .attributes {
       display: flex;
-      gap: 16px;
+      gap: 10px;
       color: #64748b;
-      font-size: 14px;
+      font-size: 12px;
       flex-wrap: wrap;
       align-items: center;
     }
@@ -767,9 +767,9 @@
     .attr-pill {
       background: #e3f2fd;
       color: #1565c0;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
       font-weight: 600;
     }
     .attr-pill.green {
@@ -787,10 +787,11 @@
     .apply-btn {
       background: #0b2a6f;
       color: white;
-      padding: 10px 22px;
-      border-radius: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
       text-decoration: none;
       font-weight: 600;
+      font-size: 13px;
       display: inline-block;
       transition: background 0.15s ease;
     }
@@ -801,9 +802,9 @@
     .stats-row {
       grid-column: 2;
       display: flex;
-      gap: 40px;
-      margin-top: 8px;
-      padding-top: 12px;
+      gap: 24px;
+      margin-top: 4px;
+      padding-top: 8px;
       border-top: 1px dashed #e2e8f0;
     }
     .stat-box {
@@ -811,13 +812,13 @@
       flex-direction: column;
     }
     .stat-label {
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
       color: #94a3b8;
       font-weight: 700;
     }
     .stat-value {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 700;
       color: #0f172a;
     }
@@ -827,12 +828,12 @@
       grid-row: 3;
       text-align: right;
       color: #64748b;
-      font-size: 13px;
+      font-size: 12px;
       text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 8px;
+      gap: 6px;
       align-self: end;
       cursor: pointer;
     }
@@ -874,7 +875,7 @@
     .job-description-content {
       font-size: 14px;
       line-height: 1.6;
-      color: #475569;
+      color: #000000;
     }
     .job-description-content:empty::before {
       content: "No description available for this position.";

@@ -1493,12 +1493,15 @@
             employer: 'airline',
             flightTime: job.total_hours || 0,
             pic: job.pic_hours || 0,
+            jetTime: job.jet_time || 0,
+            multiEngine: job.multi_engine_time || 0,
+            salary: job.salary_usd || 0,
             requiredType: job.aircraft || '',
             minTypeTime: 0,
             workRegion: matchedCompany?.country || job.location || 'International',
             logo: matchedCompany?.logo_url || '',
             applyUrl: job.url || '#',
-            description: job.description || '',
+            description: job.description_summary || job.description || '',
             rank: job.rank || '',
             aircraft: job.aircraft || '',
             roster: job.roster || ''
@@ -1932,6 +1935,18 @@
               <span class="stat-label">PIC Time</span>
               <span class="stat-value">${j.pic.toLocaleString()} hrs</span>
             </div>
+            ${j.jetTime ? `<div class="stat-box">
+              <span class="stat-label">Jet Time</span>
+              <span class="stat-value">${j.jetTime.toLocaleString()} hrs</span>
+            </div>` : ''}
+            ${j.multiEngine ? `<div class="stat-box">
+              <span class="stat-label">Multi-Engine</span>
+              <span class="stat-value">${j.multiEngine.toLocaleString()} hrs</span>
+            </div>` : ''}
+            ${j.salary ? `<div class="stat-box">
+              <span class="stat-label">Salary</span>
+              <span class="stat-value" style="color: #22c55e;">$${j.salary.toLocaleString()}/yr</span>
+            </div>` : ''}
           </div>
 
           <a href="#" class="expand-link">

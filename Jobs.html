@@ -867,7 +867,8 @@
       margin-top: 0;
     }
     .job-description.expanded {
-      max-height: 200px;
+      max-height: 400px;
+      overflow-y: auto;
       padding: 16px 20px;
       margin-top: 12px;
       border: 1px solid #e2e8f0;
@@ -881,6 +882,37 @@
       content: "No description available for this position.";
       color: #94a3b8;
       font-style: italic;
+    }
+
+    /* Requirements list styling */
+    .requirements-list {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0 0;
+    }
+    .requirements-list li {
+      position: relative;
+      padding-left: 16px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #1e293b;
+    }
+    .requirements-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #0b2a6f;
+      font-weight: bold;
+    }
+    .requirements-title {
+      font-weight: 600;
+      color: #475569;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 12px;
+      margin-bottom: 4px;
     }
 
     .save-btn {
@@ -1500,6 +1532,7 @@
             logo: job.logo_url || '',  // Logo comes directly from verified_jobs
             applyUrl: job.url || '#',
             description: job.description_summary || '',
+            requirements: job.requirements || '',  // JSON string of requirements array
             rank: job.rank || '',
             aircraft: job.aircraft || ''
           };
@@ -1691,6 +1724,30 @@
         expandLink.childNodes[0].textContent = 'Hide description ';
       } else {
         expandLink.childNodes[0].textContent = 'See job description ';
+      }
+    }
+
+    // Parse requirements JSON and render as bullet list
+    function renderRequirements(requirementsJson) {
+      if (!requirementsJson) return '';
+
+      try {
+        // Parse JSON string to array
+        let requirements = requirementsJson;
+        if (typeof requirementsJson === 'string') {
+          requirements = JSON.parse(requirementsJson);
+        }
+
+        if (!Array.isArray(requirements) || requirements.length === 0) {
+          return '';
+        }
+
+        // Render as bullet list
+        const items = requirements.map(req => `<li>${req}</li>`).join('');
+        return `<ul class="requirements-list">${items}</ul>`;
+      } catch (e) {
+        console.warn('Failed to parse requirements:', e);
+        return '';
       }
     }
 
@@ -1968,7 +2025,12 @@
           </div>
 
           <div class="job-description">
-            <div class="job-description-content">${j.description || ''}</div>
+            ${j.description ? `<div class="job-description-content">${j.description}</div>` : ''}
+            ${j.requirements ? `
+              <div class="requirements-title">Requirements</div>
+              ${renderRequirements(j.requirements)}
+            ` : ''}
+            ${!j.description && !j.requirements ? `<div class="job-description-content"></div>` : ''}
           </div>
         </article>
       `).join("");

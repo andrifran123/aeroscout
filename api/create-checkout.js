@@ -1,11 +1,3 @@
-const { createClient } = require('@supabase/supabase-js');
-
-// Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
-
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -27,23 +19,13 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Missing userId or userEmail' });
     }
 
-    // Lemon Squeezy checkout URL with pre-filled email and custom data
-    const variantId = process.env.LEMONSQUEEZY_VARIANT_ID;
-    const storeId = process.env.LEMONSQUEEZY_STORE_ID || 'aeroscout';
+    // Use the Lemon Squeezy share link with custom parameters
+    const baseUrl = process.env.LEMONSQUEEZY_CHECKOUT_URL || 'https://aeroscout-pro.lemonsqueezy.com/checkout/buy/3811b1aa-0b8c-41d4-9ad9-1a48e9cdc92e';
 
-    // Build checkout URL with parameters
-    const checkoutUrl = new URL(`https://${storeId}.lemonsqueezy.com/checkout/buy/${variantId}`);
+    // Add custom data to the URL
+    const checkoutUrl = `${baseUrl}?checkout[email]=${encodeURIComponent(userEmail)}&checkout[custom][supabase_user_id]=${encodeURIComponent(userId)}&checkout[success_url]=${encodeURIComponent('https://www.aeroscout.net/success.html')}`;
 
-    // Pre-fill customer email
-    checkoutUrl.searchParams.set('checkout[email]', userEmail);
-
-    // Pass Supabase user ID in custom data for webhook
-    checkoutUrl.searchParams.set('checkout[custom][supabase_user_id]', userId);
-
-    // Redirect URLs
-    checkoutUrl.searchParams.set('checkout[success_url]', `${process.env.SITE_URL || 'https://aeroscout.net'}/success.html`);
-
-    res.status(200).json({ url: checkoutUrl.toString() });
+    res.status(200).json({ url: checkoutUrl });
   } catch (error) {
     console.error('Checkout error:', error);
     res.status(500).json({ error: error.message });

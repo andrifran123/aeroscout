@@ -1479,9 +1479,12 @@
           // Try to find matching company by name in job title
           const matchedCompany = findCompanyForJob(job.title, allCompanies);
 
-          // Extract airline name from title (e.g., "B787 First Officers- Vietnam Airlines" -> "Vietnam Airlines")
+          // Priority: 1) AI-extracted airline field, 2) matched company, 3) extract from title
           let orgName = 'Unknown Airline';
-          if (matchedCompany) {
+          if (job.airline && job.airline.trim()) {
+            // Use AI-extracted airline name (most reliable)
+            orgName = job.airline.trim();
+          } else if (matchedCompany) {
             orgName = matchedCompany.name;
           } else {
             // Try to extract from title after " - " or similar patterns

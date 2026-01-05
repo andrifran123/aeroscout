@@ -1405,7 +1405,7 @@
                   <button class="premium-unlock-btn" id="unlockBtn">Upgrade to Pro</button>
                 </div>
                 <div class="section-title">Jobs within reach <span class="premium-badge">Pro</span> <span id="deltaLabel" style="margin-left:auto;">≤ 500 hrs away</span></div>
-                <input type="range" class="delta-slider" id="deltaSlider" min="0" max="3000" step="100" value="500">
+                <input type="range" class="delta-slider" id="deltaSlider" min="0" max="3000" step="100" value="3000">
                 <div class="delta-labels">
                   <span>Eligible now</span>
                   <span>3,000 hrs away</span>
@@ -2468,7 +2468,7 @@
       syncFT();
 
       // Reset delta slider and blockers toggle
-      deltaSlider.value = 500;
+      deltaSlider.value = 3000;
       syncDelta();
       includeBlockersCheckbox.checked = false;
 

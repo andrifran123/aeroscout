@@ -391,6 +391,26 @@
       background: rgba(11, 42, 111, 0.08);
     }
 
+    /* Clear Filters Button */
+    .clear-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px dashed #6b7890;
+      color: #6b7890;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.15s ease;
+      margin-top: 10px;
+    }
+    .clear-btn:hover {
+      background: #f1f5f9;
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
+
     /* Eligibility Delta Slider */
     .delta-section {
       background: #fef9e7;
@@ -1360,7 +1380,6 @@
 
         <main class="grid">
           <aside class="panel" id="filtersPanel">
-            <button class="close-filters-btn" id="closeFilters">Close Filters</button>
             <div class="filters">
               <!-- Job Type Toggle (Pilot/Cabin Crew) -->
               <div class="job-type-toggle">
@@ -1449,6 +1468,7 @@
                 <span>Show Results</span>
                 <span class="result-count" id="matchCount">6 Jobs</span>
               </button>
+              <button class="clear-btn" id="clearBtn" type="button">Clear Filters</button>
             </div>
           </aside>
 
@@ -1532,11 +1552,11 @@
             location: job.location || 'Confidential',
             chips: [job.aircraft, job.rank].filter(Boolean),
             featured: false,
-            visa: false,
+            visa: job.visa_sponsor || false,
             direct: false,
             remote: false,
             license: 'ATPL',
-            type: 'standard',
+            type: job.type_rated ? 'typed' : 'standard',
             employer: 'airline',
             flightTime: job.total_hours || 0,
             pic: job.pic_hours || 0,
@@ -1552,6 +1572,8 @@
             requirements: job.requirements || '',
             rank: job.rank || '',
             aircraft: job.aircraft || '',
+            typeRated: job.type_rated || false,
+            visaSponsor: job.visa_sponsor || false,
             jobType: 'pilot'
           };
         });
@@ -2374,7 +2396,7 @@
         // Perks - if any selected, job must match at least one
         if (perk.any){
           const matches =
-            (f.perks.visa && j.visa) ||
+            (f.perks.visa && (j.visa || j.visaSponsor)) ||
             (f.perks.direct && j.direct) ||
             (f.perks.remote && j.remote);
           if (!matches) return false;
@@ -2392,8 +2414,8 @@
         // Type - if any selected, job must match at least one
         if (typ.any){
           const matches =
-            (f.type.typed && j.type === "typed") ||
-            (f.type.ntr && j.type === "ntr");
+            (f.type.typed && (j.type === "typed" || j.typeRated === true)) ||
+            (f.type.ntr && (j.type === "standard" || j.type === "ntr" || j.typeRated === false));
           if (!matches) return false;
         }
 
@@ -2453,6 +2475,7 @@
     ftSlider.addEventListener('input', updateMatchCount);
 
     el("applyBtn").addEventListener("click", apply);
+    el("clearBtn").addEventListener("click", clearAll);
     el("searchBtn").addEventListener("click", apply);
     el("q").addEventListener("keydown", (e) => { if (e.key === "Enter") apply(); });
 
@@ -2469,10 +2492,8 @@
       document.body.style.top = `-${scrollPosition}px`;
 
       const p = el("filtersPanel");
-      const closeBtn = el("closeFilters");
       p.classList.add("show");
       p.style.display = "block";
-      if (closeBtn) closeBtn.style.display = "block";
     }
 
     function closeFilters() {
@@ -2482,10 +2503,8 @@
       window.scrollTo(0, scrollPosition);
 
       const p = el("filtersPanel");
-      const closeBtn = el("closeFilters");
       p.classList.remove("show");
       p.style.display = "none";
-      if (closeBtn) closeBtn.style.display = "none";
     }
 
     el("toggleFilters").addEventListener("click", () => {
@@ -2496,11 +2515,6 @@
         openFilters();
       }
     });
-
-    // Close filters button
-    if (el("closeFilters")) {
-      el("closeFilters").addEventListener("click", closeFilters);
-    }
 
     // Also close filters when clicking "Show Results"
     el("applyBtn").addEventListener("click", () => {

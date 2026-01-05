@@ -2251,7 +2251,7 @@
 
         if (profile && profile.is_premium) {
           isPremium = true;
-          premiumLock.classList.add("hidden");
+          updatePremiumUI();
           updateMatchCount();
         }
       }
@@ -2277,7 +2277,7 @@
 
           if (profile && profile.is_premium) {
             isPremium = true;
-            premiumLock.classList.add("hidden");
+            updatePremiumUI();
             updateMatchCount();
             apply();
           }

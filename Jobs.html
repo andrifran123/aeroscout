@@ -691,6 +691,129 @@
       margin-left: 6px;
       text-transform: uppercase;
     }
+
+    /* Sort by Salary Button */
+    .sort-salary-section {
+      margin: 16px 0;
+    }
+    .sort-salary-btn {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .sort-salary-btn.unlocked {
+      background: linear-gradient(135deg, #f4d03f, #e9b32a);
+      border: 1px solid #d4a82a;
+      color: #5a4a00;
+    }
+    .sort-salary-btn.unlocked:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(244, 208, 63, 0.4);
+    }
+    .sort-salary-btn.unlocked.active {
+      background: linear-gradient(135deg, #e9b32a, #d4a000);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 4px 12px rgba(244, 208, 63, 0.4);
+    }
+    .sort-salary-btn.locked {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      color: #94a3b8;
+      cursor: not-allowed;
+      position: relative;
+    }
+    .sort-salary-btn .lock-icon {
+      font-size: 14px;
+    }
+    .sort-salary-btn .premium-tag {
+      font-size: 9px;
+      background: linear-gradient(135deg, #f4d03f, #e9b32a);
+      color: #5a4a00;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    /* Salary Notice Modal */
+    .salary-notice-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+    }
+    .salary-notice-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    .salary-notice-modal {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 400px;
+      margin: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      transform: scale(0.9);
+      transition: transform 0.2s ease;
+    }
+    .salary-notice-overlay.visible .salary-notice-modal {
+      transform: scale(1);
+    }
+    .salary-notice-modal h3 {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .salary-notice-modal p {
+      margin: 0 0 20px 0;
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+    .salary-notice-modal .btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .salary-notice-modal .btn-cancel {
+      padding: 8px 16px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #64748b;
+    }
+    .salary-notice-modal .btn-confirm {
+      padding: 8px 16px;
+      border: none;
+      background: linear-gradient(135deg, #f4d03f, #e9b32a);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #5a4a00;
+    }
+    .salary-notice-modal .btn-confirm:hover {
+      box-shadow: 0 4px 12px rgba(244, 208, 63, 0.4);
+    }
+
     .delta-section .section-title {
       margin-bottom: 8px;
       color: #7d6608;
@@ -1687,6 +1810,15 @@
                 <div class="filter-tile" data-filter="remote" id="remoteTile">Home-Based</div>
               </div>
 
+              <!-- Sort by Salary (Premium Feature) -->
+              <div class="sort-salary-section">
+                <button type="button" class="sort-salary-btn locked" id="sortSalaryBtn">
+                  <span class="lock-icon">🔒</span>
+                  <span>Sort by Salary</span>
+                  <span class="premium-tag">Pro</span>
+                </button>
+              </div>
+
               <!-- Flight Time Range (Pilot only) -->
               <div class="section-title pilot-filter" id="flightTimeTitle">Total Flight Time <span id="ftLabel">0 - 10,000+</span></div>
               <div class="range-section pilot-filter" id="flightTimeSection">
@@ -1809,6 +1941,18 @@
     </div>
   </div>
 
+  <!-- Salary Notice Modal -->
+  <div class="salary-notice-overlay" id="salaryNoticeModal">
+    <div class="salary-notice-modal">
+      <h3>💰 Sort by Salary</h3>
+      <p>Please note that some jobs do not publicly disclose salary information. This sorting feature only works with jobs that have posted their salary. Jobs without salary data will appear at the end of the list.</p>
+      <div class="btn-row">
+        <button type="button" class="btn-cancel" id="salaryNoticeCancel">Cancel</button>
+        <button type="button" class="btn-confirm" id="salaryNoticeConfirm">Got it, Sort by Salary</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     // Supabase configuration
@@ -1824,6 +1968,9 @@
 
     // Delta filter state - when false, eligibility badges and filtering are disabled
     let deltaFilterEnabled = true;
+
+    // Salary sorting state (premium feature)
+    let sortBySalary = false;
 
     // Pagination state
     const JOBS_PER_PAGE = 10;
@@ -2143,10 +2290,19 @@
     checkLoginStatus();
 
     function updatePremiumUI() {
+      const sortSalaryBtn = el("sortSalaryBtn");
       if (isPremium) {
         premiumLock.classList.add("hidden");
+        // Update sort salary button to unlocked state
+        sortSalaryBtn.classList.remove("locked");
+        sortSalaryBtn.classList.add("unlocked");
+        sortSalaryBtn.innerHTML = '<span>Sort by Salary</span><span class="premium-tag">Pro</span>';
       } else {
         premiumLock.classList.remove("hidden");
+        // Keep sort salary button locked
+        sortSalaryBtn.classList.add("locked");
+        sortSalaryBtn.classList.remove("unlocked");
+        sortSalaryBtn.innerHTML = '<span class="lock-icon">🔒</span><span>Sort by Salary</span><span class="premium-tag">Pro</span>';
       }
     }
 
@@ -2809,6 +2965,33 @@
         }
 
         return true;
+      }).sort((a, b) => {
+        // Apply salary sorting if enabled (premium feature)
+        if (sortBySalary && isPremium) {
+          // Parse salary - handle string ranges like "100000-150000" by taking the higher value
+          const parseSalary = (salary) => {
+            if (!salary) return 0;
+            if (typeof salary === 'number') return salary;
+            const str = String(salary);
+            // Check for range (e.g., "100000-150000")
+            if (str.includes('-')) {
+              const parts = str.split('-').map(s => parseInt(s.replace(/[^0-9]/g, '')) || 0);
+              return Math.max(...parts);
+            }
+            return parseInt(str.replace(/[^0-9]/g, '')) || 0;
+          };
+
+          const salaryA = parseSalary(a.salary);
+          const salaryB = parseSalary(b.salary);
+
+          // Sort descending (highest salary first)
+          // Jobs without salary (0) go to the end
+          if (salaryA === 0 && salaryB === 0) return 0;
+          if (salaryA === 0) return 1;  // a goes after b
+          if (salaryB === 0) return -1; // b goes after a
+          return salaryB - salaryA;
+        }
+        return 0; // No sorting, keep original order
       });
     }
 
@@ -2837,6 +3020,10 @@
       deltaSlider.value = 3000;
       syncDelta();
       includeBlockersCheckbox.checked = false;
+
+      // Reset salary sorting
+      sortBySalary = false;
+      el("sortSalaryBtn").classList.remove("active");
 
       // Reset pagination and render first batch
       currentPage = 1;
@@ -2983,6 +3170,51 @@
     cancelProfileBtn.addEventListener("click", closeModal);
     profileModal.addEventListener("click", (e) => {
       if (e.target === profileModal) closeModal();
+    });
+
+    // ============================================
+    // Sort by Salary Feature (Premium)
+    // ============================================
+    const sortSalaryBtn = el("sortSalaryBtn");
+    const salaryNoticeModal = el("salaryNoticeModal");
+    const salaryNoticeCancel = el("salaryNoticeCancel");
+    const salaryNoticeConfirm = el("salaryNoticeConfirm");
+
+    sortSalaryBtn.addEventListener("click", () => {
+      if (!isPremium) {
+        // Non-premium users - show upgrade prompt
+        alert("Sort by Salary is a Premium feature. Upgrade to Pro to unlock!");
+        return;
+      }
+
+      // If already sorting by salary, turn it off
+      if (sortBySalary) {
+        sortBySalary = false;
+        sortSalaryBtn.classList.remove("active");
+        apply();
+        return;
+      }
+
+      // Show the notice modal for premium users
+      salaryNoticeModal.classList.add("visible");
+    });
+
+    salaryNoticeCancel.addEventListener("click", () => {
+      salaryNoticeModal.classList.remove("visible");
+    });
+
+    salaryNoticeConfirm.addEventListener("click", () => {
+      salaryNoticeModal.classList.remove("visible");
+      sortBySalary = true;
+      sortSalaryBtn.classList.add("active");
+      apply();
+    });
+
+    // Close modal on overlay click
+    salaryNoticeModal.addEventListener("click", (e) => {
+      if (e.target === salaryNoticeModal) {
+        salaryNoticeModal.classList.remove("visible");
+      }
     });
 
     // Populate form with current profile data

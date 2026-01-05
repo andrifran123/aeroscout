@@ -1885,7 +1885,7 @@
             visa: job.visa_sponsor || false,
             direct: false,
             remote: false,
-            license: 'ATPL',
+            license: job.license_required || 'ATPL',
             type: job.type_rated ? 'typed' : 'standard',
             employer: 'airline',
             flightTime: job.total_hours || 0,
@@ -1893,7 +1893,7 @@
             jetTime: job.jet_time || 0,
             multiEngine: job.multi_engine_time || 0,
             salary: job.salary_usd || 0,
-            requiredType: job.aircraft || '',
+            requiredType: job.type_rated ? (job.aircraft || '') : '',  // Only set required type for type-rated jobs
             minTypeTime: 0,
             workRegion: job.location || 'International',
             logo: job.logo_url || '',

@@ -1711,6 +1711,39 @@
       return (s[0] || "A").toUpperCase();
     }
 
+    // Format salary with commas and handle ranges
+    function formatSalary(salary) {
+      if (!salary || salary === 0 || salary === "0") return null;
+
+      const salaryStr = String(salary);
+
+      // Check if it's a range (contains hyphen)
+      if (salaryStr.includes('-')) {
+        const parts = salaryStr.split('-');
+        if (parts.length === 2) {
+          const low = parseInt(parts[0], 10);
+          const high = parseInt(parts[1], 10);
+          if (!isNaN(low) && !isNaN(high)) {
+            return {
+              formatted: `$${low.toLocaleString()}-$${high.toLocaleString()}/yr`,
+              isRange: true
+            };
+          }
+        }
+      }
+
+      // Single value
+      const val = parseInt(salaryStr, 10);
+      if (!isNaN(val) && val > 0) {
+        return {
+          formatted: `$${val.toLocaleString()}/yr`,
+          isRange: false
+        };
+      }
+
+      return null;
+    }
+
     // Toggle job description expand/collapse
     function toggleDescription(expandLink) {
       const card = expandLink.closest('.card');
@@ -2013,10 +2046,14 @@
               <span class="stat-label">Multi-Engine</span>
               <span class="stat-value">${j.multiEngine.toLocaleString()} hrs</span>
             </div>` : ''}
-            ${j.salary ? `<div class="stat-box">
-              <span class="stat-label">Salary</span>
-              <span class="stat-value" style="color: #22c55e;">$${j.salary.toLocaleString()}/yr</span>
-            </div>` : ''}
+            ${(() => {
+              const salaryInfo = formatSalary(j.salary);
+              if (!salaryInfo) return '';
+              return `<div class="stat-box">
+                <span class="stat-label">Salary${salaryInfo.isRange ? ' <span style="font-size: 0.75em; opacity: 0.8;">(range)</span>' : ''}</span>
+                <span class="stat-value" style="color: #22c55e;">${salaryInfo.formatted}</span>
+              </div>`;
+            })()}
           </div>
 
           <div class="expand-link" onclick="toggleDescription(this)">

@@ -1398,31 +1398,34 @@
               </div>
 
               <!-- Eligibility Delta Slider (Premium Feature) -->
-              <div class="delta-section">
+              <div class="delta-section" id="deltaSection">
                 <div class="premium-lock" id="premiumLock">
                   <span class="premium-lock-icon">🔒</span>
                   <span class="premium-lock-text">Premium Feature</span>
                   <button class="premium-unlock-btn" id="unlockBtn">Upgrade to Pro</button>
                 </div>
-                <div class="section-title" style="display:flex; align-items:center; justify-content:space-between;">
-                  <span>Jobs within reach <span class="premium-badge">Pro</span></span>
-                  <label style="display:flex; align-items:center; gap:6px; font-size:11px; cursor:pointer;">
-                    <input type="checkbox" id="deltaEnabled" style="width:14px; height:14px;" checked>
-                    <span id="deltaLabel">≤ 3,000 hrs away</span>
-                  </label>
+                <div class="delta-content" id="deltaContent">
+                  <div class="section-title">Jobs within reach <span class="premium-badge">Pro</span> <span id="deltaLabel" style="margin-left:auto;">≤ 3,000 hrs away</span></div>
+                  <input type="range" class="delta-slider" id="deltaSlider" min="0" max="3000" step="100" value="3000">
+                  <div class="delta-labels">
+                    <span>Eligible now</span>
+                    <span>3,000 hrs away</span>
+                  </div>
+                  <!-- Include blockers toggle -->
+                  <div class="blocker-toggle" style="margin-top:12px; padding-top:10px; border-top:1px dashed #f9e79f;">
+                    <label style="display:flex; align-items:center; gap:8px; font-size:11px; color:#7d6608; cursor:pointer;">
+                      <input type="checkbox" id="includeBlockers" style="width:14px; height:14px;">
+                      <span>Include jobs with blockers</span>
+                    </label>
+                    <div style="font-size:10px; color:#b7950b; margin-top:4px; margin-left:22px;">Show type ratings & licenses I don't have</div>
+                  </div>
+                  <!-- Turn off button -->
+                  <button type="button" id="turnOffDeltaBtn" style="width:100%; margin-top:12px; padding:8px 12px; background:#f5ecd3; border:1px solid #d4c896; border-radius:6px; color:#7d6608; font-size:12px; cursor:pointer; transition:all 0.2s;">Turn off Eligibility</button>
                 </div>
-                <input type="range" class="delta-slider" id="deltaSlider" min="0" max="3000" step="100" value="3000">
-                <div class="delta-labels">
-                  <span>Eligible now</span>
-                  <span>3,000 hrs away</span>
-                </div>
-                <!-- Include blockers toggle -->
-                <div class="blocker-toggle" style="margin-top:12px; padding-top:10px; border-top:1px dashed #f9e79f;">
-                  <label style="display:flex; align-items:center; gap:8px; font-size:11px; color:#7d6608; cursor:pointer;">
-                    <input type="checkbox" id="includeBlockers" style="width:14px; height:14px;">
-                    <span>Include jobs with blockers</span>
-                  </label>
-                  <div style="font-size:10px; color:#b7950b; margin-top:4px; margin-left:22px;">Show type ratings & licenses I don't have</div>
+                <!-- Disabled state message -->
+                <div class="delta-disabled" id="deltaDisabled" style="display:none; text-align:center; padding:10px;">
+                  <div style="font-size:12px; color:#7d6608; margin-bottom:8px;">Eligibility filter is off</div>
+                  <button type="button" id="turnOnDeltaBtn" style="padding:6px 16px; background:#1e3a5f; border:none; border-radius:6px; color:white; font-size:12px; cursor:pointer;">Turn on</button>
                 </div>
               </div>
 
@@ -1502,6 +1505,9 @@
     // Premium state (in production this would come from user auth/subscription)
     let isPremium = false;
     let isLoggedIn = false;
+
+    // Delta filter state - when false, eligibility badges and filtering are disabled
+    let deltaFilterEnabled = true;
 
     // Pagination state
     const JOBS_PER_PAGE = 10;
@@ -1694,14 +1700,26 @@
       updateMatchCount();
     });
 
-    // Delta enabled checkbox - turns the whole delta filter on/off
-    const deltaEnabledCheckbox = el("deltaEnabled");
-    deltaEnabledCheckbox.addEventListener("change", () => {
-      const enabled = deltaEnabledCheckbox.checked;
-      deltaSlider.disabled = !enabled;
-      deltaSlider.style.opacity = enabled ? 1 : 0.4;
+    // Delta filter toggle buttons - turns the whole delta/eligibility filter on/off
+    const deltaContent = el("deltaContent");
+    const deltaDisabled = el("deltaDisabled");
+    const turnOffDeltaBtn = el("turnOffDeltaBtn");
+    const turnOnDeltaBtn = el("turnOnDeltaBtn");
+
+    function setDeltaFilterState(enabled) {
+      deltaFilterEnabled = enabled;
+      if (enabled) {
+        deltaContent.style.display = "block";
+        deltaDisabled.style.display = "none";
+      } else {
+        deltaContent.style.display = "none";
+        deltaDisabled.style.display = "block";
+      }
       updateMatchCount();
-    });
+    }
+
+    turnOffDeltaBtn.addEventListener("click", () => setDeltaFilterState(false));
+    turnOnDeltaBtn.addEventListener("click", () => setDeltaFilterState(true));
 
     // Premium unlock button - Stripe integration
     const premiumLock = el("premiumLock");
@@ -2007,6 +2025,11 @@
      * Generate the eligibility badge HTML with tooltip breakdown
      */
     function getEligibilityBadge(job) {
+      // If delta filter is disabled, don't show any eligibility badge
+      if (!deltaFilterEnabled) {
+        return '';
+      }
+
       // For non-premium users, show a teaser badge that prompts upgrade
       if (!isPremium) {
         return '<span class="eligibility-badge" style="background:#f3f4f6;color:#9ca3af;cursor:pointer;" title="Upgrade to Pro to see eligibility">🔒 Eligibility</span>';
@@ -2361,7 +2384,7 @@
       };
 
       const maxFT = Number(ftSlider.value || 10000);
-      const deltaEnabled = deltaEnabledCheckbox.checked;
+      const deltaEnabled = deltaFilterEnabled;
       const maxDelta = deltaEnabled ? Number(deltaSlider.value) : 3000; // If disabled, treat as max (no filtering)
       const eligibleOnly = eligibleOnlyCheckbox.checked;
       const includeBlockers = includeBlockersCheckbox.checked;

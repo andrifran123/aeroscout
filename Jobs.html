@@ -1871,6 +1871,10 @@
         }
 
         console.log('Fetched', data.length, 'verified pilot jobs from Supabase');
+        // Debug: log first job's license data
+        if (data.length > 0) {
+          console.log('Sample job license_required:', data[0].license_required, 'type_rated:', data[0].type_rated);
+        }
 
         return data.map(job => {
           let orgName = job.airline || 'Unknown Airline';
@@ -2283,9 +2287,12 @@
 
       // 6. Work Rights Check - can pilot legally work in this region?
       // If job provides visa sponsorship, work rights are not required
-      const needsWorkRights = !job.visa && job.workRegion;
-      const hasWorkRights = !needsWorkRights || pilot.workRights.includes(job.workRegion);
-      const missingWorkRightsBlocker = needsWorkRights && !hasWorkRights;
+      // Note: For now, skip work rights check since job.workRegion contains full location strings
+      // (e.g., "Dubai, UAE") but pilot.workRights contains region codes (e.g., "EU", "USA")
+      // TODO: Implement proper location-to-region mapping
+      const needsWorkRights = false;  // Disabled until we have proper region mapping
+      const hasWorkRights = true;
+      const missingWorkRightsBlocker = false;
 
       // 7. The "hours gap" includes TT, PIC, and type time (things you can fly toward)
       // Hard blockers (missing type, license, work rights) are NOT included
@@ -2731,12 +2738,24 @@
         if (f.loc && !j.location.includes(f.loc)) return false;
         if (j.flightTime > f.maxFT) return false;
 
-        // Delta/Eligibility filter - only applies for premium users
-        if (isPremium) {
+        // "Eligible only" checkbox - works for ALL users (in black profile box)
+        if (f.eligibleOnly) {
           const delta = calculateDelta(j);
+          // Debug: log why jobs are being filtered
+          if (!delta.isEligible) {
+            console.log(`Job "${j.title}" not eligible:`, {
+              ttMet: delta.ttMet, pilotTT: PILOT_PROFILE.totalHours, jobTT: j.flightTime,
+              picMet: delta.picMet, pilotPIC: PILOT_PROFILE.picHours, jobPIC: j.pic,
+              hasLicense: delta.hasLicense, pilotLicense: PILOT_PROFILE.license, jobLicense: j.license,
+              hasBlocker: delta.hasBlocker, missingTypeBlocker: delta.missingTypeBlocker, missingLicenseBlocker: delta.missingLicenseBlocker
+            });
+          }
+          if (!delta.isEligible) return false;
+        }
 
-          // "Eligible only" checkbox - must meet ALL requirements
-          if (f.eligibleOnly && !delta.isEligible) return false;
+        // Delta/Eligibility filter - premium features (golden box)
+        if (isPremium && f.deltaEnabled) {
+          const delta = calculateDelta(j);
 
           // Delta slider - "show jobs within X hours"
           if (f.maxDelta < 3000) { // Only filter if slider is not at max

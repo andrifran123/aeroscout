@@ -2396,7 +2396,7 @@
         // Perks - if any selected, job must match at least one
         if (perk.any){
           const matches =
-            (f.perks.visa && (j.visa || j.visaSponsor)) ||
+            (f.perks.visa && j.visaSponsor === true) ||
             (f.perks.direct && j.direct) ||
             (f.perks.remote && j.remote);
           if (!matches) return false;
@@ -2414,8 +2414,8 @@
         // Type - if any selected, job must match at least one
         if (typ.any){
           const matches =
-            (f.type.typed && (j.type === "typed" || j.typeRated === true)) ||
-            (f.type.ntr && (j.type === "standard" || j.type === "ntr" || j.typeRated === false));
+            (f.type.typed && j.typeRated === true) ||
+            (f.type.ntr && j.typeRated === false);
           if (!matches) return false;
         }
 

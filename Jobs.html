@@ -1718,6 +1718,97 @@
     </div>
   </div>
 
+  <!-- Profile Editor Modal -->
+  <div class="profile-modal-overlay" id="profileModal">
+    <div class="profile-modal">
+      <div class="profile-modal-header">
+        <h2>Edit Your Profile</h2>
+        <button class="profile-modal-close" id="closeProfileModal">&times;</button>
+      </div>
+      <div class="profile-modal-body">
+        <!-- Flight Hours Section -->
+        <div class="profile-form-section">
+          <h3>Flight Hours</h3>
+          <div class="profile-form-row">
+            <div class="profile-form-group">
+              <label for="profileTotalHours">Total Time</label>
+              <input type="number" id="profileTotalHours" placeholder="e.g. 1500" min="0">
+            </div>
+            <div class="profile-form-group">
+              <label for="profilePicHours">PIC Time</label>
+              <input type="number" id="profilePicHours" placeholder="e.g. 500" min="0">
+            </div>
+          </div>
+          <div class="profile-form-row">
+            <div class="profile-form-group">
+              <label for="profileJetTime">Jet Time</label>
+              <input type="number" id="profileJetTime" placeholder="e.g. 200" min="0">
+            </div>
+            <div class="profile-form-group">
+              <label for="profileMultiEngine">Multi-Engine</label>
+              <input type="number" id="profileMultiEngine" placeholder="e.g. 300" min="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- License Section -->
+        <div class="profile-form-section">
+          <h3>License</h3>
+          <div class="profile-form-row">
+            <div class="profile-form-group full-width">
+              <label for="profileLicense">Current License</label>
+              <select id="profileLicense">
+                <option value="PPL">PPL - Private Pilot License</option>
+                <option value="CPL">CPL - Commercial Pilot License</option>
+                <option value="fATPL">fATPL - Frozen ATPL</option>
+                <option value="ATPL">ATPL - Airline Transport Pilot License</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type Ratings Section -->
+        <div class="profile-form-section">
+          <h3>Type Ratings</h3>
+          <div class="type-ratings-container" id="typeRatingsContainer">
+            <!-- Type rating chips will be added here dynamically -->
+          </div>
+          <div class="add-type-rating">
+            <input type="text" id="newTypeRating" placeholder="e.g. A320, B737, ATR 72...">
+            <button type="button" id="addTypeRatingBtn">Add</button>
+          </div>
+          <div class="profile-form-row" style="margin-top: 12px;">
+            <div class="profile-form-group full-width">
+              <label for="profileTypeTime">Hours on Primary Type</label>
+              <input type="number" id="profileTypeTime" placeholder="e.g. 500" min="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Work Rights Section -->
+        <div class="profile-form-section">
+          <h3>Work Rights</h3>
+          <p style="font-size: 11px; color: #64748b; margin: 0 0 12px 0;">Select regions where you can legally work</p>
+          <div class="work-rights-grid">
+            <label><input type="checkbox" value="EU" class="work-right-cb"> EU/EEA</label>
+            <label><input type="checkbox" value="USA" class="work-right-cb"> USA</label>
+            <label><input type="checkbox" value="UK" class="work-right-cb"> UK</label>
+            <label><input type="checkbox" value="Middle East" class="work-right-cb"> Middle East</label>
+            <label><input type="checkbox" value="Asia" class="work-right-cb"> Asia</label>
+            <label><input type="checkbox" value="Africa" class="work-right-cb"> Africa</label>
+            <label><input type="checkbox" value="Australia" class="work-right-cb"> Australia</label>
+            <label><input type="checkbox" value="Canada" class="work-right-cb"> Canada</label>
+            <label><input type="checkbox" value="South America" class="work-right-cb"> S. America</label>
+          </div>
+        </div>
+      </div>
+      <div class="profile-modal-footer">
+        <button class="profile-cancel-btn" id="cancelProfileBtn">Cancel</button>
+        <button class="profile-save-btn" id="saveProfileBtn">Save Profile</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     // Supabase configuration
@@ -3088,96 +3179,5 @@
 
     init();
   </script>
-
-  <!-- Profile Editor Modal -->
-  <div class="profile-modal-overlay" id="profileModal">
-    <div class="profile-modal">
-      <div class="profile-modal-header">
-        <h2>Edit Your Profile</h2>
-        <button class="profile-modal-close" id="closeProfileModal">&times;</button>
-      </div>
-      <div class="profile-modal-body">
-        <!-- Flight Hours Section -->
-        <div class="profile-form-section">
-          <h3>Flight Hours</h3>
-          <div class="profile-form-row">
-            <div class="profile-form-group">
-              <label for="profileTotalHours">Total Time</label>
-              <input type="number" id="profileTotalHours" placeholder="e.g. 1500" min="0">
-            </div>
-            <div class="profile-form-group">
-              <label for="profilePicHours">PIC Time</label>
-              <input type="number" id="profilePicHours" placeholder="e.g. 500" min="0">
-            </div>
-          </div>
-          <div class="profile-form-row">
-            <div class="profile-form-group">
-              <label for="profileJetTime">Jet Time</label>
-              <input type="number" id="profileJetTime" placeholder="e.g. 200" min="0">
-            </div>
-            <div class="profile-form-group">
-              <label for="profileMultiEngine">Multi-Engine</label>
-              <input type="number" id="profileMultiEngine" placeholder="e.g. 300" min="0">
-            </div>
-          </div>
-        </div>
-
-        <!-- License Section -->
-        <div class="profile-form-section">
-          <h3>License</h3>
-          <div class="profile-form-row">
-            <div class="profile-form-group full-width">
-              <label for="profileLicense">Current License</label>
-              <select id="profileLicense">
-                <option value="PPL">PPL - Private Pilot License</option>
-                <option value="CPL">CPL - Commercial Pilot License</option>
-                <option value="fATPL">fATPL - Frozen ATPL</option>
-                <option value="ATPL">ATPL - Airline Transport Pilot License</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Type Ratings Section -->
-        <div class="profile-form-section">
-          <h3>Type Ratings</h3>
-          <div class="type-ratings-container" id="typeRatingsContainer">
-            <!-- Type rating chips will be added here dynamically -->
-          </div>
-          <div class="add-type-rating">
-            <input type="text" id="newTypeRating" placeholder="e.g. A320, B737, ATR 72...">
-            <button type="button" id="addTypeRatingBtn">Add</button>
-          </div>
-          <div class="profile-form-row" style="margin-top: 12px;">
-            <div class="profile-form-group full-width">
-              <label for="profileTypeTime">Hours on Primary Type</label>
-              <input type="number" id="profileTypeTime" placeholder="e.g. 500" min="0">
-            </div>
-          </div>
-        </div>
-
-        <!-- Work Rights Section -->
-        <div class="profile-form-section">
-          <h3>Work Rights</h3>
-          <p style="font-size: 11px; color: #64748b; margin: 0 0 12px 0;">Select regions where you can legally work</p>
-          <div class="work-rights-grid">
-            <label><input type="checkbox" value="EU" class="work-right-cb"> EU/EEA</label>
-            <label><input type="checkbox" value="USA" class="work-right-cb"> USA</label>
-            <label><input type="checkbox" value="UK" class="work-right-cb"> UK</label>
-            <label><input type="checkbox" value="Middle East" class="work-right-cb"> Middle East</label>
-            <label><input type="checkbox" value="Asia" class="work-right-cb"> Asia</label>
-            <label><input type="checkbox" value="Africa" class="work-right-cb"> Africa</label>
-            <label><input type="checkbox" value="Australia" class="work-right-cb"> Australia</label>
-            <label><input type="checkbox" value="Canada" class="work-right-cb"> Canada</label>
-            <label><input type="checkbox" value="South America" class="work-right-cb"> S. America</label>
-          </div>
-        </div>
-      </div>
-      <div class="profile-modal-footer">
-        <button class="profile-cancel-btn" id="cancelProfileBtn">Cancel</button>
-        <button class="profile-save-btn" id="saveProfileBtn">Save Profile</button>
-      </div>
-    </div>
-  </div>
 </body>
 </html>

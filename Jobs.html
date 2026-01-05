@@ -1542,6 +1542,13 @@
 
         console.log('Fetched', data.length, 'verified pilot jobs from Supabase');
 
+        // Debug: log first few jobs' type_rated and visa_sponsor values
+        console.log('Sample job data:', data.slice(0, 3).map(j => ({
+          title: j.title,
+          type_rated: j.type_rated,
+          visa_sponsor: j.visa_sponsor
+        })));
+
         return data.map(job => {
           let orgName = job.airline || 'Unknown Airline';
 
@@ -1796,6 +1803,12 @@
 
     function updateMatchCount() {
       const filtered = getFilteredJobs();
+      console.log('updateMatchCount: Total JOBS:', JOBS.length, 'Filtered:', filtered.length);
+      console.log('Current filters:', getFilters());
+      // Debug: show first job's typeRated/visaSponsor
+      if (JOBS.length > 0) {
+        console.log('First job typeRated:', JOBS[0].typeRated, 'visaSponsor:', JOBS[0].visaSponsor);
+      }
       el("matchCount").textContent = `${filtered.length} Jobs`;
     }
 

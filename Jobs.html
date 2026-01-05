@@ -1404,7 +1404,13 @@
                   <span class="premium-lock-text">Premium Feature</span>
                   <button class="premium-unlock-btn" id="unlockBtn">Upgrade to Pro</button>
                 </div>
-                <div class="section-title">Jobs within reach <span class="premium-badge">Pro</span> <span id="deltaLabel" style="margin-left:auto;">≤ 500 hrs away</span></div>
+                <div class="section-title" style="display:flex; align-items:center; justify-content:space-between;">
+                  <span>Jobs within reach <span class="premium-badge">Pro</span></span>
+                  <label style="display:flex; align-items:center; gap:6px; font-size:11px; cursor:pointer;">
+                    <input type="checkbox" id="deltaEnabled" style="width:14px; height:14px;" checked>
+                    <span id="deltaLabel">≤ 3,000 hrs away</span>
+                  </label>
+                </div>
                 <input type="range" class="delta-slider" id="deltaSlider" min="0" max="3000" step="100" value="3000">
                 <div class="delta-labels">
                   <span>Eligible now</span>
@@ -1541,13 +1547,6 @@
         }
 
         console.log('Fetched', data.length, 'verified pilot jobs from Supabase');
-
-        // Debug: log first few jobs' type_rated and visa_sponsor values
-        console.log('Sample job data:', data.slice(0, 3).map(j => ({
-          title: j.title,
-          type_rated: j.type_rated,
-          visa_sponsor: j.visa_sponsor
-        })));
 
         return data.map(job => {
           let orgName = job.airline || 'Unknown Airline';
@@ -1695,6 +1694,15 @@
       updateMatchCount();
     });
 
+    // Delta enabled checkbox - turns the whole delta filter on/off
+    const deltaEnabledCheckbox = el("deltaEnabled");
+    deltaEnabledCheckbox.addEventListener("change", () => {
+      const enabled = deltaEnabledCheckbox.checked;
+      deltaSlider.disabled = !enabled;
+      deltaSlider.style.opacity = enabled ? 1 : 0.4;
+      updateMatchCount();
+    });
+
     // Premium unlock button - Stripe integration
     const premiumLock = el("premiumLock");
     el("unlockBtn").addEventListener("click", async () => {
@@ -1803,12 +1811,6 @@
 
     function updateMatchCount() {
       const filtered = getFilteredJobs();
-      console.log('updateMatchCount: Total JOBS:', JOBS.length, 'Filtered:', filtered.length);
-      console.log('Current filters:', getFilters());
-      // Debug: show first job's typeRated/visaSponsor
-      if (JOBS.length > 0) {
-        console.log('First job typeRated:', JOBS[0].typeRated, 'visaSponsor:', JOBS[0].visaSponsor);
-      }
       el("matchCount").textContent = `${filtered.length} Jobs`;
     }
 
@@ -2357,11 +2359,12 @@
       };
 
       const maxFT = Number(ftSlider.value || 10000);
-      const maxDelta = Number(deltaSlider.value);
+      const deltaEnabled = deltaEnabledCheckbox.checked;
+      const maxDelta = deltaEnabled ? Number(deltaSlider.value) : 3000; // If disabled, treat as max (no filtering)
       const eligibleOnly = eligibleOnlyCheckbox.checked;
       const includeBlockers = includeBlockersCheckbox.checked;
 
-      return { q, loc, perks, license, type, employer, maxFT, maxDelta, eligibleOnly, includeBlockers };
+      return { q, loc, perks, license, type, employer, maxFT, maxDelta, deltaEnabled, eligibleOnly, includeBlockers };
     }
 
     function matchesAny(map){

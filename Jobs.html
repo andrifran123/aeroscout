@@ -1715,7 +1715,8 @@
         deltaContent.style.display = "none";
         deltaDisabled.style.display = "block";
       }
-      updateMatchCount();
+      // Re-render jobs to show/hide eligibility badges
+      apply();
     }
 
     turnOffDeltaBtn.addEventListener("click", () => setDeltaFilterState(false));

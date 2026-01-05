@@ -248,6 +248,224 @@
       height: 16px;
       cursor: pointer;
     }
+    .profile-summary .edit-profile-btn {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .profile-summary .edit-profile-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    /* Profile Editor Modal */
+    .profile-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+    .profile-modal-overlay.active {
+      display: flex;
+    }
+    .profile-modal {
+      background: white;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .profile-modal-header {
+      background: #0a192f;
+      color: white;
+      padding: 20px 24px;
+      border-radius: 16px 16px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .profile-modal-header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .profile-modal-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .profile-modal-close:hover {
+      opacity: 1;
+    }
+    .profile-modal-body {
+      padding: 24px;
+    }
+    .profile-form-section {
+      margin-bottom: 24px;
+    }
+    .profile-form-section h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0a192f;
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .profile-form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .profile-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .profile-form-group.full-width {
+      grid-column: span 2;
+    }
+    .profile-form-group label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+    .profile-form-group input,
+    .profile-form-group select {
+      padding: 10px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    .profile-form-group input:focus,
+    .profile-form-group select:focus {
+      outline: none;
+      border-color: #1e3a5f;
+    }
+    .type-ratings-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .type-rating-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8f4fd;
+      color: #1e3a5f;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .type-rating-chip .remove-rating {
+      background: none;
+      border: none;
+      color: #1e3a5f;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      opacity: 0.6;
+    }
+    .type-rating-chip .remove-rating:hover {
+      opacity: 1;
+    }
+    .add-type-rating {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .add-type-rating input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .add-type-rating button {
+      padding: 8px 16px;
+      background: #1e3a5f;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .work-rights-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .work-rights-grid label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #334155;
+      cursor: pointer;
+    }
+    .work-rights-grid input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+    .profile-modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    .profile-modal-footer button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .profile-cancel-btn {
+      background: #f1f5f9;
+      border: none;
+      color: #64748b;
+    }
+    .profile-cancel-btn:hover {
+      background: #e2e8f0;
+    }
+    .profile-save-btn {
+      background: #1e3a5f;
+      border: none;
+      color: white;
+    }
+    .profile-save-btn:hover {
+      background: #2d4a6f;
+    }
+    .profile-save-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
     /* Section Titles */
     .section-title {
@@ -1395,6 +1613,13 @@
                   <input type="checkbox" id="eligibleOnly">
                   <label for="eligibleOnly">Show eligible only</label>
                 </div>
+                <button class="edit-profile-btn" id="editProfileBtn">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  Edit Profile
+                </button>
               </div>
 
               <!-- Eligibility Delta Slider (Premium Feature) -->
@@ -1514,10 +1739,12 @@
     let currentPage = 1;
     let currentFilteredJobs = [];
 
-    // Pilot's profile (in production this comes from user database)
-    const PILOT_PROFILE = {
+    // Pilot's profile (loaded from Supabase when logged in)
+    let PILOT_PROFILE = {
       totalHours: 1200,
       picHours: 400,
+      jetTime: 0,
+      multiEngineTime: 0,
       typeRatings: ['A320'],  // Aircraft types the pilot is rated on
       typeTime: { 'A320': 200 },  // Hours on each type
       license: 'CPL',  // Current license: PPL < CPL < ATPL
@@ -2617,8 +2844,231 @@
     el("pilotBtn").addEventListener("click", () => switchJobType("pilot"));
     el("cabinCrewBtn").addEventListener("click", () => switchJobType("cabin_crew"));
 
+    // ============================================================
+    // PROFILE EDITOR MODAL
+    // ============================================================
+    const profileModal = el("profileModal");
+    const editProfileBtn = el("editProfileBtn");
+    const closeProfileModal = el("closeProfileModal");
+    const cancelProfileBtn = el("cancelProfileBtn");
+    const saveProfileBtn = el("saveProfileBtn");
+    const typeRatingsContainer = el("typeRatingsContainer");
+    const newTypeRatingInput = el("newTypeRating");
+    const addTypeRatingBtn = el("addTypeRatingBtn");
+
+    // Temporary storage for type ratings being edited
+    let editingTypeRatings = [];
+
+    // Open modal
+    editProfileBtn.addEventListener("click", () => {
+      populateProfileForm();
+      profileModal.classList.add("active");
+    });
+
+    // Close modal
+    function closeModal() {
+      profileModal.classList.remove("active");
+    }
+    closeProfileModal.addEventListener("click", closeModal);
+    cancelProfileBtn.addEventListener("click", closeModal);
+    profileModal.addEventListener("click", (e) => {
+      if (e.target === profileModal) closeModal();
+    });
+
+    // Populate form with current profile data
+    function populateProfileForm() {
+      el("profileTotalHours").value = PILOT_PROFILE.totalHours || '';
+      el("profilePicHours").value = PILOT_PROFILE.picHours || '';
+      el("profileJetTime").value = PILOT_PROFILE.jetTime || '';
+      el("profileMultiEngine").value = PILOT_PROFILE.multiEngineTime || '';
+      el("profileLicense").value = PILOT_PROFILE.license || 'CPL';
+
+      // Get primary type time
+      const primaryType = PILOT_PROFILE.typeRatings[0];
+      el("profileTypeTime").value = primaryType ? (PILOT_PROFILE.typeTime[primaryType] || '') : '';
+
+      // Type ratings
+      editingTypeRatings = [...PILOT_PROFILE.typeRatings];
+      renderTypeRatings();
+
+      // Work rights checkboxes
+      document.querySelectorAll('.work-right-cb').forEach(cb => {
+        cb.checked = PILOT_PROFILE.workRights.includes(cb.value);
+      });
+    }
+
+    // Render type rating chips
+    function renderTypeRatings() {
+      typeRatingsContainer.innerHTML = editingTypeRatings.map(type => `
+        <span class="type-rating-chip">
+          ${type}
+          <button class="remove-rating" data-type="${type}">&times;</button>
+        </span>
+      `).join('');
+
+      // Add remove handlers
+      typeRatingsContainer.querySelectorAll('.remove-rating').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const typeToRemove = btn.dataset.type;
+          editingTypeRatings = editingTypeRatings.filter(t => t !== typeToRemove);
+          renderTypeRatings();
+        });
+      });
+    }
+
+    // Add new type rating
+    addTypeRatingBtn.addEventListener("click", () => {
+      const newType = newTypeRatingInput.value.trim().toUpperCase();
+      if (newType && !editingTypeRatings.includes(newType)) {
+        editingTypeRatings.push(newType);
+        renderTypeRatings();
+        newTypeRatingInput.value = '';
+      }
+    });
+
+    // Enter key to add type rating
+    newTypeRatingInput.addEventListener("keypress", (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addTypeRatingBtn.click();
+      }
+    });
+
+    // Update profile display string
+    function updateProfileDisplay() {
+      const totalHrs = PILOT_PROFILE.totalHours.toLocaleString();
+      const license = PILOT_PROFILE.license;
+      const types = PILOT_PROFILE.typeRatings.length > 0 ? PILOT_PROFILE.typeRatings.join(', ') : 'No type';
+      el("profileDisplay").textContent = `${totalHrs}h Total · ${license} · ${types}`;
+    }
+
+    // Save profile to Supabase
+    saveProfileBtn.addEventListener("click", async () => {
+      saveProfileBtn.disabled = true;
+      saveProfileBtn.textContent = "Saving...";
+
+      try {
+        // Get form values
+        const totalHours = parseInt(el("profileTotalHours").value) || 0;
+        const picHours = parseInt(el("profilePicHours").value) || 0;
+        const jetTime = parseInt(el("profileJetTime").value) || 0;
+        const multiEngineTime = parseInt(el("profileMultiEngine").value) || 0;
+        const license = el("profileLicense").value;
+        const typeTime = parseInt(el("profileTypeTime").value) || 0;
+
+        // Get work rights
+        const workRights = [];
+        document.querySelectorAll('.work-right-cb:checked').forEach(cb => {
+          workRights.push(cb.value);
+        });
+
+        // Build type time object
+        const typeTimeObj = {};
+        editingTypeRatings.forEach((type, idx) => {
+          // First type gets the specified hours, others get 0
+          typeTimeObj[type] = idx === 0 ? typeTime : 0;
+        });
+
+        // Update local profile
+        PILOT_PROFILE = {
+          totalHours,
+          picHours,
+          jetTime,
+          multiEngineTime,
+          typeRatings: editingTypeRatings,
+          typeTime: typeTimeObj,
+          license,
+          workRights
+        };
+
+        // Check if user is logged in
+        const { data: { session } } = await supabaseClient.auth.getSession();
+
+        if (session) {
+          // Save to Supabase
+          const { error } = await supabaseClient
+            .from('user_profiles')
+            .upsert({
+              user_id: session.user.id,
+              total_hours: totalHours,
+              pic_hours: picHours,
+              jet_time: jetTime,
+              multi_engine_time: multiEngineTime,
+              license: license,
+              type_ratings: editingTypeRatings,
+              type_time: typeTimeObj,
+              work_rights: workRights,
+              updated_at: new Date().toISOString()
+            }, {
+              onConflict: 'user_id'
+            });
+
+          if (error) {
+            console.error('Error saving profile:', error);
+            alert('Failed to save profile to database. Changes saved locally.');
+          }
+        } else {
+          // Not logged in - save to localStorage
+          localStorage.setItem('pilotProfile', JSON.stringify(PILOT_PROFILE));
+        }
+
+        // Update display and re-render jobs
+        updateProfileDisplay();
+        apply(); // Re-render to update eligibility calculations
+        closeModal();
+
+      } catch (err) {
+        console.error('Error saving profile:', err);
+        alert('An error occurred while saving. Please try again.');
+      } finally {
+        saveProfileBtn.disabled = false;
+        saveProfileBtn.textContent = "Save Profile";
+      }
+    });
+
+    // Load profile from Supabase or localStorage
+    async function loadUserProfile() {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+
+        if (session) {
+          // Try to load from Supabase
+          const { data, error } = await supabaseClient
+            .from('user_profiles')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .single();
+
+          if (data && !error) {
+            PILOT_PROFILE = {
+              totalHours: data.total_hours || 0,
+              picHours: data.pic_hours || 0,
+              jetTime: data.jet_time || 0,
+              multiEngineTime: data.multi_engine_time || 0,
+              typeRatings: data.type_ratings || [],
+              typeTime: data.type_time || {},
+              license: data.license || 'CPL',
+              workRights: data.work_rights || []
+            };
+            updateProfileDisplay();
+          }
+        } else {
+          // Try localStorage
+          const saved = localStorage.getItem('pilotProfile');
+          if (saved) {
+            PILOT_PROFILE = JSON.parse(saved);
+            updateProfileDisplay();
+          }
+        }
+      } catch (err) {
+        console.error('Error loading profile:', err);
+      }
+    }
+
     // Initialize: fetch jobs from Supabase and render
     async function init() {
+      // Load user profile first
+      await loadUserProfile();
       // Show loading state
       el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">Loading jobs...</div>';
 
@@ -2638,5 +3088,96 @@
 
     init();
   </script>
+
+  <!-- Profile Editor Modal -->
+  <div class="profile-modal-overlay" id="profileModal">
+    <div class="profile-modal">
+      <div class="profile-modal-header">
+        <h2>Edit Your Profile</h2>
+        <button class="profile-modal-close" id="closeProfileModal">&times;</button>
+      </div>
+      <div class="profile-modal-body">
+        <!-- Flight Hours Section -->
+        <div class="profile-form-section">
+          <h3>Flight Hours</h3>
+          <div class="profile-form-row">
+            <div class="profile-form-group">
+              <label for="profileTotalHours">Total Time</label>
+              <input type="number" id="profileTotalHours" placeholder="e.g. 1500" min="0">
+            </div>
+            <div class="profile-form-group">
+              <label for="profilePicHours">PIC Time</label>
+              <input type="number" id="profilePicHours" placeholder="e.g. 500" min="0">
+            </div>
+          </div>
+          <div class="profile-form-row">
+            <div class="profile-form-group">
+              <label for="profileJetTime">Jet Time</label>
+              <input type="number" id="profileJetTime" placeholder="e.g. 200" min="0">
+            </div>
+            <div class="profile-form-group">
+              <label for="profileMultiEngine">Multi-Engine</label>
+              <input type="number" id="profileMultiEngine" placeholder="e.g. 300" min="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- License Section -->
+        <div class="profile-form-section">
+          <h3>License</h3>
+          <div class="profile-form-row">
+            <div class="profile-form-group full-width">
+              <label for="profileLicense">Current License</label>
+              <select id="profileLicense">
+                <option value="PPL">PPL - Private Pilot License</option>
+                <option value="CPL">CPL - Commercial Pilot License</option>
+                <option value="fATPL">fATPL - Frozen ATPL</option>
+                <option value="ATPL">ATPL - Airline Transport Pilot License</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type Ratings Section -->
+        <div class="profile-form-section">
+          <h3>Type Ratings</h3>
+          <div class="type-ratings-container" id="typeRatingsContainer">
+            <!-- Type rating chips will be added here dynamically -->
+          </div>
+          <div class="add-type-rating">
+            <input type="text" id="newTypeRating" placeholder="e.g. A320, B737, ATR 72...">
+            <button type="button" id="addTypeRatingBtn">Add</button>
+          </div>
+          <div class="profile-form-row" style="margin-top: 12px;">
+            <div class="profile-form-group full-width">
+              <label for="profileTypeTime">Hours on Primary Type</label>
+              <input type="number" id="profileTypeTime" placeholder="e.g. 500" min="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Work Rights Section -->
+        <div class="profile-form-section">
+          <h3>Work Rights</h3>
+          <p style="font-size: 11px; color: #64748b; margin: 0 0 12px 0;">Select regions where you can legally work</p>
+          <div class="work-rights-grid">
+            <label><input type="checkbox" value="EU" class="work-right-cb"> EU/EEA</label>
+            <label><input type="checkbox" value="USA" class="work-right-cb"> USA</label>
+            <label><input type="checkbox" value="UK" class="work-right-cb"> UK</label>
+            <label><input type="checkbox" value="Middle East" class="work-right-cb"> Middle East</label>
+            <label><input type="checkbox" value="Asia" class="work-right-cb"> Asia</label>
+            <label><input type="checkbox" value="Africa" class="work-right-cb"> Africa</label>
+            <label><input type="checkbox" value="Australia" class="work-right-cb"> Australia</label>
+            <label><input type="checkbox" value="Canada" class="work-right-cb"> Canada</label>
+            <label><input type="checkbox" value="South America" class="work-right-cb"> S. America</label>
+          </div>
+        </div>
+      </div>
+      <div class="profile-modal-footer">
+        <button class="profile-cancel-btn" id="cancelProfileBtn">Cancel</button>
+        <button class="profile-save-btn" id="saveProfileBtn">Save Profile</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

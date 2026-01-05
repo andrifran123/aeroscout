@@ -362,21 +362,33 @@
       font-size: 12px;
     }
 
-    .clear-btn {
-      width: 100%;
-      background: transparent;
-      border: 1px dashed #3b82f6;
-      color: #3b82f6;
-      padding: 12px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background 0.15s ease;
-      margin-top: 10px;
+    /* Job Type Toggle (Pilot/Cabin Crew) */
+    .job-type-toggle {
+      display: flex;
+      background: #e8eef7;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 16px;
     }
-    .clear-btn:hover {
-      background: #eff6ff;
+    .job-type-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #6b7890;
+    }
+    .job-type-btn.active {
+      background: linear-gradient(135deg, var(--nav), var(--nav2));
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(11, 42, 111, 0.25);
+    }
+    .job-type-btn:hover:not(.active) {
+      background: rgba(11, 42, 111, 0.08);
     }
 
     /* Eligibility Delta Slider */
@@ -1339,7 +1351,7 @@
             </button>
 
             <div class="meta" style="grid-column: 1 / -1;">
-              <span id="count" style="font-size:15px;font-weight:700;">Active pilot jobs as of <span id="gmtTime"></span>: <span id="jobCount">0</span></span>
+              <span id="count" style="font-size:15px;font-weight:700;"><span id="jobTypeLabel">Active pilot jobs</span> as of <span id="gmtTime"></span>: <span id="jobCount">0</span></span>
             </div>
           </div>
 
@@ -1350,6 +1362,12 @@
           <aside class="panel" id="filtersPanel">
             <button class="close-filters-btn" id="closeFilters">Close Filters</button>
             <div class="filters">
+              <!-- Job Type Toggle (Pilot/Cabin Crew) -->
+              <div class="job-type-toggle">
+                <button class="job-type-btn active" id="pilotBtn" data-type="pilot">Pilot Jobs</button>
+                <button class="job-type-btn" id="cabinCrewBtn" data-type="cabin_crew">Cabin Crew</button>
+              </div>
+
               <!-- Profile Summary Card -->
               <div class="profile-summary">
                 <span class="profile-label">Your Experience</span>
@@ -1383,16 +1401,16 @@
                 </div>
               </div>
 
-              <!-- Type Preference -->
-              <div class="section-title">Type Preference</div>
-              <div class="tile-group">
+              <!-- Type Preference (Pilot only) -->
+              <div class="section-title pilot-filter" id="typePrefTitle">Type Preference</div>
+              <div class="tile-group pilot-filter" id="typePrefGroup">
                 <div class="filter-tile" data-filter="ntr" id="ntrTile">NTR</div>
                 <div class="filter-tile" data-filter="typed" id="typedTile">Type-Rated</div>
               </div>
 
-              <!-- License -->
-              <div class="section-title">License</div>
-              <div class="tile-group">
+              <!-- License (Pilot only) -->
+              <div class="section-title pilot-filter" id="licenseTitle">License</div>
+              <div class="tile-group pilot-filter" id="licenseGroup">
                 <div class="filter-tile" data-filter="atpl" id="atplTile">ATPL</div>
                 <div class="filter-tile" data-filter="cpl" id="cplTile">CPL</div>
                 <div class="filter-tile" data-filter="fatpl" id="fatplTile">fATPL</div>
@@ -1416,9 +1434,9 @@
                 <div class="filter-tile" data-filter="remote" id="remoteTile">Home-Based</div>
               </div>
 
-              <!-- Flight Time Range -->
-              <div class="section-title">Total Flight Time <span id="ftLabel">0 - 10,000+</span></div>
-              <div class="range-section">
+              <!-- Flight Time Range (Pilot only) -->
+              <div class="section-title pilot-filter" id="flightTimeTitle">Total Flight Time <span id="ftLabel">0 - 10,000+</span></div>
+              <div class="range-section pilot-filter" id="flightTimeSection">
                 <input type="range" class="range-slider" id="ftSlider" min="0" max="10000" step="100" value="10000">
                 <div class="range-labels">
                   <span>0 hrs</span>
@@ -1431,7 +1449,6 @@
                 <span>Show Results</span>
                 <span class="result-count" id="matchCount">6 Jobs</span>
               </button>
-              <button class="clear-btn" id="clearBtn" type="button">Clear all</button>
             </div>
           </aside>
 
@@ -1487,10 +1504,12 @@
     // Jobs will be loaded from Supabase
     let JOBS = [];
 
-    // Fetch jobs from Supabase verified_jobs table (includes logo_url)
-    async function fetchJobs() {
+    // Current job type (pilot or cabin_crew)
+    let currentJobType = 'pilot';
+
+    // Fetch pilot jobs from Supabase verified_jobs table
+    async function fetchPilotJobs() {
       try {
-        // Fetch all verified jobs (these have logo_url directly)
         const { data, error } = await supabaseClient
           .from('verified_jobs')
           .select('*')
@@ -1501,11 +1520,9 @@
           return [];
         }
 
-        console.log('Fetched', data.length, 'verified jobs from Supabase');
+        console.log('Fetched', data.length, 'verified pilot jobs from Supabase');
 
-        // Map verified_jobs fields
         return data.map(job => {
-          // Use airline field directly (already verified)
           let orgName = job.airline || 'Unknown Airline';
 
           return {
@@ -1529,17 +1546,77 @@
             requiredType: job.aircraft || '',
             minTypeTime: 0,
             workRegion: job.location || 'International',
-            logo: job.logo_url || '',  // Logo comes directly from verified_jobs
+            logo: job.logo_url || '',
             applyUrl: job.url || '#',
             description: job.description_summary || '',
-            requirements: job.requirements || '',  // JSON string of requirements array
+            requirements: job.requirements || '',
             rank: job.rank || '',
-            aircraft: job.aircraft || ''
+            aircraft: job.aircraft || '',
+            jobType: 'pilot'
           };
         });
       } catch (err) {
-        console.error('Failed to fetch jobs:', err);
+        console.error('Failed to fetch pilot jobs:', err);
         return [];
+      }
+    }
+
+    // Fetch cabin crew jobs from Supabase verified_cabin_crew_jobs table
+    async function fetchCabinCrewJobs() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('verified_cabin_crew_jobs')
+          .select('*')
+          .order('verified_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching verified cabin crew jobs:', error);
+          return [];
+        }
+
+        console.log('Fetched', data.length, 'verified cabin crew jobs from Supabase');
+
+        return data.map(job => {
+          let orgName = job.airline || 'Unknown Airline';
+
+          return {
+            id: job.id,
+            title: job.title || '',
+            org: orgName,
+            location: job.location || 'Confidential',
+            chips: [job.position, job.contract_type].filter(Boolean),
+            featured: false,
+            visa: false,
+            direct: false,
+            remote: false,
+            license: '',
+            type: 'standard',
+            employer: 'airline',
+            experienceYears: job.experience_years || 0,
+            languageRequirements: job.language_requirements || '',
+            salary: job.salary_usd || 0,
+            contractType: job.contract_type || '',
+            workRegion: job.location || 'International',
+            logo: job.logo_url || '',
+            applyUrl: job.url || '#',
+            description: job.description_summary || '',
+            requirements: job.requirements || '',
+            position: job.position || '',
+            jobType: 'cabin_crew'
+          };
+        });
+      } catch (err) {
+        console.error('Failed to fetch cabin crew jobs:', err);
+        return [];
+      }
+    }
+
+    // Fetch jobs based on current job type
+    async function fetchJobs() {
+      if (currentJobType === 'pilot') {
+        return await fetchPilotJobs();
+      } else {
+        return await fetchCabinCrewJobs();
       }
     }
 
@@ -2003,6 +2080,115 @@
       `;
     }
 
+    // Render job card attributes based on job type
+    function renderAttributes(j) {
+      if (j.jobType === 'cabin_crew') {
+        return `
+          <span class="attr-item"><b>Position:</b> <span class="attr-pill">${j.position || 'Flight Attendant'}</span></span>
+          <span class="attr-item"><b>Location:</b> <span class="attr-pill">${j.location}</span></span>
+          ${j.contractType ? `<span class="attr-pill">${j.contractType}</span>` : ''}
+          ${j.visa ? '<span class="attr-pill green"><b>Visa sponsor</b></span>' : ''}
+        `;
+      } else {
+        return `
+          <span class="attr-item"><b>Aircraft:</b> <span class="attr-pill">${j.chips[0] || 'N/A'}</span></span>
+          <span class="attr-item"><b>Location:</b> <span class="attr-pill">${j.location}</span></span>
+          ${j.type === "typed" ? '<span class="attr-pill">Type-rated</span>' : '<span class="attr-pill green">Non-type rated</span>'}
+          ${j.visa ? '<span class="attr-pill green"><b>Visa sponsor</b></span>' : ''}
+          ${getEligibilityBadge(j)}
+        `;
+      }
+    }
+
+    // Render stats row based on job type
+    function renderStatsRow(j) {
+      if (j.jobType === 'cabin_crew') {
+        // For cabin crew, show experience years, languages, contract type
+        let stats = '';
+
+        if (j.experienceYears > 0) {
+          stats += `<div class="stat-box">
+            <span class="stat-label">Experience</span>
+            <span class="stat-value">${j.experienceYears} ${j.experienceYears === 1 ? 'year' : 'years'}</span>
+          </div>`;
+        }
+
+        // Parse language requirements
+        let languages = [];
+        if (j.languageRequirements) {
+          try {
+            if (typeof j.languageRequirements === 'string') {
+              languages = JSON.parse(j.languageRequirements);
+            } else {
+              languages = j.languageRequirements;
+            }
+          } catch (e) {
+            languages = [j.languageRequirements];
+          }
+        }
+
+        if (languages && languages.length > 0 && languages[0] !== 'None') {
+          stats += `<div class="stat-box">
+            <span class="stat-label">Languages</span>
+            <span class="stat-value">${Array.isArray(languages) ? languages.join(', ') : languages}</span>
+          </div>`;
+        }
+
+        if (j.contractType) {
+          stats += `<div class="stat-box">
+            <span class="stat-label">Contract</span>
+            <span class="stat-value">${j.contractType}</span>
+          </div>`;
+        }
+
+        const salaryInfo = formatSalary(j.salary);
+        if (salaryInfo) {
+          stats += `<div class="stat-box">
+            <span class="stat-label">Salary${salaryInfo.isRange ? ' (range)' : ''}</span>
+            <span class="stat-value" style="color: #22c55e;">${salaryInfo.formatted}</span>
+          </div>`;
+        }
+
+        return stats || '<div class="stat-box"><span class="stat-label">Details</span><span class="stat-value">See description</span></div>';
+      } else {
+        // For pilots, show flight hours
+        let stats = `
+          <div class="stat-box">
+            <span class="stat-label">Total Time</span>
+            <span class="stat-value">${j.flightTime.toLocaleString()} hrs</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">PIC Time</span>
+            <span class="stat-value">${j.pic.toLocaleString()} hrs</span>
+          </div>
+        `;
+
+        if (j.jetTime) {
+          stats += `<div class="stat-box">
+            <span class="stat-label">Jet Time</span>
+            <span class="stat-value">${j.jetTime.toLocaleString()} hrs</span>
+          </div>`;
+        }
+
+        if (j.multiEngine) {
+          stats += `<div class="stat-box">
+            <span class="stat-label">Multi-Engine</span>
+            <span class="stat-value">${j.multiEngine.toLocaleString()} hrs</span>
+          </div>`;
+        }
+
+        const salaryInfo = formatSalary(j.salary);
+        if (salaryInfo) {
+          stats += `<div class="stat-box">
+            <span class="stat-label">Salary${salaryInfo.isRange ? ' (range)' : ''}</span>
+            <span class="stat-value" style="color: #22c55e;">${salaryInfo.formatted}</span>
+          </div>`;
+        }
+
+        return stats;
+      }
+    }
+
     function render(list, append = false){
       const cards = el("cards");
       const jobsHTML = list.map(j => `
@@ -2022,38 +2208,11 @@
           </div>
 
           <div class="attributes">
-            <span class="attr-item"><b>Aircraft:</b> <span class="attr-pill">${j.chips[0] || 'N/A'}</span></span>
-            <span class="attr-item"><b>Location:</b> <span class="attr-pill">${j.location}</span></span>
-            ${j.type === "typed" ? '<span class="attr-pill">Type-rated</span>' : '<span class="attr-pill green">Non-type rated</span>'}
-            ${j.visa ? '<span class="attr-pill green"><b>Visa sponsor</b></span>' : ''}
-            ${getEligibilityBadge(j)}
+            ${renderAttributes(j)}
           </div>
 
           <div class="stats-row">
-            <div class="stat-box">
-              <span class="stat-label">Total Time</span>
-              <span class="stat-value">${j.flightTime.toLocaleString()} hrs</span>
-            </div>
-            <div class="stat-box">
-              <span class="stat-label">PIC Time</span>
-              <span class="stat-value">${j.pic.toLocaleString()} hrs</span>
-            </div>
-            ${j.jetTime ? `<div class="stat-box">
-              <span class="stat-label">Jet Time</span>
-              <span class="stat-value">${j.jetTime.toLocaleString()} hrs</span>
-            </div>` : ''}
-            ${j.multiEngine ? `<div class="stat-box">
-              <span class="stat-label">Multi-Engine</span>
-              <span class="stat-value">${j.multiEngine.toLocaleString()} hrs</span>
-            </div>` : ''}
-            ${(() => {
-              const salaryInfo = formatSalary(j.salary);
-              if (!salaryInfo) return '';
-              return `<div class="stat-box">
-                <span class="stat-label">Salary${salaryInfo.isRange ? ' (range)' : ''}</span>
-                <span class="stat-value" style="color: #22c55e;">${salaryInfo.formatted}</span>
-              </div>`;
-            })()}
+            ${renderStatsRow(j)}
           </div>
 
           <div class="expand-link" onclick="toggleDescription(this)">
@@ -2086,6 +2245,10 @@
       const now = new Date();
       const gmtTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' }) + ' GMT';
       el("gmtTime").textContent = gmtTime;
+
+      // Update header text based on job type
+      const jobTypeLabel = currentJobType === 'pilot' ? 'Active pilot jobs' : 'Active cabin crew jobs';
+      el("jobTypeLabel").textContent = jobTypeLabel;
 
       // Update load more section
       const totalJobs = currentFilteredJobs.length;
@@ -2290,7 +2453,6 @@
     ftSlider.addEventListener('input', updateMatchCount);
 
     el("applyBtn").addEventListener("click", apply);
-    el("clearBtn").addEventListener("click", clearAll);
     el("searchBtn").addEventListener("click", apply);
     el("q").addEventListener("keydown", (e) => { if (e.key === "Enter") apply(); });
 
@@ -2350,6 +2512,54 @@
     syncFT();
     syncDelta();
     updatePremiumUI();
+
+    // Job Type Toggle (Pilot/Cabin Crew)
+    async function switchJobType(jobType) {
+      if (currentJobType === jobType) return;
+
+      currentJobType = jobType;
+
+      // Update toggle button states
+      el("pilotBtn").classList.toggle("active", jobType === "pilot");
+      el("cabinCrewBtn").classList.toggle("active", jobType === "cabin_crew");
+
+      // Show/hide pilot-specific filters using the pilot-filter class
+      const pilotFilters = document.querySelectorAll('.pilot-filter, .profile-summary, .delta-section');
+
+      if (jobType === 'cabin_crew') {
+        // Hide pilot-specific filters for cabin crew
+        pilotFilters.forEach(elem => {
+          if (elem) elem.style.display = 'none';
+        });
+      } else {
+        // Show pilot filters
+        pilotFilters.forEach(elem => {
+          if (elem) elem.style.display = '';
+        });
+      }
+
+      // Show loading state
+      el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">Loading jobs...</div>';
+
+      // Fetch new jobs
+      JOBS = await fetchJobs();
+      currentPage = 1;
+      currentFilteredJobs = JOBS;
+
+      if (JOBS.length === 0) {
+        el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">No jobs found.</div>';
+        updateDisplay();
+        return;
+      }
+
+      const initialBatch = JOBS.slice(0, JOBS_PER_PAGE);
+      render(initialBatch);
+      updateDisplay();
+      updateMatchCount();
+    }
+
+    el("pilotBtn").addEventListener("click", () => switchJobType("pilot"));
+    el("cabinCrewBtn").addEventListener("click", () => switchJobType("cabin_crew"));
 
     // Initialize: fetch jobs from Supabase and render
     async function init() {

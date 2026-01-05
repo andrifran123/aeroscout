@@ -1922,7 +1922,9 @@
       const picMet = pilot.picHours >= job.pic;
 
       // 3. Type Rating Check
-      const needsType = job.requiredType !== null;
+      // Only check type rating if the job REQUIRES it (typeRated === true)
+      // NTR jobs (typeRated === false) don't require type rating
+      const needsType = job.typeRated === true && job.requiredType;
       const hasType = needsType ? pilot.typeRatings.includes(job.requiredType) : true;
       const missingTypeBlocker = needsType && !hasType;
 

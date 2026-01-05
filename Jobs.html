@@ -2050,7 +2050,7 @@
               const salaryInfo = formatSalary(j.salary);
               if (!salaryInfo) return '';
               return `<div class="stat-box">
-                <span class="stat-label">Salary${salaryInfo.isRange ? ' <span style="font-size: 0.75em; opacity: 0.8;">(range)</span>' : ''}</span>
+                <span class="stat-label">Salary${salaryInfo.isRange ? ' (range)' : ''}</span>
                 <span class="stat-value" style="color: #22c55e;">${salaryInfo.formatted}</span>
               </div>`;
             })()}

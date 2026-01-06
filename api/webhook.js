@@ -1,31 +1,25 @@
 /**
- * PayPal Webhook Handler
+ * Paddle Webhook Handler
  *
- * Handles PayPal subscription events:
- *   - BILLING.SUBSCRIPTION.ACTIVATED - User subscribed successfully
- *   - BILLING.SUBSCRIPTION.CANCELLED - User cancelled subscription
- *   - BILLING.SUBSCRIPTION.SUSPENDED - Payment failed
- *   - BILLING.SUBSCRIPTION.EXPIRED - Subscription ended
+ * Handles Paddle subscription events:
+ *   - subscription.activated - User subscribed successfully
+ *   - subscription.canceled - User cancelled subscription
+ *   - subscription.updated - Subscription changed
+ *   - transaction.completed - Payment successful
  *
  * Environment variables required:
- *   - PAYPAL_CLIENT_ID
- *   - PAYPAL_SECRET
- *   - PAYPAL_WEBHOOK_ID
- *   - PAYPAL_MODE (sandbox or live)
+ *   - PADDLE_WEBHOOK_SECRET (optional, for signature verification)
  *   - SUPABASE_URL
  *   - SUPABASE_SERVICE_KEY
  */
 
+const crypto = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
-
-const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === 'live'
-  ? 'https://api-m.paypal.com'
-  : 'https://api-m.sandbox.paypal.com';
 
 // Disable body parsing - we need raw body for signature verification
 module.exports.config = {
@@ -42,56 +36,20 @@ async function buffer(readable) {
   return Buffer.concat(chunks);
 }
 
-async function getAccessToken() {
-  const auth = Buffer.from(
-    `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_SECRET}`
-  ).toString('base64');
+function verifyPaddleSignature(rawBody, signature, secret) {
+  if (!secret) return true; // Skip verification if no secret configured
 
-  const response = await fetch(`${PAYPAL_BASE_URL}/v1/oauth2/token`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Basic ${auth}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: 'grant_type=client_credentials',
-  });
+  const hmac = crypto.createHmac('sha256', secret);
+  const expectedSignature = hmac.update(rawBody).digest('hex');
 
-  if (!response.ok) {
-    throw new Error('Failed to authenticate with PayPal');
-  }
-
-  const data = await response.json();
-  return data.access_token;
-}
-
-async function verifyWebhookSignature(headers, body) {
-  const accessToken = await getAccessToken();
-
-  const response = await fetch(`${PAYPAL_BASE_URL}/v1/notifications/verify-webhook-signature`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      auth_algo: headers['paypal-auth-algo'],
-      cert_url: headers['paypal-cert-url'],
-      transmission_id: headers['paypal-transmission-id'],
-      transmission_sig: headers['paypal-transmission-sig'],
-      transmission_time: headers['paypal-transmission-time'],
-      webhook_id: process.env.PAYPAL_WEBHOOK_ID,
-      webhook_event: JSON.parse(body),
-    }),
-  });
-
-  if (!response.ok) {
-    const error = await response.text();
-    console.error('Webhook verification failed:', error);
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expectedSignature)
+    );
+  } catch {
     return false;
   }
-
-  const result = await response.json();
-  return result.verification_status === 'SUCCESS';
 }
 
 module.exports = async (req, res) => {
@@ -102,17 +60,17 @@ module.exports = async (req, res) => {
   const buf = await buffer(req);
   const rawBody = buf.toString('utf8');
 
-  // Verify webhook signature (optional but recommended)
-  if (process.env.PAYPAL_WEBHOOK_ID) {
-    try {
-      const isValid = await verifyWebhookSignature(req.headers, rawBody);
-      if (!isValid) {
-        console.error('Invalid PayPal webhook signature');
-        return res.status(400).json({ error: 'Invalid signature' });
-      }
-    } catch (err) {
-      console.error('Signature verification error:', err.message);
-      // Continue processing - PayPal sandbox sometimes has verification issues
+  // Verify webhook signature if secret is configured
+  const signature = req.headers['paddle-signature'];
+  if (process.env.PADDLE_WEBHOOK_SECRET && signature) {
+    // Extract the h1 signature from the header
+    const signatureParts = signature.split(';');
+    const h1Part = signatureParts.find(p => p.startsWith('h1='));
+    const h1Signature = h1Part ? h1Part.replace('h1=', '') : '';
+
+    if (!verifyPaddleSignature(rawBody, h1Signature, process.env.PADDLE_WEBHOOK_SECRET)) {
+      console.error('Invalid Paddle webhook signature');
+      return res.status(400).json({ error: 'Invalid signature' });
     }
   }
 
@@ -125,18 +83,19 @@ module.exports = async (req, res) => {
   }
 
   const eventType = event.event_type;
-  const resource = event.resource;
+  const data = event.data;
 
-  console.log(`Received PayPal event: ${eventType}`);
+  console.log(`Received Paddle event: ${eventType}`);
 
   // Handle subscription events
   switch (eventType) {
-    case 'BILLING.SUBSCRIPTION.ACTIVATED':
-    case 'BILLING.SUBSCRIPTION.CREATED': {
+    case 'subscription.activated':
+    case 'subscription.created': {
       // User subscribed successfully
-      const subscriptionId = resource.id;
-      const userId = resource.custom_id;  // Our Supabase user ID
-      const subscriberEmail = resource.subscriber?.email_address;
+      const subscriptionId = data.id;
+      const customData = data.custom_data || {};
+      const userId = customData.supabase_user_id;
+      const customerEmail = data.customer?.email;
 
       if (userId) {
         const { error } = await supabase
@@ -144,8 +103,9 @@ module.exports = async (req, res) => {
           .upsert({
             id: userId,
             is_premium: true,
-            paypal_subscription_id: subscriptionId,
-            paypal_customer_email: subscriberEmail,
+            paddle_subscription_id: subscriptionId,
+            paddle_customer_id: data.customer_id,
+            paddle_customer_email: customerEmail,
             premium_since: new Date().toISOString(),
           }, { onConflict: 'id' });
 
@@ -155,22 +115,21 @@ module.exports = async (req, res) => {
           console.log(`User ${userId} upgraded to premium (subscription: ${subscriptionId})`);
         }
       } else {
-        console.log('No custom_id (user ID) in subscription');
+        console.log('No supabase_user_id in custom_data');
       }
       break;
     }
 
-    case 'BILLING.SUBSCRIPTION.CANCELLED':
-    case 'BILLING.SUBSCRIPTION.SUSPENDED':
-    case 'BILLING.SUBSCRIPTION.EXPIRED': {
-      // User cancelled or subscription ended
-      const subscriptionId = resource.id;
+    case 'subscription.canceled':
+    case 'subscription.paused': {
+      // User cancelled or paused subscription
+      const subscriptionId = data.id;
 
       // Find user by subscription ID and remove premium
       const { data: profile } = await supabase
         .from('profiles')
         .select('id')
-        .eq('paypal_subscription_id', subscriptionId)
+        .eq('paddle_subscription_id', subscriptionId)
         .single();
 
       if (profile) {
@@ -182,36 +141,61 @@ module.exports = async (req, res) => {
           })
           .eq('id', profile.id);
 
-        console.log(`User ${profile.id} subscription ${eventType.split('.')[2].toLowerCase()}`);
+        console.log(`User ${profile.id} subscription ${eventType.split('.')[1]}`);
       }
       break;
     }
 
-    case 'PAYMENT.SALE.COMPLETED': {
-      // Recurring payment succeeded - ensure premium is active
-      const subscriptionId = resource.billing_agreement_id;
+    case 'subscription.resumed':
+    case 'subscription.updated': {
+      // Subscription resumed or updated - check if it's active
+      const subscriptionId = data.id;
+      const status = data.status;
 
-      if (subscriptionId) {
+      if (status === 'active') {
         const { data: profile } = await supabase
           .from('profiles')
           .select('id')
-          .eq('paypal_subscription_id', subscriptionId)
+          .eq('paddle_subscription_id', subscriptionId)
           .single();
 
-        if (profile && !profile.is_premium) {
+        if (profile) {
           await supabase
             .from('profiles')
             .update({ is_premium: true })
             .eq('id', profile.id);
 
-          console.log(`User ${profile.id} premium reactivated after payment`);
+          console.log(`User ${profile.id} subscription reactivated`);
         }
       }
       break;
     }
 
+    case 'transaction.completed': {
+      // Payment completed - ensure premium is active
+      const customData = data.custom_data || {};
+      const userId = customData.supabase_user_id;
+      const subscriptionId = data.subscription_id;
+
+      if (userId) {
+        // Update user to premium
+        await supabase
+          .from('profiles')
+          .upsert({
+            id: userId,
+            is_premium: true,
+            paddle_subscription_id: subscriptionId,
+            paddle_customer_id: data.customer_id,
+            premium_since: new Date().toISOString(),
+          }, { onConflict: 'id' });
+
+        console.log(`User ${userId} payment completed`);
+      }
+      break;
+    }
+
     default:
-      console.log(`Unhandled PayPal event type: ${eventType}`);
+      console.log(`Unhandled Paddle event type: ${eventType}`);
   }
 
   res.status(200).json({ received: true });

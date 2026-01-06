@@ -1,70 +1,48 @@
 /**
- * PayPal Subscription Checkout API
+ * Paddle Subscription Checkout API
  *
- * Creates a PayPal subscription for the user and returns the approval URL.
+ * Creates a Paddle checkout session for subscriptions.
+ * Users can pay with credit card without needing a Paddle/PayPal account.
  *
  * Environment variables required:
- *   - PAYPAL_CLIENT_ID
- *   - PAYPAL_SECRET
- *   - PAYPAL_PLAN_ID
- *   - PAYPAL_MODE (sandbox or live)
+ *   - PADDLE_API_KEY
+ *   - PADDLE_PRICE_ID
  */
 
-const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === 'live'
-  ? 'https://api-m.paypal.com'
-  : 'https://api-m.sandbox.paypal.com';
+const PADDLE_API_URL = 'https://api.paddle.com';
 
-async function getAccessToken() {
-  const auth = Buffer.from(
-    `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_SECRET}`
-  ).toString('base64');
-
-  const response = await fetch(`${PAYPAL_BASE_URL}/v1/oauth2/token`, {
+async function createCheckoutSession(userId, userEmail) {
+  const response = await fetch(`${PADDLE_API_URL}/transactions`, {
     method: 'POST',
     headers: {
-      'Authorization': `Basic ${auth}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: 'grant_type=client_credentials',
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to authenticate with PayPal');
-  }
-
-  const data = await response.json();
-  return data.access_token;
-}
-
-async function createSubscription(accessToken, userId, userEmail) {
-  const response = await fetch(`${PAYPAL_BASE_URL}/v1/billing/subscriptions`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
+      'Authorization': `Bearer ${process.env.PADDLE_API_KEY}`,
       'Content-Type': 'application/json',
-      'PayPal-Request-Id': `sub-${userId}-${Date.now()}`,
     },
     body: JSON.stringify({
-      plan_id: process.env.PAYPAL_PLAN_ID,
-      subscriber: {
-        email_address: userEmail,
+      items: [
+        {
+          price_id: process.env.PADDLE_PRICE_ID,
+          quantity: 1,
+        },
+      ],
+      customer_id: null,  // Let Paddle create customer
+      custom_data: {
+        supabase_user_id: userId,
       },
-      custom_id: userId,  // This links the subscription to our Supabase user
-      application_context: {
-        brand_name: 'AeroScout Pro',
-        locale: 'en-US',
-        shipping_preference: 'NO_SHIPPING',
-        user_action: 'SUBSCRIBE_NOW',
-        return_url: 'https://www.aeroscout.net/success.html',
-        cancel_url: 'https://www.aeroscout.net/pricing.html',
+      checkout: {
+        url: 'https://www.aeroscout.net/success.html',
+      },
+      // Pre-fill customer email
+      customer: {
+        email: userEmail,
       },
     }),
   });
 
   if (!response.ok) {
     const error = await response.text();
-    console.error('PayPal subscription error:', error);
-    throw new Error('Failed to create subscription');
+    console.error('Paddle API error:', error);
+    throw new Error('Failed to create checkout session');
   }
 
   return response.json();
@@ -91,22 +69,28 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Missing userId or userEmail' });
     }
 
-    // Get PayPal access token
-    const accessToken = await getAccessToken();
+    // Create Paddle checkout session
+    const session = await createCheckoutSession(userId, userEmail);
 
-    // Create subscription
-    const subscription = await createSubscription(accessToken, userId, userEmail);
+    // Get the checkout URL from the response
+    const checkoutUrl = session.data?.checkout?.url;
 
-    // Find the approval URL
-    const approvalLink = subscription.links.find(link => link.rel === 'approve');
-
-    if (!approvalLink) {
-      throw new Error('No approval URL in PayPal response');
+    if (!checkoutUrl) {
+      // For Paddle Billing, we need to use the transaction ID to build checkout URL
+      const transactionId = session.data?.id;
+      if (transactionId) {
+        // Redirect to Paddle's hosted checkout
+        return res.status(200).json({
+          url: `https://checkout.paddle.com/checkout/custom/${transactionId}`,
+          transactionId: transactionId,
+        });
+      }
+      throw new Error('No checkout URL in Paddle response');
     }
 
     res.status(200).json({
-      url: approvalLink.href,
-      subscriptionId: subscription.id,
+      url: checkoutUrl,
+      transactionId: session.data?.id,
     });
 
   } catch (error) {

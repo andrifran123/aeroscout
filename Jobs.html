@@ -2056,6 +2056,7 @@
             aircraft: job.aircraft || '',
             typeRated: job.type_rated || false,
             visaSponsor: job.visa_sponsor || false,
+            roster: job.roster || '',
             jobType: 'pilot'
           };
         });
@@ -2741,6 +2742,13 @@
           stats += `<div class="stat-box">
             <span class="stat-label">Multi-Engine</span>
             <span class="stat-value">${j.multiEngine.toLocaleString()} hrs</span>
+          </div>`;
+        }
+
+        if (j.roster) {
+          stats += `<div class="stat-box">
+            <span class="stat-label">Roster</span>
+            <span class="stat-value">${j.roster}</span>
           </div>`;
         }
 

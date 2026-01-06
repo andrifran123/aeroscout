@@ -1,52 +1,12 @@
 /**
  * Paddle Subscription Checkout API
  *
- * Creates a Paddle checkout session for subscriptions.
+ * Creates a Paddle checkout URL using Paddle.js overlay checkout.
  * Users can pay with credit card without needing a Paddle/PayPal account.
  *
  * Environment variables required:
- *   - PADDLE_API_KEY
  *   - PADDLE_PRICE_ID
  */
-
-const PADDLE_API_URL = 'https://api.paddle.com';
-
-async function createCheckoutSession(userId, userEmail) {
-  const response = await fetch(`${PADDLE_API_URL}/transactions`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.PADDLE_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      items: [
-        {
-          price_id: process.env.PADDLE_PRICE_ID,
-          quantity: 1,
-        },
-      ],
-      customer_id: null,  // Let Paddle create customer
-      custom_data: {
-        supabase_user_id: userId,
-      },
-      checkout: {
-        url: 'https://www.aeroscout.net/success.html',
-      },
-      // Pre-fill customer email
-      customer: {
-        email: userEmail,
-      },
-    }),
-  });
-
-  if (!response.ok) {
-    const error = await response.text();
-    console.error('Paddle API error:', error);
-    throw new Error('Failed to create checkout session');
-  }
-
-  return response.json();
-}
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -69,28 +29,29 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Missing userId or userEmail' });
     }
 
-    // Create Paddle checkout session
-    const session = await createCheckoutSession(userId, userEmail);
+    const priceId = process.env.PADDLE_PRICE_ID;
 
-    // Get the checkout URL from the response
-    const checkoutUrl = session.data?.checkout?.url;
-
-    if (!checkoutUrl) {
-      // For Paddle Billing, we need to use the transaction ID to build checkout URL
-      const transactionId = session.data?.id;
-      if (transactionId) {
-        // Redirect to Paddle's hosted checkout
-        return res.status(200).json({
-          url: `https://checkout.paddle.com/checkout/custom/${transactionId}`,
-          transactionId: transactionId,
-        });
-      }
-      throw new Error('No checkout URL in Paddle response');
+    if (!priceId) {
+      throw new Error('PADDLE_PRICE_ID not configured');
     }
 
+    // Build Paddle checkout URL with parameters
+    // Using Paddle's direct checkout link format
+    const checkoutParams = new URLSearchParams({
+      items: JSON.stringify([{ priceId: priceId, quantity: 1 }]),
+      'customer[email]': userEmail,
+      'customData[supabase_user_id]': userId,
+      'settings[successUrl]': 'https://www.aeroscout.net/success.html',
+    });
+
+    // Return the price ID and user data - frontend will use Paddle.js
     res.status(200).json({
-      url: checkoutUrl,
-      transactionId: session.data?.id,
+      priceId: priceId,
+      customData: {
+        supabase_user_id: userId,
+      },
+      customerEmail: userEmail,
+      successUrl: 'https://www.aeroscout.net/success.html',
     });
 
   } catch (error) {

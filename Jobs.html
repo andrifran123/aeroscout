@@ -1954,6 +1954,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <script>
     // Supabase configuration
     const SUPABASE_URL = 'https://ziboktbmbyjbhifsdypa.supabase.co';
@@ -2204,7 +2205,7 @@
         return;
       }
 
-      // User is logged in - redirect to Stripe Checkout
+      // User is logged in - open Paddle checkout
       try {
         el("unlockBtn").textContent = "Loading...";
         el("unlockBtn").disabled = true;
@@ -2222,12 +2223,34 @@
 
         const data = await response.json();
 
-        if (data.url) {
-          // Redirect to Stripe Checkout
-          window.location.href = data.url;
-        } else {
-          throw new Error(data.error || 'Failed to create checkout session');
+        if (data.error) {
+          throw new Error(data.error);
         }
+
+        // Initialize Paddle and open checkout
+        Paddle.Initialize({
+          token: 'live_6f58ddeec5cf71e12bbbb66e2c9',  // Client-side token from Paddle
+          checkout: {
+            settings: {
+              displayMode: 'overlay',
+              theme: 'light',
+              locale: 'en',
+              successUrl: data.successUrl,
+            }
+          }
+        });
+
+        // Open Paddle checkout overlay
+        Paddle.Checkout.open({
+          items: [{ priceId: data.priceId, quantity: 1 }],
+          customer: {
+            email: data.customerEmail,
+          },
+          customData: data.customData,
+        });
+
+        el("unlockBtn").textContent = "Upgrade to Pro";
+        el("unlockBtn").disabled = false;
       } catch (error) {
         console.error('Checkout error:', error);
         alert('Failed to start checkout. Please try again.');

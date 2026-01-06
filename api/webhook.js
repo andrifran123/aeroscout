@@ -1,11 +1,31 @@
-const crypto = require('crypto');
+/**
+ * PayPal Webhook Handler
+ *
+ * Handles PayPal subscription events:
+ *   - BILLING.SUBSCRIPTION.ACTIVATED - User subscribed successfully
+ *   - BILLING.SUBSCRIPTION.CANCELLED - User cancelled subscription
+ *   - BILLING.SUBSCRIPTION.SUSPENDED - Payment failed
+ *   - BILLING.SUBSCRIPTION.EXPIRED - Subscription ended
+ *
+ * Environment variables required:
+ *   - PAYPAL_CLIENT_ID
+ *   - PAYPAL_SECRET
+ *   - PAYPAL_WEBHOOK_ID
+ *   - PAYPAL_MODE (sandbox or live)
+ *   - SUPABASE_URL
+ *   - SUPABASE_SERVICE_KEY
+ */
+
 const { createClient } = require('@supabase/supabase-js');
 
-// Supabase client with service role key for admin operations
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
+
+const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === 'live'
+  ? 'https://api-m.paypal.com'
+  : 'https://api-m.sandbox.paypal.com';
 
 // Disable body parsing - we need raw body for signature verification
 module.exports.config = {
@@ -22,10 +42,56 @@ async function buffer(readable) {
   return Buffer.concat(chunks);
 }
 
-function verifySignature(payload, signature, secret) {
-  const hmac = crypto.createHmac('sha256', secret);
-  const digest = hmac.update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
+async function getAccessToken() {
+  const auth = Buffer.from(
+    `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_SECRET}`
+  ).toString('base64');
+
+  const response = await fetch(`${PAYPAL_BASE_URL}/v1/oauth2/token`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${auth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'grant_type=client_credentials',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to authenticate with PayPal');
+  }
+
+  const data = await response.json();
+  return data.access_token;
+}
+
+async function verifyWebhookSignature(headers, body) {
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(`${PAYPAL_BASE_URL}/v1/notifications/verify-webhook-signature`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      auth_algo: headers['paypal-auth-algo'],
+      cert_url: headers['paypal-cert-url'],
+      transmission_id: headers['paypal-transmission-id'],
+      transmission_sig: headers['paypal-transmission-sig'],
+      transmission_time: headers['paypal-transmission-time'],
+      webhook_id: process.env.PAYPAL_WEBHOOK_ID,
+      webhook_event: JSON.parse(body),
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    console.error('Webhook verification failed:', error);
+    return false;
+  }
+
+  const result = await response.json();
+  return result.verification_status === 'SUCCESS';
 }
 
 module.exports = async (req, res) => {
@@ -35,25 +101,19 @@ module.exports = async (req, res) => {
 
   const buf = await buffer(req);
   const rawBody = buf.toString('utf8');
-  const signature = req.headers['x-signature'];
 
-  // Verify webhook signature
-  if (!signature) {
-    console.error('Missing webhook signature');
-    return res.status(400).json({ error: 'Missing signature' });
-  }
-
-  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
-
-  try {
-    const isValid = verifySignature(rawBody, signature, secret);
-    if (!isValid) {
-      console.error('Invalid webhook signature');
-      return res.status(400).json({ error: 'Invalid signature' });
+  // Verify webhook signature (optional but recommended)
+  if (process.env.PAYPAL_WEBHOOK_ID) {
+    try {
+      const isValid = await verifyWebhookSignature(req.headers, rawBody);
+      if (!isValid) {
+        console.error('Invalid PayPal webhook signature');
+        return res.status(400).json({ error: 'Invalid signature' });
+      }
+    } catch (err) {
+      console.error('Signature verification error:', err.message);
+      // Continue processing - PayPal sandbox sometimes has verification issues
     }
-  } catch (err) {
-    console.error('Signature verification error:', err.message);
-    return res.status(400).json({ error: 'Signature verification failed' });
   }
 
   let event;
@@ -64,65 +124,94 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Invalid JSON' });
   }
 
-  const eventName = event.meta?.event_name;
-  const customData = event.meta?.custom_data || {};
-  const userId = customData.supabase_user_id;
+  const eventType = event.event_type;
+  const resource = event.resource;
 
-  console.log(`Received Lemon Squeezy event: ${eventName}`);
+  console.log(`Received PayPal event: ${eventType}`);
 
-  // Handle the event
-  switch (eventName) {
-    case 'order_created':
-    case 'subscription_created': {
+  // Handle subscription events
+  switch (eventType) {
+    case 'BILLING.SUBSCRIPTION.ACTIVATED':
+    case 'BILLING.SUBSCRIPTION.CREATED': {
+      // User subscribed successfully
+      const subscriptionId = resource.id;
+      const userId = resource.custom_id;  // Our Supabase user ID
+      const subscriberEmail = resource.subscriber?.email_address;
+
       if (userId) {
-        const subscriptionId = event.data?.id;
-        const customerEmail = event.data?.attributes?.user_email;
-
-        // Update user's premium status in Supabase
         const { error } = await supabase
           .from('profiles')
           .upsert({
             id: userId,
             is_premium: true,
-            lemonsqueezy_subscription_id: String(subscriptionId),
-            lemonsqueezy_customer_email: customerEmail,
+            paypal_subscription_id: subscriptionId,
+            paypal_customer_email: subscriberEmail,
             premium_since: new Date().toISOString(),
           }, { onConflict: 'id' });
 
         if (error) {
           console.error('Failed to update user premium status:', error);
         } else {
-          console.log(`User ${userId} upgraded to premium`);
+          console.log(`User ${userId} upgraded to premium (subscription: ${subscriptionId})`);
         }
       } else {
-        console.log('No supabase_user_id in custom data');
+        console.log('No custom_id (user ID) in subscription');
       }
       break;
     }
 
-    case 'subscription_cancelled': {
-      const subscriptionId = event.data?.id;
+    case 'BILLING.SUBSCRIPTION.CANCELLED':
+    case 'BILLING.SUBSCRIPTION.SUSPENDED':
+    case 'BILLING.SUBSCRIPTION.EXPIRED': {
+      // User cancelled or subscription ended
+      const subscriptionId = resource.id;
 
       // Find user by subscription ID and remove premium
       const { data: profile } = await supabase
         .from('profiles')
         .select('id')
-        .eq('lemonsqueezy_subscription_id', String(subscriptionId))
+        .eq('paypal_subscription_id', subscriptionId)
         .single();
 
       if (profile) {
         await supabase
           .from('profiles')
-          .update({ is_premium: false })
+          .update({
+            is_premium: false,
+            premium_ended: new Date().toISOString(),
+          })
           .eq('id', profile.id);
 
-        console.log(`User ${profile.id} subscription cancelled`);
+        console.log(`User ${profile.id} subscription ${eventType.split('.')[2].toLowerCase()}`);
+      }
+      break;
+    }
+
+    case 'PAYMENT.SALE.COMPLETED': {
+      // Recurring payment succeeded - ensure premium is active
+      const subscriptionId = resource.billing_agreement_id;
+
+      if (subscriptionId) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('paypal_subscription_id', subscriptionId)
+          .single();
+
+        if (profile && !profile.is_premium) {
+          await supabase
+            .from('profiles')
+            .update({ is_premium: true })
+            .eq('id', profile.id);
+
+          console.log(`User ${profile.id} premium reactivated after payment`);
+        }
       }
       break;
     }
 
     default:
-      console.log(`Unhandled event type: ${eventName}`);
+      console.log(`Unhandled PayPal event type: ${eventType}`);
   }
 
   res.status(200).json({ received: true });

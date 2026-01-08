@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AeroScout | Browse Roles</title>
+  <!-- Mapbox GL JS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
   <style>
     :root{
       --nav:#0b2a6f;
@@ -1669,6 +1672,244 @@
     }
 
     .svg{display:block}
+
+    /* Map Search Button */
+    .map-search-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #1b66ff 0%, #00b7a8 100%);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 14px rgba(27, 102, 255, 0.25);
+    }
+    .map-search-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(27, 102, 255, 0.35);
+    }
+    .map-search-btn:active {
+      transform: translateY(0);
+    }
+    .map-search-btn svg {
+      flex-shrink: 0;
+    }
+
+    /* Map Overlay */
+    .map-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 24, 61, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    .map-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    .map-container {
+      width: 94%;
+      height: 90%;
+      max-width: 1600px;
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+    .map-overlay.visible .map-container {
+      transform: scale(1);
+    }
+    .map-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      background: linear-gradient(90deg, var(--nav), var(--nav2));
+      color: #fff;
+    }
+    .map-header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .map-close-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .map-close-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+    .map-content {
+      flex: 1;
+      position: relative;
+    }
+    #mapbox-map {
+      width: 100%;
+      height: 100%;
+    }
+    .map-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #f8fafc;
+      gap: 12px;
+    }
+    .map-loading.hidden {
+      display: none;
+    }
+    .map-loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #e2e8f0;
+      border-top-color: #1b66ff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .map-loading-text {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .map-stats {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 12px 16px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      font-size: 13px;
+      z-index: 10;
+    }
+    .map-stats strong {
+      color: var(--accent);
+    }
+
+    /* Mapbox popup customization */
+    .mapboxgl-popup-content {
+      padding: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      min-width: 260px;
+    }
+    .mapboxgl-popup-close-button {
+      font-size: 20px;
+      padding: 8px 12px;
+      color: #fff;
+      z-index: 10;
+    }
+    .mapboxgl-popup-close-button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .job-popup {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+    .job-popup-header {
+      background: linear-gradient(135deg, var(--nav), var(--nav2));
+      color: #fff;
+      padding: 14px 16px;
+    }
+    .job-popup-location {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .job-popup-count {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+    .job-popup-body {
+      padding: 12px 16px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .job-popup-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .job-popup-item:last-child {
+      border-bottom: none;
+    }
+    .job-popup-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .job-popup-airline {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .job-popup-footer {
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+    }
+    .job-popup-view-btn {
+      width: 100%;
+      padding: 10px 16px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .job-popup-view-btn:hover {
+      background: #0052cc;
+    }
+
+    /* Cluster markers */
+    .cluster-marker {
+      background: linear-gradient(135deg, #1b66ff, #00b7a8);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 4px 14px rgba(27, 102, 255, 0.4);
+      border: 3px solid #fff;
+    }
   </style>
 </head>
 
@@ -1727,6 +1968,16 @@
                 <button class="job-type-btn active" id="pilotBtn" data-type="pilot">Pilot Jobs</button>
                 <button class="job-type-btn" id="cabinCrewBtn" data-type="cabin_crew">Cabin Crew</button>
               </div>
+
+              <!-- Search by Map Button -->
+              <button class="map-search-btn" id="openMapBtn" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                  <line x1="8" y1="2" x2="8" y2="18"></line>
+                  <line x1="16" y1="6" x2="16" y2="22"></line>
+                </svg>
+                Search by Map
+              </button>
 
               <!-- Profile Summary Card -->
               <div class="profile-summary">
@@ -1953,6 +2204,36 @@
     </div>
   </div>
 
+  <!-- Map Overlay -->
+  <div class="map-overlay" id="mapOverlay">
+    <div class="map-container">
+      <div class="map-header">
+        <h2>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+            <line x1="8" y1="2" x2="8" y2="18"></line>
+            <line x1="16" y1="6" x2="16" y2="22"></line>
+          </svg>
+          Job Locations
+        </h2>
+        <button class="map-close-btn" id="closeMapBtn" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="map-content">
+        <div class="map-loading" id="mapLoading">
+          <div class="map-loading-spinner"></div>
+          <div class="map-loading-text">Loading map...</div>
+        </div>
+        <div id="mapbox-map"></div>
+        <div class="map-stats" id="mapStats"></div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <script>
@@ -2037,7 +2318,7 @@
             visa: job.visa_sponsor || false,
             direct: false,
             remote: false,
-            license: job.license_required || 'ATPL',
+            license: Array.isArray(job.license_required) ? job.license_required : (job.license_required ? [job.license_required] : ['ATPL']),
             type: job.type_rated ? 'typed' : 'standard',
             employer: 'airline',
             flightTime: job.total_hours || 0,
@@ -2460,10 +2741,15 @@
       }
 
       // 5. License Check - is pilot's license sufficient?
-      const jobLicenseLevel = LICENSE_LEVELS[job.license] || 0;
+      // job.license is now an array of acceptable licenses
+      const jobLicenses = Array.isArray(job.license) ? job.license : [job.license];
       const pilotLicenseLevel = LICENSE_LEVELS[pilot.license] || 0;
-      const hasLicense = pilotLicenseLevel >= jobLicenseLevel;
+      // Pilot qualifies if their license level >= ANY of the job's acceptable license levels
+      const hasLicense = jobLicenses.some(lic => pilotLicenseLevel >= (LICENSE_LEVELS[lic] || 0));
       const missingLicenseBlocker = !hasLicense;
+      // For display: show the minimum required license (lowest level in the array)
+      const minJobLicenseLevel = Math.min(...jobLicenses.map(lic => LICENSE_LEVELS[lic] || 0));
+      const jobLicenseDisplay = jobLicenses.join('/');  // e.g., "CPL/ATPL"
 
       // 6. Work Rights Check - can pilot legally work in this region?
       // If job provides visa sponsorship, work rights are not required
@@ -2502,7 +2788,8 @@
         // License
         hasLicense,
         missingLicenseBlocker,
-        jobLicense: job.license,
+        jobLicense: jobLicenseDisplay,
+        jobLicenses: jobLicenses,
         pilotLicense: pilot.license,
 
         // Work rights
@@ -2970,10 +3257,12 @@
 
         // License - if any selected, job must match at least one
         if (lic.any){
+          // j.license is now an array of acceptable licenses
+          const jobLicenses = Array.isArray(j.license) ? j.license : [j.license];
           const ok =
-            (f.license.atpl && (j.license === "ATPL" || j.license === "ATP")) ||
-            (f.license.cpl && j.license === "CPL") ||
-            (f.license.fatpl && j.license === "IATRA");
+            (f.license.atpl && jobLicenses.some(l => l === "ATPL" || l === "ATP")) ||
+            (f.license.cpl && jobLicenses.includes("CPL")) ||
+            (f.license.fatpl && jobLicenses.includes("IATRA"));
           if (!ok) return false;
         }
 
@@ -3458,6 +3747,397 @@
       updateDisplay();
       updateMatchCount();
     }
+
+    // ============================================
+    // MAP SEARCH FUNCTIONALITY
+    // ============================================
+
+    // Mapbox access token - Replace with your token from https://mapbox.com
+    const MAPBOX_TOKEN = 'pk.eyJ1IjoiYW5kcmlmcmV5cmEiLCJhIjoiY21rNXNkZ2dyMDlmMTNxcjNzb3l0ejdlaCJ9.9DPoZNg_5L_Odkp_ooFeBQ';
+
+    // Location cache to avoid repeated geocoding
+    const locationCache = {};
+
+    // Map instance
+    let mapInstance = null;
+    let mapInitialized = false;
+
+    // Geocode a location string to coordinates using Mapbox Geocoding API
+    async function geocodeLocation(locationText) {
+      if (!locationText || locationText.trim() === '') return null;
+
+      const cleanLocation = locationText.trim();
+
+      // Check cache first
+      if (locationCache[cleanLocation]) {
+        return locationCache[cleanLocation];
+      }
+
+      try {
+        const response = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(cleanLocation)}.json?access_token=${MAPBOX_TOKEN}&limit=1`
+        );
+        const data = await response.json();
+
+        if (data.features && data.features.length > 0) {
+          const [lng, lat] = data.features[0].center;
+          const result = { lng, lat, name: data.features[0].place_name };
+          locationCache[cleanLocation] = result;
+          return result;
+        }
+      } catch (error) {
+        console.warn('Geocoding failed for:', cleanLocation, error);
+      }
+
+      return null;
+    }
+
+    // Get unique locations from current jobs
+    function getUniqueLocations() {
+      const locationMap = new Map();
+
+      JOBS.forEach(job => {
+        if (job.location && job.location.trim()) {
+          const loc = job.location.trim();
+          if (!locationMap.has(loc)) {
+            locationMap.set(loc, []);
+          }
+          locationMap.get(loc).push(job);
+        }
+      });
+
+      return locationMap;
+    }
+
+    // Build GeoJSON from geocoded locations
+    async function buildGeoJSON() {
+      const locationMap = getUniqueLocations();
+      const features = [];
+      let geocodedCount = 0;
+      let failedCount = 0;
+
+      const loadingText = el('mapLoading').querySelector('.map-loading-text');
+      const totalLocations = locationMap.size;
+      let processedCount = 0;
+
+      // Process locations in parallel batches
+      const entries = Array.from(locationMap.entries());
+      const batchSize = 5; // Geocode 5 at a time to avoid rate limits
+
+      for (let i = 0; i < entries.length; i += batchSize) {
+        const batch = entries.slice(i, i + batchSize);
+
+        const results = await Promise.all(
+          batch.map(async ([locationText, jobs]) => {
+            const coords = await geocodeLocation(locationText);
+            processedCount++;
+            loadingText.textContent = `Geocoding locations... (${processedCount}/${totalLocations})`;
+
+            if (coords) {
+              geocodedCount++;
+              return {
+                type: 'Feature',
+                geometry: {
+                  type: 'Point',
+                  coordinates: [coords.lng, coords.lat]
+                },
+                properties: {
+                  location: locationText,
+                  jobCount: jobs.length,
+                  jobs: jobs.map(j => ({
+                    id: j.id,
+                    title: j.title,
+                    org: j.org,
+                    applyUrl: j.applyUrl
+                  }))
+                }
+              };
+            } else {
+              failedCount++;
+              return null;
+            }
+          })
+        );
+
+        features.push(...results.filter(Boolean));
+      }
+
+      // Update stats
+      const totalJobs = features.reduce((sum, f) => sum + f.properties.jobCount, 0);
+      el('mapStats').innerHTML = `<strong>${totalJobs}</strong> jobs across <strong>${geocodedCount}</strong> locations`;
+
+      return {
+        type: 'FeatureCollection',
+        features
+      };
+    }
+
+    // Initialize Mapbox map
+    async function initMap() {
+      if (MAPBOX_TOKEN === 'YOUR_MAPBOX_ACCESS_TOKEN_HERE') {
+        el('mapLoading').innerHTML = `
+          <div style="text-align: center; padding: 20px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">🗺️</div>
+            <h3 style="margin: 0 0 8px; color: #0e1830;">Mapbox Token Required</h3>
+            <p style="color: #6b7890; margin: 0; max-width: 400px;">
+              To enable the map feature, add your Mapbox access token in the JavaScript code.
+              <br><br>
+              Get a free token at <a href="https://mapbox.com" target="_blank" style="color: #1b66ff;">mapbox.com</a>
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      if (mapInitialized && mapInstance) {
+        // Map already exists, just update data
+        await updateMapData();
+        el('mapLoading').classList.add('hidden');
+        return;
+      }
+
+      try {
+        mapboxgl.accessToken = MAPBOX_TOKEN;
+
+        mapInstance = new mapboxgl.Map({
+          container: 'mapbox-map',
+          style: 'mapbox://styles/mapbox/light-v11',
+          center: [0, 25],
+          zoom: 1.8,
+          projection: 'mercator'
+        });
+
+        mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+        mapInstance.on('load', async () => {
+          await updateMapData();
+          el('mapLoading').classList.add('hidden');
+          mapInitialized = true;
+        });
+
+      } catch (error) {
+        console.error('Map initialization failed:', error);
+        el('mapLoading').innerHTML = `
+          <div style="text-align: center; padding: 20px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+            <h3 style="margin: 0 0 8px; color: #0e1830;">Map Failed to Load</h3>
+            <p style="color: #6b7890; margin: 0;">Please check your Mapbox token and try again.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Update map data (used for initial load and refresh)
+    async function updateMapData() {
+      const geojson = await buildGeoJSON();
+
+      // Remove existing source and layers if they exist
+      if (mapInstance.getSource('jobs')) {
+        mapInstance.removeLayer('clusters');
+        mapInstance.removeLayer('cluster-count');
+        mapInstance.removeLayer('unclustered-point');
+        mapInstance.removeSource('jobs');
+      }
+
+      // Add clustered source
+      mapInstance.addSource('jobs', {
+        type: 'geojson',
+        data: geojson,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50
+      });
+
+      // Cluster circles
+      mapInstance.addLayer({
+        id: 'clusters',
+        type: 'circle',
+        source: 'jobs',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#1b66ff',   // Blue for small clusters
+            10, '#00b7a8', // Teal for medium clusters
+            30, '#0b2a6f'  // Navy for large clusters
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            18,   // Small cluster
+            10, 24, // Medium cluster
+            30, 32  // Large cluster
+          ],
+          'circle-stroke-width': 3,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+
+      // Cluster count labels
+      mapInstance.addLayer({
+        id: 'cluster-count',
+        type: 'symbol',
+        source: 'jobs',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': ['get', 'point_count_abbreviated'],
+          'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 13
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+
+      // Individual job pins
+      mapInstance.addLayer({
+        id: 'unclustered-point',
+        type: 'circle',
+        source: 'jobs',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': '#1b66ff',
+          'circle-radius': 10,
+          'circle-stroke-width': 3,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+
+      // Click on cluster to zoom in
+      mapInstance.on('click', 'clusters', (e) => {
+        const features = mapInstance.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+        const clusterId = features[0].properties.cluster_id;
+        mapInstance.getSource('jobs').getClusterExpansionZoom(clusterId, (err, zoom) => {
+          if (err) return;
+          mapInstance.easeTo({
+            center: features[0].geometry.coordinates,
+            zoom: zoom
+          });
+        });
+      });
+
+      // Click on individual point to show popup
+      mapInstance.on('click', 'unclustered-point', (e) => {
+        const coordinates = e.features[0].geometry.coordinates.slice();
+        const props = e.features[0].properties;
+        const location = props.location;
+        const jobs = JSON.parse(props.jobs);
+        const jobCount = props.jobCount;
+
+        // Build popup HTML
+        const jobListHTML = jobs.slice(0, 5).map(j => `
+          <div class="job-popup-item">
+            <div class="job-popup-title">${j.title}</div>
+            <div class="job-popup-airline">${j.org}</div>
+          </div>
+        `).join('');
+
+        const moreText = jobCount > 5 ? `<div style="padding:8px 16px;font-size:11px;color:#6b7890;">+ ${jobCount - 5} more jobs</div>` : '';
+
+        new mapboxgl.Popup({ offset: 15, maxWidth: '320px' })
+          .setLngLat(coordinates)
+          .setHTML(`
+            <div class="job-popup">
+              <div class="job-popup-header">
+                <div class="job-popup-location">${location}</div>
+                <div class="job-popup-count">${jobCount} job${jobCount > 1 ? 's' : ''} available</div>
+              </div>
+              <div class="job-popup-body">
+                ${jobListHTML}
+                ${moreText}
+              </div>
+              <div class="job-popup-footer">
+                <button class="job-popup-view-btn" onclick="filterByLocation('${location.replace(/'/g, "\\'")}')">
+                  View ${jobCount > 1 ? 'All Jobs' : 'Job'}
+                </button>
+              </div>
+            </div>
+          `)
+          .addTo(mapInstance);
+      });
+
+      // Change cursor on hover
+      mapInstance.on('mouseenter', 'clusters', () => {
+        mapInstance.getCanvas().style.cursor = 'pointer';
+      });
+      mapInstance.on('mouseleave', 'clusters', () => {
+        mapInstance.getCanvas().style.cursor = '';
+      });
+      mapInstance.on('mouseenter', 'unclustered-point', () => {
+        mapInstance.getCanvas().style.cursor = 'pointer';
+      });
+      mapInstance.on('mouseleave', 'unclustered-point', () => {
+        mapInstance.getCanvas().style.cursor = '';
+      });
+    }
+
+    // Filter jobs by location (called from popup)
+    function filterByLocation(location) {
+      // Close map overlay
+      closeMap();
+
+      // Set location filter (find the location select and set value)
+      const locSelect = el('loc');
+      if (locSelect) {
+        // Check if option exists, if not just search
+        const options = Array.from(locSelect.options);
+        const matchingOption = options.find(opt => opt.value === location || opt.textContent === location);
+        if (matchingOption) {
+          locSelect.value = matchingOption.value;
+        }
+      }
+
+      // Apply filter by searching for the location
+      const searchInput = el('q');
+      if (searchInput) {
+        searchInput.value = location;
+      }
+
+      // Trigger filter application
+      apply();
+    }
+
+    // Open map overlay
+    function openMap() {
+      el('mapOverlay').classList.add('visible');
+      document.body.style.overflow = 'hidden';
+
+      // Reset loading state
+      el('mapLoading').classList.remove('hidden');
+      el('mapLoading').innerHTML = `
+        <div class="map-loading-spinner"></div>
+        <div class="map-loading-text">Loading map...</div>
+      `;
+
+      // Initialize or update map
+      setTimeout(() => {
+        initMap();
+        if (mapInstance) {
+          mapInstance.resize();
+        }
+      }, 100);
+    }
+
+    // Close map overlay
+    function closeMap() {
+      el('mapOverlay').classList.remove('visible');
+      document.body.style.overflow = '';
+    }
+
+    // Map event listeners
+    el('openMapBtn').addEventListener('click', openMap);
+    el('closeMapBtn').addEventListener('click', closeMap);
+    el('mapOverlay').addEventListener('click', (e) => {
+      if (e.target === el('mapOverlay')) closeMap();
+    });
+
+    // Close map with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && el('mapOverlay').classList.contains('visible')) {
+        closeMap();
+      }
+    });
 
     init();
   </script>

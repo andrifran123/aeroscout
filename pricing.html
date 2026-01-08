@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing | AeroScout</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1b66ff;
+            --navy-dark: #0B1C3E;
+            --accent-teal: #00b7a8;
+            --white: #ffffff;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+            --bg-light: #f8fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: linear-gradient(rgba(11, 28, 62, 0.4), rgba(11, 28, 62, 0.6)),
+                        url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1950&q=80') center/cover fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .pricing-container {
+            background: rgba(255, 255, 255, 0.98);
+            width: 100%;
+            max-width: 1100px;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header .brand {
+            font-family: 'Outfit';
+            font-size: 1.2rem;
+            color: var(--navy-dark);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header h1 {
+            font-family: 'Outfit';
+            font-size: 2.5rem;
+            color: var(--navy-dark);
+            letter-spacing: -1px;
+            margin-bottom: 0.75rem;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .pricing-card {
+            background: var(--white);
+            border: 2px solid var(--border-light);
+            border-radius: 16px;
+            padding: 2.5rem;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary-blue);
+            background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-teal));
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-name {
+            font-family: 'Outfit';
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navy-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-description {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-price {
+            margin-bottom: 1.5rem;
+        }
+
+        .price-amount {
+            font-family: 'Outfit';
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--navy-dark);
+        }
+
+        .price-currency {
+            font-size: 1.5rem;
+            vertical-align: top;
+            color: var(--navy-dark);
+        }
+
+        .price-period {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .features-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #1e293b;
+        }
+
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            background: #dcfce7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .check-icon svg {
+            width: 12px;
+            height: 12px;
+            color: #16a34a;
+        }
+
+        .x-icon {
+            width: 20px;
+            height: 20px;
+            background: #fee2e2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .x-icon svg {
+            width: 12px;
+            height: 12px;
+            color: #dc2626;
+        }
+
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .cta-button.primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-teal));
+            color: white;
+        }
+
+        .cta-button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(27, 102, 255, 0.3);
+        }
+
+        .cta-button.secondary {
+            background: var(--bg-light);
+            color: var(--navy-dark);
+            border: 2px solid var(--border-light);
+        }
+
+        .cta-button.secondary:hover {
+            background: var(--border-light);
+        }
+
+        .guarantee {
+            text-align: center;
+            padding: 1.5rem;
+            background: #eff6ff;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .guarantee p {
+            color: var(--navy-dark);
+            font-weight: 500;
+        }
+
+        .guarantee strong {
+            color: var(--primary-blue);
+        }
+
+        .faq-section {
+            margin-top: 2rem;
+        }
+
+        .faq-section h2 {
+            font-family: 'Outfit';
+            font-size: 1.5rem;
+            color: var(--navy-dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .faq-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: var(--navy-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-answer {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--navy-dark);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .back-link:hover {
+            background: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .pricing-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .price-amount {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .pricing-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.7rem;
+            }
+
+            .pricing-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="pricing-container">
+        <div class="header">
+            <div class="brand">AEROSCOUT</div>
+            <h1>Simple, Transparent Pricing</h1>
+            <p>Find your dream aviation job with AeroScout. Choose the plan that fits your career goals.</p>
+        </div>
+
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card">
+                <div class="plan-name">Free</div>
+                <div class="plan-description">Get started with basic job search</div>
+                <div class="plan-price">
+                    <span class="price-currency">$</span><span class="price-amount">0</span>
+                    <span class="price-period">/ forever</span>
+                </div>
+                <ul class="features-list">
+                    <li>
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                        Access to all job listings
+                    </li>
+                    <li>
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                        Basic search and filters
+                    </li>
+                    <li>
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                        Create pilot profile
+                    </li>
+                    <li>
+                        <span class="x-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+                        Eligibility matching
+                    </li>
+                    <li>
+                        <span class="x-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+                        Sort by salary
+                    </li>
+                    <li>
+                        <span class="x-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+                        "Jobs within reach" filter
+                    </li>
+                </ul>
+                <a href="/Jobs.html" class="cta-button secondary">Browse Jobs</a>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="pricing-card featured">
+                <div class="popular-badge">Most Popular</div>
+                <div class="plan-name">Pro</div>
+                <div class="plan-description">Everything you need to land your dream job</div>
+                <div class="plan-price">
+                    <span class="price-currency">$</span><span class="price-amount">9</span>
+                    <span class="price-period">/ month</span>
+                </div>
+                <ul class="features-list">
+                    <li>
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                        <strong>Everything in Free, plus:</strong>
+                    </li>
+                    <li>
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                        Smart eligibility matching
+                    </li>
+                    <li>
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                        Sort jobs by salary
+                    </li>
+                    <li>
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                        "Jobs within reach" filter
+                    </li>
+                    <li>
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                        See hours gap to eligibility
+                    </li>
+                    <li>
+                        <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                        Priority support
+                    </li>
+                </ul>
+                <a href="/Jobs.html" class="cta-button primary">Get Pro Access</a>
+            </div>
+        </div>
+
+        <div class="guarantee">
+            <p><strong>7-Day Money-Back Guarantee</strong> - Not satisfied? Get a full refund within 7 days, no questions asked.</p>
+        </div>
+
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I cancel anytime?</div>
+                <div class="faq-answer">Yes, you can cancel your subscription at any time. Your access will continue until the end of your current billing period.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">What payment methods do you accept?</div>
+                <div class="faq-answer">We accept all major credit cards, debit cards, and PayPal through our secure payment processor, Paddle.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How does the eligibility matching work?</div>
+                <div class="faq-answer">Our system compares your profile (flight hours, licenses, type ratings) against job requirements and shows you which jobs you qualify for and how close you are to others.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Is my payment information secure?</div>
+                <div class="faq-answer">Absolutely. All payments are processed securely through Paddle, a trusted payment provider. We never store your card details on our servers.</div>
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <a href="/terms.html">Terms of Service</a>
+            <a href="/privacy.html">Privacy Policy</a>
+            <a href="/refund.html">Refund Policy</a>
+            <br>
+            <a href="/" class="back-link">Back to AeroScout</a>
+        </div>
+    </div>
+</body>
+</html>

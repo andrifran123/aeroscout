@@ -1539,12 +1539,12 @@
       }
 
       .company-logo {
-        width: 59px;
-        height: 59px;
-        font-size: 16px;
+        width: 83px;
+        height: 83px;
+        font-size: 20px;
         float: left;
-        margin-right: 12px;
-        margin-bottom: 8px;
+        margin-right: 14px;
+        margin-bottom: 10px;
       }
 
       .job-title {
@@ -1555,10 +1555,16 @@
       }
 
       .airline-name {
-        display: block;
+        display: inline;
         margin-left: 0;
-        margin-top: 4px;
+        margin-top: 0;
         font-size: 12px;
+        background: none;
+        border: none;
+        padding: 0;
+      }
+      .airline-name::before {
+        content: " - ";
       }
 
       /* Apply button - top right corner */
@@ -1661,7 +1667,7 @@
       .job-title { font-size: 13px; padding-right: 65px; }
       .airline-name { font-size: 11px; }
 
-      .company-logo { width: 50px; height: 50px; }
+      .company-logo { width: 70px; height: 70px; }
 
       .apply-btn { padding: 6px 10px; font-size: 10px; }
 

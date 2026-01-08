@@ -1956,10 +1956,6 @@
     .map-job-preview .save-btn {
       display: none;
     }
-    .map-job-preview .expand-link,
-    .map-job-preview .job-description {
-      display: none;
-    }
   </style>
 </head>
 
@@ -4111,8 +4107,8 @@
                 ${moreText}
               </div>
               <div class="job-popup-footer">
-                <button class="job-popup-view-btn" onclick="filterByLocation('${location.replace(/'/g, "\\'")}')">
-                  View ${jobCount > 1 ? 'All Jobs' : 'Job'}
+                <button class="job-popup-view-btn" onclick="showJobPreview(0)">
+                  View ${jobCount > 1 ? 'Jobs' : 'Job'}
                 </button>
               </div>
             </div>
@@ -4162,6 +4158,20 @@
 
           <div class="stats-row">
             ${renderStatsRow(j)}
+          </div>
+
+          <div class="expand-link" onclick="toggleDescription(this)">
+            See job description
+            <div class="arrow-v"></div>
+          </div>
+
+          <div class="job-description">
+            ${j.description ? `<div class="job-description-content">${j.description}</div>` : ''}
+            ${j.requirements ? `
+              <div class="requirements-title">Requirements</div>
+              ${renderRequirements(j.requirements)}
+            ` : ''}
+            ${!j.description && !j.requirements ? `<div class="job-description-content">No description available.</div>` : ''}
           </div>
         </article>
       `;

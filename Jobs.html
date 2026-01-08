@@ -2367,7 +2367,7 @@
             id: job.id,
             title: job.title || '',
             org: orgName,
-            location: job.location || 'Confidential',
+            location: job.location || '',
             chips: [job.aircraft, job.rank].filter(Boolean),
             featured: false,
             visa: job.visa_sponsor || false,
@@ -2424,7 +2424,7 @@
             id: job.id,
             title: job.title || '',
             org: orgName,
-            location: job.location || 'Confidential',
+            location: job.location || '',
             chips: [job.position, job.contract_type].filter(Boolean),
             featured: false,
             visa: false,
@@ -2995,14 +2995,14 @@
       if (j.jobType === 'cabin_crew') {
         return `
           <span class="attr-item"><b>Position:</b> <span class="attr-pill">${j.position || 'Flight Attendant'}</span></span>
-          <span class="attr-item"><b>Location:</b> <span class="attr-pill">${j.location}</span></span>
+          <span class="attr-item"><b>Location:</b> <span class="attr-pill">${j.location || 'Not specified'}</span></span>
           ${j.contractType ? `<span class="attr-pill">${j.contractType}</span>` : ''}
           ${j.visa ? '<span class="attr-pill green"><b>Visa sponsor</b></span>' : ''}
         `;
       } else {
         return `
           <span class="attr-item"><b>Aircraft:</b> <span class="attr-pill">${j.chips[0] || 'N/A'}</span></span>
-          <span class="attr-item"><b>Location:</b> <span class="attr-pill">${j.location}</span></span>
+          <span class="attr-item"><b>Location:</b> <span class="attr-pill">${j.location || 'Not specified'}</span></span>
           ${j.type === "typed" ? '<span class="attr-pill">Type-rated</span>' : '<span class="attr-pill green">Non-type rated</span>'}
           ${j.visa ? '<span class="attr-pill green"><b>Visa sponsor</b></span>' : ''}
           ${getEligibilityBadge(j)}

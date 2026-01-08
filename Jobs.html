@@ -1910,6 +1910,103 @@
       box-shadow: 0 4px 14px rgba(27, 102, 255, 0.4);
       border: 3px solid #fff;
     }
+
+    /* Map Job Preview Panel */
+    .map-job-preview {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.98);
+      border-top: 1px solid #e2e8f0;
+      padding: 16px 20px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 20;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .map-job-preview.visible {
+      transform: translateY(0);
+    }
+    .map-job-preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .map-job-preview-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .map-job-preview-airline {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .map-job-preview-close {
+      background: #f1f5f9;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .map-job-preview-close:hover {
+      background: #e2e8f0;
+    }
+    .map-job-preview-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .map-job-preview-chip {
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .map-job-preview-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .map-job-preview-apply {
+      background: linear-gradient(135deg, var(--nav), var(--nav2));
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    .map-job-preview-apply:hover {
+      transform: translateY(-1px);
+    }
+    .map-job-preview-filter {
+      background: #f1f5f9;
+      color: var(--text);
+      border: 1px solid #e2e8f0;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .map-job-preview-filter:hover {
+      background: #e2e8f0;
+    }
   </style>
 </head>
 
@@ -2230,6 +2327,25 @@
         </div>
         <div id="mapbox-map"></div>
         <div class="map-stats" id="mapStats"></div>
+        <div class="map-job-preview" id="mapJobPreview">
+          <div class="map-job-preview-header">
+            <div>
+              <div class="map-job-preview-title" id="previewTitle">Job Title</div>
+              <div class="map-job-preview-airline" id="previewAirline">Airline Name</div>
+            </div>
+            <button class="map-job-preview-close" id="closePreview" type="button">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="map-job-preview-details" id="previewDetails"></div>
+          <div class="map-job-preview-actions">
+            <a href="#" class="map-job-preview-apply" id="previewApply" target="_blank">Apply Now</a>
+            <button class="map-job-preview-filter" id="previewFilter" type="button">View All at Location</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -4025,9 +4141,13 @@
         const jobs = JSON.parse(props.jobs);
         const jobCount = props.jobCount;
 
-        // Build popup HTML
-        const jobListHTML = jobs.slice(0, 5).map(j => `
-          <div class="job-popup-item">
+        // Store jobs for this location globally for click handler
+        window.currentMapJobs = jobs;
+        window.currentMapLocation = location;
+
+        // Build popup HTML with clickable job items
+        const jobListHTML = jobs.slice(0, 5).map((j, idx) => `
+          <div class="job-popup-item" style="cursor:pointer;" onclick="showJobPreview(${idx})">
             <div class="job-popup-title">${j.title}</div>
             <div class="job-popup-airline">${j.org}</div>
           </div>
@@ -4070,6 +4190,43 @@
       mapInstance.on('mouseleave', 'unclustered-point', () => {
         mapInstance.getCanvas().style.cursor = '';
       });
+    }
+
+    // Show job preview panel at bottom of map
+    function showJobPreview(jobIndex) {
+      const job = window.currentMapJobs[jobIndex];
+      if (!job) return;
+
+      // Find full job data from JOBS array
+      const fullJob = JOBS.find(j => j.id === job.id) || job;
+
+      // Update preview panel content
+      el('previewTitle').textContent = fullJob.title || job.title;
+      el('previewAirline').textContent = fullJob.org || job.org;
+      el('previewApply').href = fullJob.applyUrl || job.applyUrl || '#';
+
+      // Build details chips
+      const chips = [];
+      if (fullJob.location) chips.push(fullJob.location);
+      if (fullJob.chips && fullJob.chips.length) {
+        chips.push(...fullJob.chips.filter(c => c));
+      }
+      if (fullJob.salary) chips.push('$' + fullJob.salary.toLocaleString());
+
+      el('previewDetails').innerHTML = chips.map(c =>
+        `<span class="map-job-preview-chip">${c}</span>`
+      ).join('');
+
+      // Set up filter button
+      el('previewFilter').onclick = () => filterByLocation(window.currentMapLocation);
+
+      // Show the preview panel
+      el('mapJobPreview').classList.add('visible');
+    }
+
+    // Hide job preview panel
+    function hideJobPreview() {
+      el('mapJobPreview').classList.remove('visible');
     }
 
     // Filter jobs by location (called from popup)
@@ -4123,11 +4280,13 @@
     function closeMap() {
       el('mapOverlay').classList.remove('visible');
       document.body.style.overflow = '';
+      hideJobPreview();
     }
 
     // Map event listeners
     el('openMapBtn').addEventListener('click', openMap);
     el('closeMapBtn').addEventListener('click', closeMap);
+    el('closePreview').addEventListener('click', hideJobPreview);
     el('mapOverlay').addEventListener('click', (e) => {
       if (e.target === el('mapOverlay')) closeMap();
     });

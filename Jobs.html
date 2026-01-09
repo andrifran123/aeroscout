@@ -3757,13 +3757,14 @@
     const closeAlertModal = el("closeAlertModal");
     const alertSubmitBtn = el("alertSubmitBtn");
     const alertEmail = el("alertEmail");
-    const alertAircraft = el("alertAircraft");
     const alertModalBody = el("alertModalBody");
 
     // Alert filter state
     const alertFilters = {
+      rank: [],      // 'captain', 'senior_fo', 'first_officer', 'second_officer', 'cadet'
+      region: [],    // 'europe', 'middle_east', 'asia', etc.
+      aircraft: [],  // 'a320', 'b737', etc.
       type: [],      // 'typed', 'ntr'
-      license: [],   // 'ATPL', 'CPL', 'fATPL'
       operator: [],  // 'airline', 'bizav', etc.
       perk: []       // 'visa', 'direct'
     };
@@ -3790,13 +3791,14 @@
         chip.classList.remove('selected');
       });
       // Reset filter state
+      alertFilters.rank = [];
+      alertFilters.region = [];
+      alertFilters.aircraft = [];
       alertFilters.type = [];
-      alertFilters.license = [];
       alertFilters.operator = [];
       alertFilters.perk = [];
       // Reset inputs
       alertEmail.value = '';
-      alertAircraft.value = '';
       // Reset button
       alertSubmitBtn.disabled = false;
       alertSubmitBtn.textContent = 'Subscribe to Alerts';
@@ -3829,13 +3831,14 @@
 
       try {
         const filters = {
-          license: alertFilters.license.length > 0 ? alertFilters.license : null,
+          rank: alertFilters.rank.length > 0 ? alertFilters.rank : null,
+          region: alertFilters.region.length > 0 ? alertFilters.region : null,
+          aircraft: alertFilters.aircraft.length > 0 ? alertFilters.aircraft : null,
           operator_type: alertFilters.operator.length > 0 ? alertFilters.operator : null,
           type_rated: alertFilters.type.includes('typed') && !alertFilters.type.includes('ntr') ? true :
                       alertFilters.type.includes('ntr') && !alertFilters.type.includes('typed') ? false : null,
           visa_sponsor: alertFilters.perk.includes('visa') ? true : null,
-          direct_entry: alertFilters.perk.includes('direct') ? true : null,
-          aircraft: alertAircraft.value.trim() || null
+          direct_entry: alertFilters.perk.includes('direct') ? true : null
         };
 
         // Insert into Supabase

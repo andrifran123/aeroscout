@@ -981,6 +981,71 @@
     }
     .multi-select-tag-remove:hover {
       opacity: 1;
+    }
+
+    /* Frequency Toggle */
+    .frequency-toggle {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .frequency-option {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+    }
+    .frequency-option:hover {
+      border-color: #3b82f6;
+    }
+    .frequency-option.selected {
+      border-color: #3b82f6;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .frequency-option .freq-icon {
+      font-size: 16px;
+    }
+    .frequency-option .freq-label {
+      font-weight: 600;
+    }
+    .frequency-option .freq-desc {
+      font-size: 11px;
+      color: #6b7280;
+      font-weight: 400;
+    }
+    .frequency-option.selected .freq-desc {
+      color: #3b82f6;
+    }
+
+    /* Required field indicator */
+    .alert-section-title .required {
+      color: #ef4444;
+      margin-left: 2px;
+    }
+    .alert-validation-error {
+      color: #ef4444;
+      font-size: 12px;
+      margin-top: 6px;
+      display: none;
+    }
+    .alert-section.error .alert-chips,
+    .alert-section.error .frequency-toggle {
+      border: 2px solid #fecaca;
+      border-radius: 12px;
+      padding: 8px;
+      margin: -8px;
+      background: #fef2f2;
       color: #374151;
     }
 
@@ -2512,9 +2577,9 @@
           <span>Your experience profile (hours, license, aircraft) will be used for eligibility matching</span>
         </div>
 
-        <!-- Rank / Position -->
-        <div class="alert-section">
-          <div class="alert-section-title">Rank / Position</div>
+        <!-- Rank / Position (Required) -->
+        <div class="alert-section" id="rankSection">
+          <div class="alert-section-title">Rank / Position<span class="required">*</span></div>
           <div class="alert-chips">
             <span class="alert-chip" data-alert-filter="rank" data-value="captain">Captain</span>
             <span class="alert-chip" data-alert-filter="rank" data-value="senior_fo">Senior First Officer</span>
@@ -2522,6 +2587,7 @@
             <span class="alert-chip" data-alert-filter="rank" data-value="second_officer">Second Officer / Cruise Relief</span>
             <span class="alert-chip" data-alert-filter="rank" data-value="cadet">Cadet / Trainee</span>
           </div>
+          <div class="alert-validation-error" id="rankError">Please select at least one rank</div>
         </div>
 
         <!-- License Authority -->
@@ -2535,9 +2601,9 @@
           </div>
         </div>
 
-        <!-- Region -->
-        <div class="alert-section">
-          <div class="alert-section-title">Region</div>
+        <!-- Region (Required) -->
+        <div class="alert-section" id="regionSection">
+          <div class="alert-section-title">Region<span class="required">*</span></div>
           <div class="alert-chips">
             <span class="alert-chip" data-alert-filter="region" data-value="europe">Europe</span>
             <span class="alert-chip" data-alert-filter="region" data-value="middle_east">Middle East</span>
@@ -2548,6 +2614,7 @@
             <span class="alert-chip" data-alert-filter="region" data-value="oceania">Oceania</span>
             <span class="alert-chip" data-alert-filter="region" data-value="worldwide">Worldwide</span>
           </div>
+          <div class="alert-validation-error" id="regionError">Please select at least one region</div>
         </div>
 
         <!-- Aircraft Family -->
@@ -2763,10 +2830,31 @@
           </div>
         </div>
 
+        <!-- Frequency (Required) -->
+        <div class="alert-section" id="frequencySection">
+          <div class="alert-section-title">Email Frequency<span class="required">*</span></div>
+          <div class="frequency-toggle">
+            <div class="frequency-option" data-value="instant" id="freqInstant">
+              <span class="freq-icon">⚡</span>
+              <div>
+                <div class="freq-label">Instant</div>
+                <div class="freq-desc">Email per job</div>
+              </div>
+            </div>
+            <div class="frequency-option selected" data-value="daily" id="freqDaily">
+              <span class="freq-icon">📅</span>
+              <div>
+                <div class="freq-label">Daily Summary</div>
+                <div class="freq-desc">One email/day</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Email -->
         <div class="alert-section" style="margin-bottom:0;">
           <div class="alert-input-group" style="margin-bottom:0;">
-            <label for="alertEmail">Email Address</label>
+            <label for="alertEmail">Email Address<span class="required">*</span></label>
             <input type="email" id="alertEmail" placeholder="you@example.com" required>
           </div>
         </div>
@@ -4075,8 +4163,25 @@
       aircraft: [],          // 'a320', 'b737', etc.
       type: [],              // 'typed', 'ntr'
       operator: [],          // 'airline', 'bizav', etc.
-      perk: []               // 'visa', 'direct'
+      perk: [],              // 'visa', 'direct'
+      frequency: 'daily'     // 'instant' or 'daily' (default: daily)
     };
+
+    // Frequency toggle handler
+    const freqInstant = el('freqInstant');
+    const freqDaily = el('freqDaily');
+
+    freqInstant.addEventListener('click', () => {
+      freqInstant.classList.add('selected');
+      freqDaily.classList.remove('selected');
+      alertFilters.frequency = 'instant';
+    });
+
+    freqDaily.addEventListener('click', () => {
+      freqDaily.classList.add('selected');
+      freqInstant.classList.remove('selected');
+      alertFilters.frequency = 'daily';
+    });
 
     // Chip toggle handler
     document.querySelectorAll('.alert-chip').forEach(chip => {
@@ -4189,6 +4294,10 @@
       });
       // Reset aircraft multi-select
       resetAircraftMultiSelect();
+      // Reset frequency toggle to daily (default)
+      freqDaily.classList.add('selected');
+      freqInstant.classList.remove('selected');
+      alertFilters.frequency = 'daily';
       // Reset filter state
       alertFilters.rank = [];
       alertFilters.license_authority = [];
@@ -4205,6 +4314,11 @@
       // Reset modal footer visibility
       const footer = document.querySelector('.alert-modal-footer');
       if (footer) footer.style.display = '';
+      // Clear validation errors
+      el('rankSection').classList.remove('error');
+      el('regionSection').classList.remove('error');
+      el('rankError').style.display = 'none';
+      el('regionError').style.display = 'none';
     }
 
     function openAlertModal() {
@@ -4223,9 +4337,37 @@
     });
 
     alertSubmitBtn.addEventListener('click', async () => {
+      // Clear previous validation errors
+      el('rankSection').classList.remove('error');
+      el('regionSection').classList.remove('error');
+      el('rankError').style.display = 'none';
+      el('regionError').style.display = 'none';
+
+      // Validate required fields
+      let hasErrors = false;
+
+      if (alertFilters.rank.length === 0) {
+        el('rankSection').classList.add('error');
+        el('rankError').style.display = 'block';
+        hasErrors = true;
+      }
+
+      if (alertFilters.region.length === 0) {
+        el('regionSection').classList.add('error');
+        el('regionError').style.display = 'block';
+        hasErrors = true;
+      }
+
       const email = alertEmail.value.trim();
       if (!email || !email.includes('@')) {
         alert('Please enter a valid email address');
+        return;
+      }
+
+      if (hasErrors) {
+        // Scroll to first error
+        const firstError = document.querySelector('.alert-section.error');
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
 
@@ -4242,7 +4384,8 @@
           type_rated: alertFilters.type.includes('typed') && !alertFilters.type.includes('ntr') ? true :
                       alertFilters.type.includes('ntr') && !alertFilters.type.includes('typed') ? false : null,
           visa_sponsor: alertFilters.perk.includes('visa') ? true : null,
-          direct_entry: alertFilters.perk.includes('direct') ? true : null
+          direct_entry: alertFilters.perk.includes('direct') ? true : null,
+          frequency: alertFilters.frequency  // 'instant' or 'daily'
         };
 
         // Insert into Supabase
@@ -4259,7 +4402,11 @@
 
         if (error) throw error;
 
-        // Show success message
+        // Show success message with frequency info
+        const freqText = alertFilters.frequency === 'daily'
+          ? 'You\'ll receive a daily summary of matching jobs.'
+          : 'You\'ll receive instant notifications for each matching job.';
+
         alertModalBody.innerHTML = `
           <div class="alert-success">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -4268,6 +4415,7 @@
             </svg>
             <h3>You're Subscribed!</h3>
             <p>We'll notify you at <strong>${email}</strong> when matching jobs are posted.</p>
+            <p style="margin-top: 8px; font-size: 13px; color: #6b7280;">${freqText}</p>
           </div>
         `;
         // Hide footer

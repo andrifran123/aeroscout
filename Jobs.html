@@ -847,6 +847,140 @@
     }
     .alert-close-btn:hover {
       background: #e5e7eb;
+    }
+
+    /* Multi-select dropdown for Aircraft */
+    .multi-select {
+      position: relative;
+      width: 100%;
+    }
+    .multi-select-trigger {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border-color 0.15s;
+    }
+    .multi-select-trigger:hover {
+      border-color: #3b82f6;
+    }
+    .multi-select.open .multi-select-trigger {
+      border-color: #3b82f6;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .multi-select-trigger svg {
+      transition: transform 0.15s;
+    }
+    .multi-select.open .multi-select-trigger svg {
+      transform: rotate(180deg);
+    }
+    .multi-select-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid #3b82f6;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+    }
+    .multi-select.open .multi-select-dropdown {
+      display: block;
+    }
+    .multi-select-group {
+      padding: 8px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .multi-select-group:last-child {
+      border-bottom: none;
+    }
+    .multi-select-group-label {
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .multi-select-option {
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.1s;
+    }
+    .multi-select-option:hover {
+      background: #f3f4f6;
+    }
+    .multi-select-option.selected {
+      background: #eff6ff;
+    }
+    .multi-select-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #d1d5db;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .multi-select-option.selected .multi-select-checkbox {
+      background: #3b82f6;
+      border-color: #3b82f6;
+    }
+    .multi-select-checkbox svg {
+      display: none;
+      width: 12px;
+      height: 12px;
+      color: white;
+    }
+    .multi-select-option.selected .multi-select-checkbox svg {
+      display: block;
+    }
+    .multi-select-label {
+      font-size: 14px;
+      color: #374151;
+    }
+    .multi-select-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .multi-select-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 16px;
+      font-size: 12px;
+      color: #1d4ed8;
+    }
+    .multi-select-tag-remove {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      opacity: 0.7;
+      transition: opacity 0.1s;
+    }
+    .multi-select-tag-remove:hover {
+      opacity: 1;
       color: #374151;
     }
 
@@ -2390,6 +2524,17 @@
           </div>
         </div>
 
+        <!-- License Authority -->
+        <div class="alert-section">
+          <div class="alert-section-title">License Authority</div>
+          <div class="alert-chips">
+            <span class="alert-chip" data-alert-filter="license_authority" data-value="easa">EASA</span>
+            <span class="alert-chip" data-alert-filter="license_authority" data-value="faa">FAA</span>
+            <span class="alert-chip" data-alert-filter="license_authority" data-value="uk_caa">UK CAA</span>
+            <span class="alert-chip" data-alert-filter="license_authority" data-value="icao">ICAO</span>
+          </div>
+        </div>
+
         <!-- Region -->
         <div class="alert-section">
           <div class="alert-section-title">Region</div>
@@ -2408,20 +2553,183 @@
         <!-- Aircraft Family -->
         <div class="alert-section">
           <div class="alert-section-title">Aircraft Family</div>
-          <div class="alert-chips">
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="a320">A320 Family</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="a330">A330</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="a350">A350</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="a380">A380</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="b737">B737 Family</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="b747">B747</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="b777">B777</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="b787">B787</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="e-jet">Embraer E-Jet</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="crj">CRJ</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="atr">ATR</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="dash8">Dash 8</span>
-            <span class="alert-chip" data-alert-filter="aircraft" data-value="bizjet">Business Jets</span>
+          <div class="multi-select" id="aircraftMultiSelect">
+            <div class="multi-select-trigger" id="aircraftTrigger">
+              <span id="aircraftPlaceholder">Select aircraft types...</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+            <div class="multi-select-dropdown" id="aircraftDropdown">
+              <!-- Airbus Narrowbody -->
+              <div class="multi-select-group">
+                <div class="multi-select-group-label">Airbus Narrowbody</div>
+                <div class="multi-select-option" data-value="a320" data-label="A320 Family">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">A320 Family (A318/A319/A320/A321)</span>
+                </div>
+                <div class="multi-select-option" data-value="a220" data-label="A220">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">A220 (A220-100/A220-300)</span>
+                </div>
+              </div>
+              <!-- Airbus Widebody -->
+              <div class="multi-select-group">
+                <div class="multi-select-group-label">Airbus Widebody</div>
+                <div class="multi-select-option" data-value="a330" data-label="A330">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">A330 (A330-200/A330-300/A330neo)</span>
+                </div>
+                <div class="multi-select-option" data-value="a340" data-label="A340">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">A340</span>
+                </div>
+                <div class="multi-select-option" data-value="a350" data-label="A350">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">A350 (A350-900/A350-1000)</span>
+                </div>
+                <div class="multi-select-option" data-value="a380" data-label="A380">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">A380</span>
+                </div>
+              </div>
+              <!-- Boeing Narrowbody -->
+              <div class="multi-select-group">
+                <div class="multi-select-group-label">Boeing Narrowbody</div>
+                <div class="multi-select-option" data-value="b737" data-label="B737 Family">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">B737 Family (B737NG/B737 MAX)</span>
+                </div>
+                <div class="multi-select-option" data-value="b757" data-label="B757">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">B757</span>
+                </div>
+              </div>
+              <!-- Boeing Widebody -->
+              <div class="multi-select-group">
+                <div class="multi-select-group-label">Boeing Widebody</div>
+                <div class="multi-select-option" data-value="b747" data-label="B747">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">B747</span>
+                </div>
+                <div class="multi-select-option" data-value="b767" data-label="B767">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">B767</span>
+                </div>
+                <div class="multi-select-option" data-value="b777" data-label="B777">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">B777</span>
+                </div>
+                <div class="multi-select-option" data-value="b787" data-label="B787">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">B787 Dreamliner</span>
+                </div>
+              </div>
+              <!-- Regional Jets -->
+              <div class="multi-select-group">
+                <div class="multi-select-group-label">Regional Jets</div>
+                <div class="multi-select-option" data-value="e-jet" data-label="Embraer E-Jet">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Embraer E-Jet (E170/E175/E190/E195)</span>
+                </div>
+                <div class="multi-select-option" data-value="crj" data-label="CRJ">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">CRJ (CRJ-200/700/900/1000)</span>
+                </div>
+                <div class="multi-select-option" data-value="erj" data-label="ERJ">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">ERJ (ERJ-135/140/145)</span>
+                </div>
+              </div>
+              <!-- Turboprops -->
+              <div class="multi-select-group">
+                <div class="multi-select-group-label">Turboprops</div>
+                <div class="multi-select-option" data-value="atr" data-label="ATR">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">ATR (ATR 42/ATR 72)</span>
+                </div>
+                <div class="multi-select-option" data-value="dash8" data-label="Dash 8">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Dash 8 / DHC-8 (Q100-Q400)</span>
+                </div>
+                <div class="multi-select-option" data-value="saab" data-label="Saab">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Saab 340/2000</span>
+                </div>
+                <div class="multi-select-option" data-value="metroliner" data-label="Metroliner">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Metroliner / Metro</span>
+                </div>
+              </div>
+              <!-- Business Jets -->
+              <div class="multi-select-group">
+                <div class="multi-select-group-label">Business Jets - Large Cabin</div>
+                <div class="multi-select-option" data-value="gulfstream" data-label="Gulfstream">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Gulfstream (G-V/G450/G550/G650)</span>
+                </div>
+                <div class="multi-select-option" data-value="global" data-label="Global">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Bombardier Global (5000/6000/7500)</span>
+                </div>
+                <div class="multi-select-option" data-value="falcon" data-label="Falcon">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Dassault Falcon (900/2000/7X/8X)</span>
+                </div>
+              </div>
+              <div class="multi-select-group">
+                <div class="multi-select-group-label">Business Jets - Mid/Light</div>
+                <div class="multi-select-option" data-value="challenger" data-label="Challenger">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Bombardier Challenger (300/350/604/650)</span>
+                </div>
+                <div class="multi-select-option" data-value="citation" data-label="Citation">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Cessna Citation (CJ/XLS/Sovereign/X)</span>
+                </div>
+                <div class="multi-select-option" data-value="learjet" data-label="Learjet">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Learjet (45/60/75)</span>
+                </div>
+                <div class="multi-select-option" data-value="hawker" data-label="Hawker">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Hawker (400/800/900)</span>
+                </div>
+                <div class="multi-select-option" data-value="phenom" data-label="Phenom">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Embraer Phenom (100/300)</span>
+                </div>
+                <div class="multi-select-option" data-value="praetor" data-label="Praetor">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Embraer Praetor (500/600)</span>
+                </div>
+              </div>
+              <!-- Single Engine Turboprops -->
+              <div class="multi-select-group">
+                <div class="multi-select-group-label">Single Engine Turboprops</div>
+                <div class="multi-select-option" data-value="pc12" data-label="PC-12">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Pilatus PC-12</span>
+                </div>
+                <div class="multi-select-option" data-value="pc24" data-label="PC-24">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Pilatus PC-24</span>
+                </div>
+                <div class="multi-select-option" data-value="tbm" data-label="TBM">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Daher TBM (850/900/960)</span>
+                </div>
+                <div class="multi-select-option" data-value="caravan" data-label="Caravan">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Cessna Caravan (208/Grand Caravan)</span>
+                </div>
+                <div class="multi-select-option" data-value="kingair" data-label="King Air">
+                  <div class="multi-select-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                  <span class="multi-select-label">Beechcraft King Air (90/200/350)</span>
+                </div>
+              </div>
+            </div>
+            <div class="multi-select-tags" id="aircraftTags"></div>
           </div>
         </div>
 
@@ -3761,12 +4069,13 @@
 
     // Alert filter state
     const alertFilters = {
-      rank: [],      // 'captain', 'senior_fo', 'first_officer', 'second_officer', 'cadet'
-      region: [],    // 'europe', 'middle_east', 'asia', etc.
-      aircraft: [],  // 'a320', 'b737', etc.
-      type: [],      // 'typed', 'ntr'
-      operator: [],  // 'airline', 'bizav', etc.
-      perk: []       // 'visa', 'direct'
+      rank: [],              // 'captain', 'senior_fo', 'first_officer', 'second_officer', 'cadet'
+      license_authority: [], // 'easa', 'faa', 'uk_caa', 'icao'
+      region: [],            // 'europe', 'middle_east', 'asia', etc.
+      aircraft: [],          // 'a320', 'b737', etc.
+      type: [],              // 'typed', 'ntr'
+      operator: [],          // 'airline', 'bizav', etc.
+      perk: []               // 'visa', 'direct'
     };
 
     // Chip toggle handler
@@ -3785,13 +4094,104 @@
       });
     });
 
+    // Aircraft Multi-Select Dropdown
+    const aircraftMultiSelect = el('aircraftMultiSelect');
+    const aircraftTrigger = el('aircraftTrigger');
+    const aircraftDropdown = el('aircraftDropdown');
+    const aircraftPlaceholder = el('aircraftPlaceholder');
+    const aircraftTags = el('aircraftTags');
+
+    // Toggle dropdown
+    aircraftTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      aircraftMultiSelect.classList.toggle('open');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!aircraftMultiSelect.contains(e.target)) {
+        aircraftMultiSelect.classList.remove('open');
+      }
+    });
+
+    // Handle option selection
+    aircraftDropdown.querySelectorAll('.multi-select-option').forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const value = option.dataset.value;
+        const label = option.dataset.label;
+
+        if (option.classList.contains('selected')) {
+          // Deselect
+          option.classList.remove('selected');
+          alertFilters.aircraft = alertFilters.aircraft.filter(v => v !== value);
+        } else {
+          // Select
+          option.classList.add('selected');
+          alertFilters.aircraft.push(value);
+        }
+
+        updateAircraftTags();
+        updateAircraftPlaceholder();
+      });
+    });
+
+    function updateAircraftPlaceholder() {
+      const count = alertFilters.aircraft.length;
+      if (count === 0) {
+        aircraftPlaceholder.textContent = 'Select aircraft types...';
+      } else {
+        aircraftPlaceholder.textContent = `${count} aircraft type${count > 1 ? 's' : ''} selected`;
+      }
+    }
+
+    function updateAircraftTags() {
+      aircraftTags.innerHTML = alertFilters.aircraft.map(value => {
+        const option = aircraftDropdown.querySelector(`[data-value="${value}"]`);
+        const label = option ? option.dataset.label : value;
+        return `
+          <span class="multi-select-tag" data-value="${value}">
+            ${label}
+            <span class="multi-select-tag-remove" onclick="removeAircraftTag('${value}')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </span>
+          </span>
+        `;
+      }).join('');
+    }
+
+    // Global function to remove aircraft tag
+    window.removeAircraftTag = function(value) {
+      alertFilters.aircraft = alertFilters.aircraft.filter(v => v !== value);
+      const option = aircraftDropdown.querySelector(`[data-value="${value}"]`);
+      if (option) option.classList.remove('selected');
+      updateAircraftTags();
+      updateAircraftPlaceholder();
+    };
+
+    function resetAircraftMultiSelect() {
+      alertFilters.aircraft = [];
+      aircraftDropdown.querySelectorAll('.multi-select-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      updateAircraftTags();
+      updateAircraftPlaceholder();
+      aircraftMultiSelect.classList.remove('open');
+    }
+
     function resetAlertModal() {
       // Reset chips
       document.querySelectorAll('.alert-chip').forEach(chip => {
         chip.classList.remove('selected');
       });
+      // Reset aircraft multi-select
+      resetAircraftMultiSelect();
       // Reset filter state
       alertFilters.rank = [];
+      alertFilters.license_authority = [];
       alertFilters.region = [];
       alertFilters.aircraft = [];
       alertFilters.type = [];
@@ -3802,6 +4202,9 @@
       // Reset button
       alertSubmitBtn.disabled = false;
       alertSubmitBtn.textContent = 'Subscribe to Alerts';
+      // Reset modal footer visibility
+      const footer = document.querySelector('.alert-modal-footer');
+      if (footer) footer.style.display = '';
     }
 
     function openAlertModal() {
@@ -3832,6 +4235,7 @@
       try {
         const filters = {
           rank: alertFilters.rank.length > 0 ? alertFilters.rank : null,
+          license_authority: alertFilters.license_authority.length > 0 ? alertFilters.license_authority : null,
           region: alertFilters.region.length > 0 ? alertFilters.region : null,
           aircraft: alertFilters.aircraft.length > 0 ? alertFilters.aircraft : null,
           operator_type: alertFilters.operator.length > 0 ? alertFilters.operator : null,

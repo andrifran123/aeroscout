@@ -2125,7 +2125,6 @@
               <div class="tile-group">
                 <div class="filter-tile" data-filter="visa" id="visaTile">Visa Sponsor</div>
                 <div class="filter-tile" data-filter="direct" id="directTile">Direct Entry</div>
-                <div class="filter-tile" data-filter="remote" id="remoteTile">Home-Based</div>
               </div>
 
               <!-- Sort by Salary (Premium Feature) -->
@@ -2392,8 +2391,7 @@
             chips: [job.aircraft, job.rank].filter(Boolean),
             featured: false,
             visa: job.visa_sponsor || false,
-            direct: false,
-            remote: false,
+            direct: job.direct_entry || false,
             license: Array.isArray(job.license_required) ? job.license_required : (job.license_required ? [job.license_required] : ['ATPL']),
             type: job.type_rated ? 'typed' : 'standard',
             operator_type: job.operator_type || 'airline',
@@ -2450,7 +2448,6 @@
             featured: false,
             visa: false,
             direct: false,
-            remote: false,
             license: '',
             type: 'standard',
             operator_type: job.operator_type || 'airline',
@@ -3218,7 +3215,7 @@
       ntr: false, typed: false,
       atpl: false, cpl: false, fatpl: false,
       'op-airline': false, 'op-bizav': false, 'op-government': false, 'op-medical': false, 'op-instructor': false,
-      visa: false, direct: false, remote: false
+      visa: false, direct: false
     };
 
     // Toggle tile active state
@@ -3237,8 +3234,7 @@
 
       const perks = {
         visa: tileFilters.visa,
-        direct: tileFilters.direct,
-        remote: tileFilters.remote
+        direct: tileFilters.direct
       };
 
       const license = {
@@ -3327,8 +3323,7 @@
         if (perk.any){
           const matches =
             (f.perks.visa && j.visaSponsor === true) ||
-            (f.perks.direct && j.direct) ||
-            (f.perks.remote && j.remote);
+            (f.perks.direct && j.direct);
           if (!matches) return false;
         }
 

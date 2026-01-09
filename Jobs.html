@@ -2841,11 +2841,11 @@
                 <div class="freq-desc">Email per job</div>
               </div>
             </div>
-            <div class="frequency-option selected" data-value="daily" id="freqDaily">
+            <div class="frequency-option selected" data-value="digest" id="freqDigest">
               <span class="freq-icon">📅</span>
               <div>
-                <div class="freq-label">Daily Summary</div>
-                <div class="freq-desc">One email/day</div>
+                <div class="freq-label">4-Day Digest</div>
+                <div class="freq-desc">Summary every 4 days</div>
               </div>
             </div>
           </div>
@@ -4164,23 +4164,23 @@
       type: [],              // 'typed', 'ntr'
       operator: [],          // 'airline', 'bizav', etc.
       perk: [],              // 'visa', 'direct'
-      frequency: 'daily'     // 'instant' or 'daily' (default: daily)
+      frequency: 'digest'    // 'instant' or 'digest' (default: digest = every 4 days)
     };
 
     // Frequency toggle handler
     const freqInstant = el('freqInstant');
-    const freqDaily = el('freqDaily');
+    const freqDigest = el('freqDigest');
 
     freqInstant.addEventListener('click', () => {
       freqInstant.classList.add('selected');
-      freqDaily.classList.remove('selected');
+      freqDigest.classList.remove('selected');
       alertFilters.frequency = 'instant';
     });
 
-    freqDaily.addEventListener('click', () => {
-      freqDaily.classList.add('selected');
+    freqDigest.addEventListener('click', () => {
+      freqDigest.classList.add('selected');
       freqInstant.classList.remove('selected');
-      alertFilters.frequency = 'daily';
+      alertFilters.frequency = 'digest';
     });
 
     // Chip toggle handler
@@ -4294,10 +4294,10 @@
       });
       // Reset aircraft multi-select
       resetAircraftMultiSelect();
-      // Reset frequency toggle to daily (default)
-      freqDaily.classList.add('selected');
+      // Reset frequency toggle to digest (default)
+      freqDigest.classList.add('selected');
       freqInstant.classList.remove('selected');
-      alertFilters.frequency = 'daily';
+      alertFilters.frequency = 'digest';
       // Reset filter state
       alertFilters.rank = [];
       alertFilters.license_authority = [];
@@ -4403,8 +4403,8 @@
         if (error) throw error;
 
         // Show success message with frequency info
-        const freqText = alertFilters.frequency === 'daily'
-          ? 'You\'ll receive a daily summary of matching jobs.'
+        const freqText = alertFilters.frequency === 'digest'
+          ? 'You\'ll receive a digest every 4 days with all matching jobs.'
           : 'You\'ll receive instant notifications for each matching job.';
 
         alertModalBody.innerHTML = `

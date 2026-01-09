@@ -635,30 +635,31 @@
     /* Job Alert Button */
     .alert-btn {
       width: 100%;
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      color: #374151;
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 13px;
-      transition: all 0.15s ease;
-      margin-top: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #1b66ff 0%, #00b7a8 100%);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 14px rgba(27, 102, 255, 0.25);
     }
     .alert-btn:hover {
-      border-color: #3b82f6;
-      color: #3b82f6;
-      background: #f0f7ff;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(27, 102, 255, 0.35);
+    }
+    .alert-btn:active {
+      transform: translateY(0);
     }
     .alert-btn svg {
       flex-shrink: 0;
-      width: 16px;
-      height: 16px;
     }
 
     /* Alert Modal */
@@ -2248,6 +2249,15 @@
                 Search by Map
               </button>
 
+              <!-- Job Alert Button -->
+              <button class="alert-btn" id="alertBtn" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                Get Job Alerts
+              </button>
+
               <!-- Profile Summary Card -->
               <div class="profile-summary">
                 <span class="profile-label">Your Experience</span>
@@ -2354,15 +2364,6 @@
                 <span class="result-count" id="matchCount">6 Jobs</span>
               </button>
               <button class="clear-btn" id="clearBtn" type="button">Clear Filters</button>
-
-              <!-- Job Alert Subscription -->
-              <button class="alert-btn" id="alertBtn" type="button">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                </svg>
-                Get Job Alerts
-              </button>
             </div>
           </aside>
 

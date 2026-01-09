@@ -2111,13 +2111,14 @@
                 <div class="filter-tile" data-filter="instructor" id="instructorTile">Instructor</div>
               </div>
 
-              <!-- Employer -->
-              <div class="section-title">Employer</div>
+              <!-- Operator Type -->
+              <div class="section-title">Operator Type</div>
               <div class="tile-group">
-                <div class="filter-tile" data-filter="airline" id="airlineTile">Airline</div>
-                <div class="filter-tile" data-filter="bizav" id="bizavTile">BizAv</div>
-                <div class="filter-tile" data-filter="training" id="trainingTile">Training</div>
-                <div class="filter-tile" data-filter="gov" id="govTile">Government</div>
+                <div class="filter-tile" data-filter="op-airline" id="opAirlineTile">Airline</div>
+                <div class="filter-tile" data-filter="op-bizav" id="opBizavTile">BizAv</div>
+                <div class="filter-tile" data-filter="op-government" id="opGovernmentTile">Government</div>
+                <div class="filter-tile" data-filter="op-medical" id="opMedicalTile">Medical</div>
+                <div class="filter-tile" data-filter="op-instructor" id="opInstructorTile">Instructor</div>
               </div>
 
               <!-- Perks -->
@@ -2396,7 +2397,7 @@
             remote: false,
             license: Array.isArray(job.license_required) ? job.license_required : (job.license_required ? [job.license_required] : ['ATPL']),
             type: job.type_rated ? 'typed' : 'standard',
-            employer: 'airline',
+            operator_type: job.operator_type || 'airline',
             flightTime: job.total_hours || 0,
             pic: job.pic_hours || 0,
             jetTime: job.jet_time || 0,
@@ -2453,7 +2454,7 @@
             remote: false,
             license: '',
             type: 'standard',
-            employer: 'airline',
+            operator_type: job.operator_type || 'airline',
             experienceYears: job.experience_years || 0,
             languageRequirements: job.language_requirements || '',
             salary: job.salary_usd || 0,
@@ -3217,7 +3218,7 @@
     const tileFilters = {
       ntr: false, typed: false,
       atpl: false, cpl: false, fatpl: false, instructor: false,
-      airline: false, bizav: false, training: false, gov: false,
+      'op-airline': false, 'op-bizav': false, 'op-government': false, 'op-medical': false, 'op-instructor': false,
       visa: false, direct: false, remote: false
     };
 
@@ -3252,11 +3253,12 @@
         ntr: tileFilters.ntr
       };
 
-      const employer = {
-        airline: tileFilters.airline,
-        bizav: tileFilters.bizav,
-        training: tileFilters.training,
-        gov: tileFilters.gov
+      const operatorType = {
+        airline: tileFilters['op-airline'],
+        bizav: tileFilters['op-bizav'],
+        government: tileFilters['op-government'],
+        medical: tileFilters['op-medical'],
+        instructor: tileFilters['op-instructor']
       };
 
       const maxFT = Number(ftSlider.value || 10000);
@@ -3265,7 +3267,7 @@
       const eligibleOnly = eligibleOnlyCheckbox.checked;
       const includeBlockers = includeBlockersCheckbox.checked;
 
-      return { q, loc, perks, license, type, employer, maxFT, maxDelta, deltaEnabled, eligibleOnly, includeBlockers };
+      return { q, loc, perks, license, type, operatorType, maxFT, maxDelta, deltaEnabled, eligibleOnly, includeBlockers };
     }
 
     function matchesAny(map){
@@ -3277,7 +3279,7 @@
       const f = getFilters();
       const lic = matchesAny(f.license);
       const typ = matchesAny(f.type);
-      const emp = matchesAny(f.employer);
+      const opType = matchesAny(f.operatorType);
       const perk = matchesAny(f.perks);
 
       return JOBS.filter(j => {
@@ -3350,13 +3352,14 @@
           if (!matches) return false;
         }
 
-        // Employer - if any selected, job must match at least one
-        if (emp.any){
+        // Operator Type - if any selected, job must match at least one
+        if (opType.any){
           const matches =
-            (f.employer.airline && j.employer === "airline") ||
-            (f.employer.bizav && j.employer === "bizav") ||
-            (f.employer.training && j.employer === "training") ||
-            (f.employer.gov && j.employer === "gov");
+            (f.operatorType.airline && j.operator_type === "airline") ||
+            (f.operatorType.bizav && j.operator_type === "bizav") ||
+            (f.operatorType.government && j.operator_type === "government") ||
+            (f.operatorType.medical && j.operator_type === "medical") ||
+            (f.operatorType.instructor && j.operator_type === "instructor");
           if (!matches) return false;
         }
 

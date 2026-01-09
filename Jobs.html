@@ -2392,7 +2392,16 @@
             featured: false,
             visa: job.visa_sponsor || false,
             direct: job.direct_entry || false,
-            license: Array.isArray(job.license_required) ? job.license_required : (job.license_required ? [job.license_required] : ['ATPL']),
+            license: (() => {
+              if (Array.isArray(job.license_required)) return job.license_required;
+              if (typeof job.license_required === 'string') {
+                try {
+                  const parsed = JSON.parse(job.license_required);
+                  return Array.isArray(parsed) ? parsed : [parsed];
+                } catch { return [job.license_required]; }
+              }
+              return ['ATPL'];
+            })(),
             type: job.type_rated ? 'typed' : 'standard',
             operator_type: job.operator_type || 'airline',
             flightTime: job.total_hours || 0,

@@ -3023,6 +3023,7 @@
           <span class="attr-item"><b>Location:</b> <span class="attr-pill">${j.location || 'Not specified'}</span></span>
           ${j.type === "typed" ? '<span class="attr-pill">Type-rated</span>' : '<span class="attr-pill green">Non-type rated</span>'}
           ${j.visa ? '<span class="attr-pill green"><b>Visa sponsor</b></span>' : ''}
+          ${j.direct ? '<span class="attr-pill" style="background:#e3f2fd;color:#1565c0;"><b>Direct Entry</b></span>' : ''}
           ${getEligibilityBadge(j)}
         `;
       }
@@ -3332,9 +3333,9 @@
           // j.license is now an array of acceptable licenses
           const jobLicenses = Array.isArray(j.license) ? j.license : [j.license];
           const ok =
-            (f.license.atpl && jobLicenses.some(l => l === "ATPL" || l === "ATP")) ||
-            (f.license.cpl && jobLicenses.includes("CPL")) ||
-            (f.license.fatpl && jobLicenses.includes("IATRA"));
+            (f.license.atpl && jobLicenses.some(l => l === "ATPL" || l === "ATP" || l === "fATPL")) ||
+            (f.license.cpl && jobLicenses.some(l => l === "CPL")) ||
+            (f.license.fatpl && jobLicenses.some(l => l === "fATPL" || l === "CPL"));
           if (!ok) return false;
         }
 

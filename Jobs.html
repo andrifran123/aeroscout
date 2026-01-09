@@ -705,6 +705,21 @@
       max-height: 60vh;
       overflow-y: auto;
     }
+    .alert-profile-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #0369a1;
+      margin-bottom: 20px;
+    }
+    .alert-profile-note svg {
+      flex-shrink: 0;
+    }
     .alert-section {
       margin-bottom: 20px;
     }
@@ -2353,22 +2368,69 @@
         <button class="alert-close-btn" id="closeAlertModal">&times;</button>
       </div>
       <div class="alert-modal-body" id="alertModalBody">
+        <!-- Profile Note -->
+        <div class="alert-profile-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 16v-4"></path>
+            <path d="M12 8h.01"></path>
+          </svg>
+          <span>Your experience profile (hours, license, aircraft) will be used for eligibility matching</span>
+        </div>
+
+        <!-- Rank / Position -->
+        <div class="alert-section">
+          <div class="alert-section-title">Rank / Position</div>
+          <div class="alert-chips">
+            <span class="alert-chip" data-alert-filter="rank" data-value="captain">Captain</span>
+            <span class="alert-chip" data-alert-filter="rank" data-value="senior_fo">Senior First Officer</span>
+            <span class="alert-chip" data-alert-filter="rank" data-value="first_officer">First Officer</span>
+            <span class="alert-chip" data-alert-filter="rank" data-value="second_officer">Second Officer / Cruise Relief</span>
+            <span class="alert-chip" data-alert-filter="rank" data-value="cadet">Cadet / Trainee</span>
+          </div>
+        </div>
+
+        <!-- Region -->
+        <div class="alert-section">
+          <div class="alert-section-title">Region</div>
+          <div class="alert-chips">
+            <span class="alert-chip" data-alert-filter="region" data-value="europe">Europe</span>
+            <span class="alert-chip" data-alert-filter="region" data-value="middle_east">Middle East</span>
+            <span class="alert-chip" data-alert-filter="region" data-value="asia">Asia</span>
+            <span class="alert-chip" data-alert-filter="region" data-value="north_america">North America</span>
+            <span class="alert-chip" data-alert-filter="region" data-value="south_america">South America</span>
+            <span class="alert-chip" data-alert-filter="region" data-value="africa">Africa</span>
+            <span class="alert-chip" data-alert-filter="region" data-value="oceania">Oceania</span>
+            <span class="alert-chip" data-alert-filter="region" data-value="worldwide">Worldwide</span>
+          </div>
+        </div>
+
+        <!-- Aircraft Family -->
+        <div class="alert-section">
+          <div class="alert-section-title">Aircraft Family</div>
+          <div class="alert-chips">
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="a320">A320 Family</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="a330">A330</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="a350">A350</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="a380">A380</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="b737">B737 Family</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="b747">B747</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="b777">B777</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="b787">B787</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="e-jet">Embraer E-Jet</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="crj">CRJ</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="atr">ATR</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="dash8">Dash 8</span>
+            <span class="alert-chip" data-alert-filter="aircraft" data-value="bizjet">Business Jets</span>
+          </div>
+        </div>
+
         <!-- Type Preference -->
         <div class="alert-section">
           <div class="alert-section-title">Type Preference</div>
           <div class="alert-chips">
             <span class="alert-chip" data-alert-filter="type" data-value="typed">Type-Rated</span>
             <span class="alert-chip" data-alert-filter="type" data-value="ntr">Non-Type-Rated</span>
-          </div>
-        </div>
-
-        <!-- License -->
-        <div class="alert-section">
-          <div class="alert-section-title">License</div>
-          <div class="alert-chips">
-            <span class="alert-chip" data-alert-filter="license" data-value="ATPL">ATPL</span>
-            <span class="alert-chip" data-alert-filter="license" data-value="CPL">CPL</span>
-            <span class="alert-chip" data-alert-filter="license" data-value="fATPL">fATPL</span>
           </div>
         </div>
 
@@ -2390,14 +2452,6 @@
           <div class="alert-chips">
             <span class="alert-chip" data-alert-filter="perk" data-value="visa">Visa Sponsor</span>
             <span class="alert-chip" data-alert-filter="perk" data-value="direct">Direct Entry</span>
-          </div>
-        </div>
-
-        <!-- Aircraft Type -->
-        <div class="alert-section">
-          <div class="alert-input-group" style="margin-bottom:0;">
-            <label for="alertAircraft">Aircraft Type (optional)</label>
-            <input type="text" id="alertAircraft" placeholder="e.g. B787, A320, G650">
           </div>
         </div>
 

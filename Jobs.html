@@ -635,180 +635,203 @@
     /* Job Alert Button */
     .alert-btn {
       width: 100%;
-      background: linear-gradient(135deg, #10b981, #059669);
-      border: none;
-      color: white;
-      padding: 14px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      padding: 12px 16px;
       border-radius: 10px;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s ease;
+      font-size: 13px;
+      transition: all 0.15s ease;
       margin-top: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
     .alert-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+      border-color: #3b82f6;
+      color: #3b82f6;
+      background: #f0f7ff;
     }
     .alert-btn svg {
       flex-shrink: 0;
+      width: 16px;
+      height: 16px;
     }
 
     /* Alert Modal */
     .alert-modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.5);
       backdrop-filter: blur(4px);
       z-index: 1000;
       display: none;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 20px;
+      padding: 40px 20px;
+      overflow-y: auto;
     }
     .alert-modal-overlay.active {
       display: flex;
     }
     .alert-modal {
       background: white;
-      border-radius: 20px;
-      max-width: 460px;
+      border-radius: 16px;
+      max-width: 500px;
       width: 100%;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
       overflow: hidden;
+      margin: auto;
     }
     .alert-modal-header {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      padding: 24px;
-      text-align: center;
+      background: #f8fafc;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .alert-modal-header h2 {
-      margin: 0 0 6px;
-      font-size: 22px;
-    }
-    .alert-modal-header p {
       margin: 0;
-      opacity: 0.9;
-      font-size: 14px;
+      font-size: 18px;
+      color: #111827;
     }
     .alert-modal-body {
-      padding: 24px;
+      padding: 20px 24px;
+      max-height: 60vh;
+      overflow-y: auto;
     }
-    .alert-filter-summary {
-      background: #f8fafc;
-      border-radius: 12px;
-      padding: 16px;
+    .alert-section {
       margin-bottom: 20px;
-      font-size: 13px;
     }
-    .alert-filter-summary h4 {
-      margin: 0 0 10px;
-      color: #374151;
-      font-size: 13px;
+    .alert-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      margin-bottom: 10px;
     }
-    .alert-filter-tags {
+    .alert-chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 8px;
     }
-    .alert-filter-tag {
-      background: #e0f2fe;
-      color: #0369a1;
-      padding: 4px 10px;
+    .alert-chip {
+      padding: 8px 14px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      color: #374151;
+    }
+    .alert-chip:hover {
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
+    .alert-chip.selected {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: white;
     }
     .alert-input-group {
       margin-bottom: 16px;
     }
     .alert-input-group label {
       display: block;
+      font-size: 12px;
       font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       margin-bottom: 8px;
-      color: #374151;
     }
-    .alert-input-group input {
+    .alert-input-group input, .alert-input-group select {
       width: 100%;
-      padding: 14px 16px;
-      border: 2px solid #e5e7eb;
-      border-radius: 10px;
-      font-size: 16px;
-      transition: border-color 0.2s;
+      padding: 12px 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.15s;
+      background: #fff;
     }
-    .alert-input-group input:focus {
+    .alert-input-group input:focus, .alert-input-group select:focus {
       outline: none;
-      border-color: #10b981;
+      border-color: #3b82f6;
+    }
+    .alert-modal-footer {
+      padding: 16px 24px;
+      background: #f8fafc;
+      border-top: 1px solid #e5e7eb;
     }
     .alert-submit-btn {
       width: 100%;
-      background: linear-gradient(135deg, #10b981, #059669);
+      background: #3b82f6;
       border: none;
       color: white;
-      padding: 16px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 16px;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.15s;
     }
     .alert-submit-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+      background: #2563eb;
     }
     .alert-submit-btn:disabled {
       background: #9ca3af;
       cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
     }
     .alert-disclaimer {
-      margin-top: 16px;
-      font-size: 12px;
-      color: #6b7280;
+      margin-top: 12px;
+      font-size: 11px;
+      color: #9ca3af;
       text-align: center;
     }
     .alert-success {
       text-align: center;
-      padding: 20px;
+      padding: 40px 20px;
     }
     .alert-success svg {
-      width: 64px;
-      height: 64px;
+      width: 56px;
+      height: 56px;
       color: #10b981;
       margin-bottom: 16px;
     }
     .alert-success h3 {
       margin: 0 0 8px;
+      font-size: 18px;
       color: #111827;
     }
     .alert-success p {
       color: #6b7280;
       margin: 0;
+      font-size: 14px;
     }
     .alert-close-btn {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: rgba(255,255,255,0.2);
+      background: none;
       border: none;
-      color: white;
+      color: #9ca3af;
       width: 32px;
       height: 32px;
-      border-radius: 50%;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 20px;
+      font-size: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: all 0.15s;
+    }
+    .alert-close-btn:hover {
+      background: #e5e7eb;
+      color: #374151;
     }
 
     /* Eligibility Delta Slider */
@@ -2357,23 +2380,69 @@
 
   <!-- Job Alert Modal -->
   <div class="alert-modal-overlay" id="alertModal">
-    <div class="alert-modal" style="position:relative;">
-      <button class="alert-close-btn" id="closeAlertModal">&times;</button>
+    <div class="alert-modal">
       <div class="alert-modal-header">
-        <h2>Get Job Alerts</h2>
-        <p>Receive instant email notifications for matching jobs</p>
+        <h2>Job Alerts</h2>
+        <button class="alert-close-btn" id="closeAlertModal">&times;</button>
       </div>
       <div class="alert-modal-body" id="alertModalBody">
-        <div class="alert-filter-summary">
-          <h4>Your Alert Filters</h4>
-          <div class="alert-filter-tags" id="alertFilterTags">
-            <span class="alert-filter-tag">All Jobs</span>
+        <!-- Type Preference -->
+        <div class="alert-section">
+          <div class="alert-section-title">Type Preference</div>
+          <div class="alert-chips">
+            <span class="alert-chip" data-alert-filter="type" data-value="typed">Type-Rated</span>
+            <span class="alert-chip" data-alert-filter="type" data-value="ntr">Non-Type-Rated</span>
           </div>
         </div>
-        <div class="alert-input-group">
-          <label for="alertEmail">Email Address</label>
-          <input type="email" id="alertEmail" placeholder="you@example.com" required>
+
+        <!-- License -->
+        <div class="alert-section">
+          <div class="alert-section-title">License</div>
+          <div class="alert-chips">
+            <span class="alert-chip" data-alert-filter="license" data-value="ATPL">ATPL</span>
+            <span class="alert-chip" data-alert-filter="license" data-value="CPL">CPL</span>
+            <span class="alert-chip" data-alert-filter="license" data-value="fATPL">fATPL</span>
+          </div>
         </div>
+
+        <!-- Operator Type -->
+        <div class="alert-section">
+          <div class="alert-section-title">Operator Type</div>
+          <div class="alert-chips">
+            <span class="alert-chip" data-alert-filter="operator" data-value="airline">Airline</span>
+            <span class="alert-chip" data-alert-filter="operator" data-value="bizav">BizAv</span>
+            <span class="alert-chip" data-alert-filter="operator" data-value="government">Government</span>
+            <span class="alert-chip" data-alert-filter="operator" data-value="medical">Medical</span>
+            <span class="alert-chip" data-alert-filter="operator" data-value="instructor">Instructor</span>
+          </div>
+        </div>
+
+        <!-- Perks -->
+        <div class="alert-section">
+          <div class="alert-section-title">Perks</div>
+          <div class="alert-chips">
+            <span class="alert-chip" data-alert-filter="perk" data-value="visa">Visa Sponsor</span>
+            <span class="alert-chip" data-alert-filter="perk" data-value="direct">Direct Entry</span>
+          </div>
+        </div>
+
+        <!-- Aircraft Type -->
+        <div class="alert-section">
+          <div class="alert-input-group" style="margin-bottom:0;">
+            <label for="alertAircraft">Aircraft Type (optional)</label>
+            <input type="text" id="alertAircraft" placeholder="e.g. B787, A320, G650">
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="alert-section" style="margin-bottom:0;">
+          <div class="alert-input-group" style="margin-bottom:0;">
+            <label for="alertEmail">Email Address</label>
+            <input type="email" id="alertEmail" placeholder="you@example.com" required>
+          </div>
+        </div>
+      </div>
+      <div class="alert-modal-footer">
         <button class="alert-submit-btn" id="alertSubmitBtn">Subscribe to Alerts</button>
         <p class="alert-disclaimer">We'll send a verification email. You can unsubscribe anytime.</p>
       </div>
@@ -3667,42 +3736,54 @@
     const closeAlertModal = el("closeAlertModal");
     const alertSubmitBtn = el("alertSubmitBtn");
     const alertEmail = el("alertEmail");
-    const alertFilterTags = el("alertFilterTags");
+    const alertAircraft = el("alertAircraft");
     const alertModalBody = el("alertModalBody");
 
-    function getActiveFilters() {
-      const filters = [];
-      const f = getFilters();
+    // Alert filter state
+    const alertFilters = {
+      type: [],      // 'typed', 'ntr'
+      license: [],   // 'ATPL', 'CPL', 'fATPL'
+      operator: [],  // 'airline', 'bizav', etc.
+      perk: []       // 'visa', 'direct'
+    };
 
-      if (f.loc) filters.push(f.loc);
-      if (f.q) filters.push(`"${f.q}"`);
+    // Chip toggle handler
+    document.querySelectorAll('.alert-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const filterType = chip.dataset.alertFilter;
+        const value = chip.dataset.value;
 
-      if (f.license.atpl) filters.push('ATPL');
-      if (f.license.cpl) filters.push('CPL');
-      if (f.license.fatpl) filters.push('fATPL');
+        if (chip.classList.contains('selected')) {
+          chip.classList.remove('selected');
+          alertFilters[filterType] = alertFilters[filterType].filter(v => v !== value);
+        } else {
+          chip.classList.add('selected');
+          alertFilters[filterType].push(value);
+        }
+      });
+    });
 
-      if (f.type.typed) filters.push('Type-Rated');
-      if (f.type.ntr) filters.push('Non-Type-Rated');
-
-      if (f.operatorType.airline) filters.push('Airline');
-      if (f.operatorType.bizav) filters.push('BizAv');
-      if (f.operatorType.government) filters.push('Government');
-      if (f.operatorType.medical) filters.push('Medical');
-      if (f.operatorType.instructor) filters.push('Instructor');
-
-      if (f.perks.visa) filters.push('Visa Sponsor');
-      if (f.perks.direct) filters.push('Direct Entry');
-
-      if (f.maxFT < 10000) filters.push(`≤${f.maxFT.toLocaleString()} hrs`);
-
-      return filters.length > 0 ? filters : ['All Jobs'];
+    function resetAlertModal() {
+      // Reset chips
+      document.querySelectorAll('.alert-chip').forEach(chip => {
+        chip.classList.remove('selected');
+      });
+      // Reset filter state
+      alertFilters.type = [];
+      alertFilters.license = [];
+      alertFilters.operator = [];
+      alertFilters.perk = [];
+      // Reset inputs
+      alertEmail.value = '';
+      alertAircraft.value = '';
+      // Reset button
+      alertSubmitBtn.disabled = false;
+      alertSubmitBtn.textContent = 'Subscribe to Alerts';
     }
 
     function openAlertModal() {
-      const filters = getActiveFilters();
-      alertFilterTags.innerHTML = filters.map(f => `<span class="alert-filter-tag">${f}</span>`).join('');
+      resetAlertModal();
       alertModal.classList.add('active');
-      alertEmail.focus();
     }
 
     function closeAlertModalFn() {
@@ -3726,33 +3807,15 @@
       alertSubmitBtn.textContent = 'Subscribing...';
 
       try {
-        const f = getFilters();
         const filters = {
-          location: f.loc || null,
-          search_query: f.q || null,
-          license: [],
-          operator_type: [],
-          type_rated: null,
-          visa_sponsor: null,
-          direct_entry: null,
-          max_flight_time: f.maxFT < 10000 ? f.maxFT : null
+          license: alertFilters.license.length > 0 ? alertFilters.license : null,
+          operator_type: alertFilters.operator.length > 0 ? alertFilters.operator : null,
+          type_rated: alertFilters.type.includes('typed') && !alertFilters.type.includes('ntr') ? true :
+                      alertFilters.type.includes('ntr') && !alertFilters.type.includes('typed') ? false : null,
+          visa_sponsor: alertFilters.perk.includes('visa') ? true : null,
+          direct_entry: alertFilters.perk.includes('direct') ? true : null,
+          aircraft: alertAircraft.value.trim() || null
         };
-
-        if (f.license.atpl) filters.license.push('ATPL');
-        if (f.license.cpl) filters.license.push('CPL');
-        if (f.license.fatpl) filters.license.push('fATPL');
-
-        if (f.operatorType.airline) filters.operator_type.push('airline');
-        if (f.operatorType.bizav) filters.operator_type.push('bizav');
-        if (f.operatorType.government) filters.operator_type.push('government');
-        if (f.operatorType.medical) filters.operator_type.push('medical');
-        if (f.operatorType.instructor) filters.operator_type.push('instructor');
-
-        if (f.type.typed && !f.type.ntr) filters.type_rated = true;
-        if (f.type.ntr && !f.type.typed) filters.type_rated = false;
-
-        if (f.perks.visa) filters.visa_sponsor = true;
-        if (f.perks.direct) filters.direct_entry = true;
 
         // Insert into Supabase
         const { data, error } = await supabaseClient
@@ -3775,10 +3838,12 @@
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
               <polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
-            <h3>Check Your Email!</h3>
-            <p>We've sent a verification link to <strong>${email}</strong>. Click it to activate your job alerts.</p>
+            <h3>You're Subscribed!</h3>
+            <p>We'll notify you at <strong>${email}</strong> when matching jobs are posted.</p>
           </div>
         `;
+        // Hide footer
+        document.querySelector('.alert-modal-footer').style.display = 'none';
 
       } catch (err) {
         console.error('Subscription error:', err);

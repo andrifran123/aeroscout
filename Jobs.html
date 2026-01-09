@@ -632,6 +632,185 @@
       color: #3b82f6;
     }
 
+    /* Job Alert Button */
+    .alert-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border: none;
+      color: white;
+      padding: 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    .alert-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+    .alert-btn svg {
+      flex-shrink: 0;
+    }
+
+    /* Alert Modal */
+    .alert-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .alert-modal-overlay.active {
+      display: flex;
+    }
+    .alert-modal {
+      background: white;
+      border-radius: 20px;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+    .alert-modal-header {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 24px;
+      text-align: center;
+    }
+    .alert-modal-header h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+    .alert-modal-header p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    .alert-modal-body {
+      padding: 24px;
+    }
+    .alert-filter-summary {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+    .alert-filter-summary h4 {
+      margin: 0 0 10px;
+      color: #374151;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .alert-filter-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .alert-filter-tag {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .alert-input-group {
+      margin-bottom: 16px;
+    }
+    .alert-input-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #374151;
+    }
+    .alert-input-group input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: border-color 0.2s;
+    }
+    .alert-input-group input:focus {
+      outline: none;
+      border-color: #10b981;
+    }
+    .alert-submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border: none;
+      color: white;
+      padding: 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .alert-submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+    .alert-submit-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .alert-disclaimer {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #6b7280;
+      text-align: center;
+    }
+    .alert-success {
+      text-align: center;
+      padding: 20px;
+    }
+    .alert-success svg {
+      width: 64px;
+      height: 64px;
+      color: #10b981;
+      margin-bottom: 16px;
+    }
+    .alert-success h3 {
+      margin: 0 0 8px;
+      color: #111827;
+    }
+    .alert-success p {
+      color: #6b7280;
+      margin: 0;
+    }
+    .alert-close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     /* Eligibility Delta Slider */
     .delta-section {
       background: #fef9e7;
@@ -2152,6 +2331,15 @@
                 <span class="result-count" id="matchCount">6 Jobs</span>
               </button>
               <button class="clear-btn" id="clearBtn" type="button">Clear Filters</button>
+
+              <!-- Job Alert Subscription -->
+              <button class="alert-btn" id="alertBtn" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                Get Job Alerts
+              </button>
             </div>
           </aside>
 
@@ -2163,6 +2351,31 @@
             </div>
           </section>
         </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Job Alert Modal -->
+  <div class="alert-modal-overlay" id="alertModal">
+    <div class="alert-modal" style="position:relative;">
+      <button class="alert-close-btn" id="closeAlertModal">&times;</button>
+      <div class="alert-modal-header">
+        <h2>Get Job Alerts</h2>
+        <p>Receive instant email notifications for matching jobs</p>
+      </div>
+      <div class="alert-modal-body" id="alertModalBody">
+        <div class="alert-filter-summary">
+          <h4>Your Alert Filters</h4>
+          <div class="alert-filter-tags" id="alertFilterTags">
+            <span class="alert-filter-tag">All Jobs</span>
+          </div>
+        </div>
+        <div class="alert-input-group">
+          <label for="alertEmail">Email Address</label>
+          <input type="email" id="alertEmail" placeholder="you@example.com" required>
+        </div>
+        <button class="alert-submit-btn" id="alertSubmitBtn">Subscribe to Alerts</button>
+        <p class="alert-disclaimer">We'll send a verification email. You can unsubscribe anytime.</p>
       </div>
     </div>
   </div>
@@ -3447,6 +3660,133 @@
     el("clearBtn").addEventListener("click", clearAll);
     el("searchBtn").addEventListener("click", apply);
     el("q").addEventListener("keydown", (e) => { if (e.key === "Enter") apply(); });
+
+    // Job Alert Modal
+    const alertModal = el("alertModal");
+    const alertBtn = el("alertBtn");
+    const closeAlertModal = el("closeAlertModal");
+    const alertSubmitBtn = el("alertSubmitBtn");
+    const alertEmail = el("alertEmail");
+    const alertFilterTags = el("alertFilterTags");
+    const alertModalBody = el("alertModalBody");
+
+    function getActiveFilters() {
+      const filters = [];
+      const f = getFilters();
+
+      if (f.loc) filters.push(f.loc);
+      if (f.q) filters.push(`"${f.q}"`);
+
+      if (f.license.atpl) filters.push('ATPL');
+      if (f.license.cpl) filters.push('CPL');
+      if (f.license.fatpl) filters.push('fATPL');
+
+      if (f.type.typed) filters.push('Type-Rated');
+      if (f.type.ntr) filters.push('Non-Type-Rated');
+
+      if (f.operatorType.airline) filters.push('Airline');
+      if (f.operatorType.bizav) filters.push('BizAv');
+      if (f.operatorType.government) filters.push('Government');
+      if (f.operatorType.medical) filters.push('Medical');
+      if (f.operatorType.instructor) filters.push('Instructor');
+
+      if (f.perks.visa) filters.push('Visa Sponsor');
+      if (f.perks.direct) filters.push('Direct Entry');
+
+      if (f.maxFT < 10000) filters.push(`≤${f.maxFT.toLocaleString()} hrs`);
+
+      return filters.length > 0 ? filters : ['All Jobs'];
+    }
+
+    function openAlertModal() {
+      const filters = getActiveFilters();
+      alertFilterTags.innerHTML = filters.map(f => `<span class="alert-filter-tag">${f}</span>`).join('');
+      alertModal.classList.add('active');
+      alertEmail.focus();
+    }
+
+    function closeAlertModalFn() {
+      alertModal.classList.remove('active');
+    }
+
+    alertBtn.addEventListener('click', openAlertModal);
+    closeAlertModal.addEventListener('click', closeAlertModalFn);
+    alertModal.addEventListener('click', (e) => {
+      if (e.target === alertModal) closeAlertModalFn();
+    });
+
+    alertSubmitBtn.addEventListener('click', async () => {
+      const email = alertEmail.value.trim();
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
+      alertSubmitBtn.disabled = true;
+      alertSubmitBtn.textContent = 'Subscribing...';
+
+      try {
+        const f = getFilters();
+        const filters = {
+          location: f.loc || null,
+          search_query: f.q || null,
+          license: [],
+          operator_type: [],
+          type_rated: null,
+          visa_sponsor: null,
+          direct_entry: null,
+          max_flight_time: f.maxFT < 10000 ? f.maxFT : null
+        };
+
+        if (f.license.atpl) filters.license.push('ATPL');
+        if (f.license.cpl) filters.license.push('CPL');
+        if (f.license.fatpl) filters.license.push('fATPL');
+
+        if (f.operatorType.airline) filters.operator_type.push('airline');
+        if (f.operatorType.bizav) filters.operator_type.push('bizav');
+        if (f.operatorType.government) filters.operator_type.push('government');
+        if (f.operatorType.medical) filters.operator_type.push('medical');
+        if (f.operatorType.instructor) filters.operator_type.push('instructor');
+
+        if (f.type.typed && !f.type.ntr) filters.type_rated = true;
+        if (f.type.ntr && !f.type.typed) filters.type_rated = false;
+
+        if (f.perks.visa) filters.visa_sponsor = true;
+        if (f.perks.direct) filters.direct_entry = true;
+
+        // Insert into Supabase
+        const { data, error } = await supabaseClient
+          .from('job_alert_subscriptions')
+          .insert({
+            email: email,
+            filters: filters,
+            verified: false,
+            verification_token: crypto.randomUUID(),
+            unsubscribe_token: crypto.randomUUID(),
+            active: true
+          });
+
+        if (error) throw error;
+
+        // Show success message
+        alertModalBody.innerHTML = `
+          <div class="alert-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <h3>Check Your Email!</h3>
+            <p>We've sent a verification link to <strong>${email}</strong>. Click it to activate your job alerts.</p>
+          </div>
+        `;
+
+      } catch (err) {
+        console.error('Subscription error:', err);
+        alert('Failed to subscribe. Please try again.');
+        alertSubmitBtn.disabled = false;
+        alertSubmitBtn.textContent = 'Subscribe to Alerts';
+      }
+    });
 
     // Load More button
     el("loadMoreBtn").addEventListener("click", loadMore);

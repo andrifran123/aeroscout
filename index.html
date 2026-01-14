@@ -143,53 +143,80 @@
 
             nav {
                 position: relative;
-                padding: 1.5rem 6%;
+                padding: 1.5rem 5%;
                 background: var(--primary-navy);
                 flex-direction: column;
+                gap: 8px;
+            }
+
+            nav .logo {
+                font-size: 1.4rem;
+            }
+
+            nav > div:last-child {
+                font-size: 0.6rem;
+                text-align: center;
             }
 
             header {
                 height: auto;
                 min-height: 100vh;
                 /* Brighter mobile background */
-                background: linear-gradient(rgba(11, 28, 62, 0.7), rgba(11, 28, 62, 0.7)), 
+                background: linear-gradient(rgba(11, 28, 62, 0.7), rgba(11, 28, 62, 0.7)),
                             url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=60') center/cover;
             }
 
             .hero-container {
-                padding: 40px 6%; /* Adjusted padding */
+                padding: 30px 5%;
                 text-align: left;
+                box-sizing: border-box;
+                width: 100%;
             }
 
             .hero-content h1 {
-                font-size: 2.2rem;
+                font-size: 1.8rem;
                 white-space: normal;
-                line-height: 1.1;
-                margin-bottom: 12px;
+                line-height: 1.2;
+                margin-bottom: 10px;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
             }
 
             .hero-content h2 {
-                font-size: 1.1rem;
-                margin-bottom: 24px;
+                font-size: 1rem;
+                margin-bottom: 20px;
+            }
+
+            .why-us-list li {
+                font-size: 0.95rem;
+                margin-bottom: 0.9rem;
+                line-height: 1.4;
+            }
+
+            .why-us-list li::before {
+                margin-right: 12px;
+                flex-shrink: 0;
             }
 
             .cta-group {
                 flex-direction: column;
                 width: 100%;
-                gap: 15px;
-                padding-right: 12%; /* Ensures buttons don't touch the very edge */
+                gap: 12px;
+                padding-right: 0;
             }
 
             .btn {
                 width: 100%;
-                max-width: 320px; /* Prevents stretching too far on wide phones */
+                max-width: none;
                 text-align: center;
                 display: block;
+                padding: 1rem 2rem;
+                font-size: 0.85rem;
             }
 
             .telemetry-strip {
                 width: 100%;
-                margin-top: 50px;
+                margin-top: 40px;
                 border-radius: 0;
                 display: grid;
                 grid-template-columns: 1fr 1fr;
@@ -198,8 +225,30 @@
                 padding: 0;
             }
 
-            .stat-item { background: white; padding: 20px 10px; }
-            .stat-val { font-size: 1.3rem; }
+            .stat-item {
+                background: white;
+                padding: 15px 8px;
+            }
+            .stat-val { font-size: 1.1rem; }
+            .stat-label { font-size: 0.55rem; }
+        }
+
+        /* Extra small phones */
+        @media (max-width: 380px) {
+            .hero-content h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero-content h2 {
+                font-size: 0.9rem;
+            }
+
+            .why-us-list li {
+                font-size: 0.85rem;
+            }
+
+            .stat-val { font-size: 1rem; }
+            .stat-label { font-size: 0.5rem; }
         }
     </style>
 </head>

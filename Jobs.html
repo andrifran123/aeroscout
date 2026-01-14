@@ -3009,7 +3009,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <script src="https://gumroad.com/js/gumroad.js"></script>
   <script>
     // Supabase configuration
     const SUPABASE_URL = 'https://ziboktbmbyjbhifsdypa.supabase.co';
@@ -3057,6 +3057,10 @@
     // Jobs will be loaded from Supabase
     let JOBS = [];
 
+    // Total job counts from Supabase (for header display)
+    let totalPilotJobCount = 0;
+    let totalCabinCrewJobCount = 0;
+
     // Current job type (pilot or cabin_crew)
     let currentJobType = 'pilot';
 
@@ -3074,6 +3078,7 @@
         }
 
         console.log('Fetched', data.length, 'verified pilot jobs from Supabase');
+        totalPilotJobCount = data.length;
         // Debug: log first job's license data
         if (data.length > 0) {
           console.log('Sample job license_required:', data[0].license_required, 'type_rated:', data[0].type_rated);
@@ -3143,6 +3148,7 @@
         }
 
         console.log('Fetched', data.length, 'verified cabin crew jobs from Supabase');
+        totalCabinCrewJobCount = data.length;
 
         return data.map(job => {
           let orgName = job.airline || 'Unknown Airline';
@@ -3255,7 +3261,7 @@
     turnOffDeltaBtn.addEventListener("click", () => setDeltaFilterState(false));
     turnOnDeltaBtn.addEventListener("click", () => setDeltaFilterState(true));
 
-    // Premium unlock button - Stripe integration
+    // Premium unlock button - Gumroad integration
     const premiumLock = el("premiumLock");
     el("unlockBtn").addEventListener("click", async () => {
       // Check if user is logged in
@@ -3268,58 +3274,14 @@
         return;
       }
 
-      // User is logged in - open Paddle checkout
-      try {
-        el("unlockBtn").textContent = "Loading...";
-        el("unlockBtn").disabled = true;
+      // User is logged in - open Gumroad checkout overlay
+      // Store user ID in localStorage so webhook can link the purchase
+      localStorage.setItem('pending_gumroad_user_id', session.user.id);
+      localStorage.setItem('pending_gumroad_email', session.user.email);
 
-        const response = await fetch('/api/create-checkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: session.user.id,
-            userEmail: session.user.email,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        // Initialize Paddle and open checkout
-        Paddle.Initialize({
-          token: 'live_3c0845cd663dcb34c0bd743dba0',  // Client-side token from Paddle
-          checkout: {
-            settings: {
-              displayMode: 'overlay',
-              theme: 'light',
-              locale: 'en',
-              successUrl: data.successUrl,
-            }
-          }
-        });
-
-        // Open Paddle checkout overlay
-        Paddle.Checkout.open({
-          items: [{ priceId: data.priceId, quantity: 1 }],
-          customer: {
-            email: data.customerEmail,
-          },
-          customData: data.customData,
-        });
-
-        el("unlockBtn").textContent = "Upgrade to Pro";
-        el("unlockBtn").disabled = false;
-      } catch (error) {
-        console.error('Checkout error:', error);
-        alert('Failed to start checkout. Please try again.');
-        el("unlockBtn").textContent = "Upgrade to Pro";
-        el("unlockBtn").disabled = false;
-      }
+      // Open Gumroad overlay checkout with email prefilled
+      const gumroadUrl = `https://freyrsmith.gumroad.com/l/dmtwbg?email=${encodeURIComponent(session.user.email)}&wanted=true`;
+      window.open(gumroadUrl, '_blank');
     });
 
     // Check login status and premium status on page load
@@ -3885,7 +3847,9 @@
     function updateDisplay() {
       // Update job count and GMT time in header
       const displayedCount = Math.min(currentPage * JOBS_PER_PAGE, currentFilteredJobs.length);
-      el("jobCount").textContent = displayedCount;
+      // Show total jobs from Supabase (not filtered count)
+      const totalFromDb = currentJobType === 'pilot' ? totalPilotJobCount : totalCabinCrewJobCount;
+      el("jobCount").textContent = totalFromDb;
       const now = new Date();
       const gmtTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' }) + ' GMT';
       el("gmtTime").textContent = gmtTime;
@@ -4388,7 +4352,11 @@
           frequency: alertFilters.frequency  // 'instant' or 'daily'
         };
 
-        // Insert into Supabase
+        // Check if user is logged in to link subscription to their profile
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        const userId = session?.user?.id || null;
+
+        // Insert into Supabase (include user_id if logged in for hour qualification matching)
         const { data, error } = await supabaseClient
           .from('job_alert_subscriptions')
           .insert({
@@ -4397,7 +4365,8 @@
             verified: false,
             verification_token: crypto.randomUUID(),
             unsubscribe_token: crypto.randomUUID(),
-            active: true
+            active: true,
+            user_id: userId  // Links to user_profiles for hour-based matching
           });
 
         if (error) throw error;

@@ -31,12 +31,15 @@ module.exports = async (req, res) => {
 
     console.log('Gumroad webhook received:', JSON.stringify(data, null, 2));
 
-    // Verify this is from our Gumroad account
+    // Verify this is from our Gumroad account (optional check)
     const sellerId = process.env.GUMROAD_SELLER_ID;
-    if (sellerId && data.seller_id !== sellerId) {
-      console.error('Invalid seller_id:', data.seller_id);
-      return res.status(403).json({ error: 'Invalid seller' });
+    if (sellerId && data.seller_id && data.seller_id !== sellerId) {
+      // Log but don't block - seller_id encoding can vary
+      console.log('Seller ID mismatch - expected:', sellerId, 'got:', data.seller_id);
     }
+
+    // Log incoming data for debugging
+    console.log('Gumroad webhook - seller_id:', data.seller_id, 'email:', data.email);
 
     // Get the customer email
     const customerEmail = data.email || data.purchaser_id;

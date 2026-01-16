@@ -3526,9 +3526,9 @@
       localStorage.setItem('pending_gumroad_user_id', session.user.id);
       localStorage.setItem('pending_gumroad_email', session.user.email);
 
-      // Open Gumroad overlay checkout with email prefilled
+      // Redirect to Gumroad checkout with email prefilled (works on mobile)
       const gumroadUrl = `https://aeroscout.gumroad.com/l/dmtwbg?email=${encodeURIComponent(session.user.email)}&wanted=true`;
-      window.open(gumroadUrl, '_blank');
+      window.location.href = gumroadUrl;
     });
 
     // Check login status and premium status on page load

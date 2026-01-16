@@ -3061,8 +3061,52 @@
     let totalPilotJobCount = 0;
     let totalCabinCrewJobCount = 0;
 
+    // Store last GMT time from API (for display consistency)
+    let lastApiGmtTime = null;
+
     // Current job type (pilot or cabin_crew)
     let currentJobType = 'pilot';
+
+    // Fetch job count from API endpoint
+    async function fetchJobCount(jobType = 'pilot') {
+      try {
+        const response = await fetch(`/api/get-job-count?type=${jobType}`);
+        if (!response.ok) {
+          console.error('Failed to fetch job count:', response.statusText);
+          return null;
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error fetching job count:', error);
+        return null;
+      }
+    }
+
+    // Update job count in header from API
+    async function updateJobCountFromAPI(jobType = null) {
+      // If no job type specified, use current job type
+      const typeToFetch = jobType || currentJobType;
+      const countData = await fetchJobCount(typeToFetch);
+
+      if (countData) {
+        // Update the appropriate counter
+        if (typeToFetch === 'pilot') {
+          totalPilotJobCount = countData.count;
+        } else {
+          totalCabinCrewJobCount = countData.count;
+        }
+
+        // Store the GMT time from API
+        lastApiGmtTime = countData.gmtTime;
+
+        // Only update display if this matches the currently selected job type
+        if (typeToFetch === currentJobType) {
+          el("jobCount").textContent = countData.count;
+          el("gmtTime").textContent = countData.gmtTime;
+        }
+      }
+    }
 
     // Fetch pilot jobs from Supabase verified_jobs table
     async function fetchPilotJobs() {
@@ -3850,9 +3894,15 @@
       // Show total jobs from Supabase (not filtered count)
       const totalFromDb = currentJobType === 'pilot' ? totalPilotJobCount : totalCabinCrewJobCount;
       el("jobCount").textContent = totalFromDb;
-      const now = new Date();
-      const gmtTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' }) + ' GMT';
-      el("gmtTime").textContent = gmtTime;
+
+      // Use API time if available, otherwise fallback to local time
+      if (lastApiGmtTime) {
+        el("gmtTime").textContent = lastApiGmtTime;
+      } else {
+        const now = new Date();
+        const gmtTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' }) + ' GMT';
+        el("gmtTime").textContent = gmtTime;
+      }
 
       // Update header text based on job type
       const jobTypeLabel = currentJobType === 'pilot' ? 'Active pilot jobs' : 'Active cabin crew jobs';
@@ -4474,6 +4524,9 @@
       // Show loading state
       el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">Loading jobs...</div>';
 
+      // Update job count from API for the new job type
+      await updateJobCountFromAPI(jobType);
+
       // Fetch new jobs
       JOBS = await fetchJobs();
       currentPage = 1;
@@ -4767,6 +4820,12 @@
       // Show loading state
       el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">Loading jobs...</div>';
 
+      // Fetch accurate job counts from API for both job types
+      await Promise.all([
+        updateJobCountFromAPI('pilot'),
+        updateJobCountFromAPI('cabin_crew')
+      ]);
+
       JOBS = await fetchJobs();
 
       if (JOBS.length === 0) {
@@ -4779,6 +4838,14 @@
       render(initialBatch);
       updateDisplay();
       updateMatchCount();
+
+      // Update job counts every 60 seconds to keep them fresh
+      setInterval(async () => {
+        await Promise.all([
+          updateJobCountFromAPI('pilot'),
+          updateJobCountFromAPI('cabin_crew')
+        ]);
+      }, 60000);
     }
 
     // ============================================

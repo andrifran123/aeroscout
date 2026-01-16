@@ -3269,7 +3269,8 @@
           .from('verified_jobs')
           .select('*')
           .order('featured_order', { ascending: true, nullsFirst: false })
-          .order('verified_at', { ascending: false });
+          .order('verified_at', { ascending: false })
+          .range(0, 4999);
 
         if (error) {
           console.error('Error fetching verified jobs:', error);
@@ -3337,7 +3338,8 @@
         const { data, error } = await supabaseClient
           .from('verified_cabin_crew_jobs')
           .select('*')
-          .order('verified_at', { ascending: false });
+          .order('verified_at', { ascending: false })
+          .range(0, 4999);
 
         if (error) {
           console.error('Error fetching verified cabin crew jobs:', error);

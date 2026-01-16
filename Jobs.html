@@ -3262,21 +3262,33 @@
       }
     }
 
-    // Fetch pilot jobs from Supabase verified_jobs table
+    // Fetch pilot jobs from Supabase verified_jobs table (with pagination to get all)
     async function fetchPilotJobs() {
       try {
-        const { data, error } = await supabaseClient
-          .from('verified_jobs')
-          .select('*')
-          .order('featured_order', { ascending: true, nullsFirst: false })
-          .order('verified_at', { ascending: false })
-          .range(0, 4999);
+        let allData = [];
+        let page = 0;
+        const pageSize = 1000;
+        let hasMore = true;
 
-        if (error) {
-          console.error('Error fetching verified jobs:', error);
-          return [];
+        while (hasMore) {
+          const { data, error } = await supabaseClient
+            .from('verified_jobs')
+            .select('*')
+            .order('featured_order', { ascending: true, nullsFirst: false })
+            .order('verified_at', { ascending: false })
+            .range(page * pageSize, (page + 1) * pageSize - 1);
+
+          if (error) {
+            console.error('Error fetching verified jobs:', error);
+            break;
+          }
+
+          allData = allData.concat(data);
+          hasMore = data.length === pageSize;
+          page++;
         }
 
+        const data = allData;
         console.log('Fetched', data.length, 'verified pilot jobs from Supabase');
         // Debug: log first job's license data
         if (data.length > 0) {
@@ -3332,20 +3344,32 @@
       }
     }
 
-    // Fetch cabin crew jobs from Supabase verified_cabin_crew_jobs table
+    // Fetch cabin crew jobs from Supabase verified_cabin_crew_jobs table (with pagination)
     async function fetchCabinCrewJobs() {
       try {
-        const { data, error } = await supabaseClient
-          .from('verified_cabin_crew_jobs')
-          .select('*')
-          .order('verified_at', { ascending: false })
-          .range(0, 4999);
+        let allData = [];
+        let page = 0;
+        const pageSize = 1000;
+        let hasMore = true;
 
-        if (error) {
-          console.error('Error fetching verified cabin crew jobs:', error);
-          return [];
+        while (hasMore) {
+          const { data, error } = await supabaseClient
+            .from('verified_cabin_crew_jobs')
+            .select('*')
+            .order('verified_at', { ascending: false })
+            .range(page * pageSize, (page + 1) * pageSize - 1);
+
+          if (error) {
+            console.error('Error fetching verified cabin crew jobs:', error);
+            break;
+          }
+
+          allData = allData.concat(data);
+          hasMore = data.length === pageSize;
+          page++;
         }
 
+        const data = allData;
         console.log('Fetched', data.length, 'verified cabin crew jobs from Supabase');
 
         return data.map(job => {

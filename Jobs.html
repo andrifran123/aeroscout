@@ -555,6 +555,63 @@
       color: #64748b;
     }
 
+    /* Dual Range Slider */
+    .dual-range-container {
+      position: relative;
+      width: 100%;
+      height: 40px;
+      margin: 10px 0;
+    }
+    .dual-range-track {
+      position: absolute;
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .dual-range-highlight {
+      position: absolute;
+      height: 6px;
+      background: #3b82f6;
+      border-radius: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .dual-range-container input[type="range"] {
+      position: absolute;
+      width: 100%;
+      height: 6px;
+      background: transparent;
+      pointer-events: none;
+      -webkit-appearance: none;
+      top: 50%;
+      transform: translateY(-50%);
+      margin: 0;
+    }
+    .dual-range-container input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border: 3px solid #3b82f6;
+      border-radius: 50%;
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .dual-range-container input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: white;
+      border: 3px solid #3b82f6;
+      border-radius: 50%;
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
     /* Result Bar */
     .result-bar {
       margin-top: 20px;
@@ -2531,7 +2588,12 @@
               <!-- Flight Time Range (Pilot only) -->
               <div class="section-title pilot-filter" id="flightTimeTitle">Total Flight Time <span id="ftLabel">0 - 10,000+</span></div>
               <div class="range-section pilot-filter" id="flightTimeSection">
-                <input type="range" class="range-slider" id="ftSlider" min="0" max="10000" step="100" value="10000">
+                <div class="dual-range-container">
+                  <div class="dual-range-track"></div>
+                  <div class="dual-range-highlight" id="ftHighlight"></div>
+                  <input type="range" id="ftSliderMin" min="0" max="10000" step="100" value="0">
+                  <input type="range" id="ftSliderMax" min="0" max="10000" step="100" value="10000">
+                </div>
                 <div class="range-labels">
                   <span>0 hrs</span>
                   <span>10,000+</span>
@@ -3312,15 +3374,41 @@
 
     const el = (id) => document.getElementById(id);
 
-    const ftSlider = el("ftSlider");
+    // Dual range slider for flight time
+    const ftSliderMin = el("ftSliderMin");
+    const ftSliderMax = el("ftSliderMax");
     const ftLabel = el("ftLabel");
+    const ftHighlight = el("ftHighlight");
 
-    function syncFT(){
-      const val = Number(ftSlider.value);
-      ftLabel.textContent = val >= 10000 ? '0 - 10,000+' : '0 - ' + val.toLocaleString();
+    function syncFT() {
+      let minVal = Number(ftSliderMin.value);
+      let maxVal = Number(ftSliderMax.value);
+
+      // Ensure min doesn't exceed max
+      if (minVal > maxVal) {
+        // Swap them
+        const temp = minVal;
+        minVal = maxVal;
+        maxVal = temp;
+        ftSliderMin.value = minVal;
+        ftSliderMax.value = maxVal;
+      }
+
+      // Update label
+      const minText = minVal.toLocaleString();
+      const maxText = maxVal >= 10000 ? '10,000+' : maxVal.toLocaleString();
+      ftLabel.textContent = `${minText} - ${maxText}`;
+
+      // Update highlight bar position
+      const percent1 = (minVal / 10000) * 100;
+      const percent2 = (maxVal / 10000) * 100;
+      ftHighlight.style.left = percent1 + '%';
+      ftHighlight.style.width = (percent2 - percent1) + '%';
     }
 
-    ftSlider.addEventListener("input", syncFT);
+    ftSliderMin.addEventListener("input", syncFT);
+    ftSliderMax.addEventListener("input", syncFT);
+    syncFT(); // Initialize
 
     // Delta slider
     const deltaSlider = el("deltaSlider");
@@ -4052,13 +4140,14 @@
         instructor: tileFilters['op-instructor']
       };
 
-      const maxFT = Number(ftSlider.value || 10000);
+      const minFT = Number(ftSliderMin.value || 0);
+      const maxFT = Number(ftSliderMax.value || 10000);
       const deltaEnabled = deltaFilterEnabled;
       const maxDelta = deltaEnabled ? Number(deltaSlider.value) : 3000; // If disabled, treat as max (no filtering)
       const eligibleOnly = eligibleOnlyCheckbox.checked;
       const includeBlockers = includeBlockersCheckbox.checked;
 
-      return { q, loc, perks, license, type, operatorType, maxFT, maxDelta, deltaEnabled, eligibleOnly, includeBlockers };
+      return { q, loc, perks, license, type, operatorType, minFT, maxFT, maxDelta, deltaEnabled, eligibleOnly, includeBlockers };
     }
 
     function matchesAny(map){
@@ -4079,10 +4168,10 @@
           if (!blob.includes(f.q)) return false;
         }
         if (f.loc && !locationMatchesRegion(j.location, f.loc)) return false;
-        // Flight time filter: job's MAX hour requirement must be <= selected value
+        // Flight time filter: job's MAX hour requirement must be within selected range
         // A pilot with 200 hours shouldn't see jobs requiring 500 PIC hours even if total hours is 0
         const jobMaxHours = Math.max(j.flightTime || 0, j.pic || 0, j.jetTime || 0, j.multiEngine || 0);
-        if (jobMaxHours > f.maxFT) return false;
+        if (jobMaxHours < f.minFT || jobMaxHours > f.maxFT) return false;
 
         // "Eligible only" checkbox - works for ALL users (in black profile box)
         if (f.eligibleOnly) {
@@ -4205,7 +4294,8 @@
       Object.keys(tileFilters).forEach(key => tileFilters[key] = false);
       document.querySelectorAll('.filter-tile').forEach(tile => tile.classList.remove('active'));
 
-      ftSlider.value = 10000;
+      ftSliderMin.value = 0;
+      ftSliderMax.value = 10000;
       syncFT();
 
       // Reset delta slider and blockers toggle
@@ -4230,7 +4320,8 @@
     document.querySelectorAll('.filters input').forEach(input => {
       input.addEventListener('change', updateMatchCount);
     });
-    ftSlider.addEventListener('input', updateMatchCount);
+    ftSliderMin.addEventListener('input', updateMatchCount);
+    ftSliderMax.addEventListener('input', updateMatchCount);
 
     el("applyBtn").addEventListener("click", apply);
     el("clearBtn").addEventListener("click", clearAll);

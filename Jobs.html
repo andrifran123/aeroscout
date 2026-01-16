@@ -2494,7 +2494,6 @@
 
               <!-- Search by Map Button (Premium) -->
               <button class="map-search-btn" id="openMapBtn" type="button">
-                <span class="lock-icon" id="mapLockIcon">🔒</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
                   <line x1="8" y1="2" x2="8" y2="18"></line>
@@ -2506,7 +2505,6 @@
 
               <!-- Job Alert Button (Premium) -->
               <button class="alert-btn" id="alertBtn" type="button">
-                <span class="lock-icon" id="alertLockIcon">🔒</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                   <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
@@ -2529,13 +2527,13 @@
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                   </svg>
                   Edit Profile
+                  <span class="premium-tag" style="background:#3b82f6;color:#fff;padding:2px 6px;border-radius:8px;font-size:9px;margin-left:4px;">Pro</span>
                 </button>
               </div>
 
               <!-- Eligibility Delta Slider (Premium Feature) -->
               <div class="delta-section" id="deltaSection">
                 <div class="premium-lock" id="premiumLock">
-                  <span class="premium-lock-icon">🔒</span>
                   <span class="premium-lock-text">Premium Feature</span>
                   <button class="premium-unlock-btn" id="unlockBtn">Upgrade to Pro</button>
                 </div>
@@ -2599,7 +2597,6 @@
               <!-- Sort by Salary (Premium Feature) -->
               <div class="sort-salary-section">
                 <button type="button" class="sort-salary-btn locked" id="sortSalaryBtn">
-                  <span class="lock-icon">🔒</span>
                   <span>Sort by Salary</span>
                   <span class="premium-tag">Pro</span>
                 </button>
@@ -3564,8 +3561,6 @@
 
     function updatePremiumUI() {
       const sortSalaryBtn = el("sortSalaryBtn");
-      const mapLockIcon = el("mapLockIcon");
-      const alertLockIcon = el("alertLockIcon");
 
       if (isPremium) {
         premiumLock.classList.add("hidden");
@@ -3573,18 +3568,12 @@
         sortSalaryBtn.classList.remove("locked");
         sortSalaryBtn.classList.add("unlocked");
         sortSalaryBtn.innerHTML = '<span>Sort by Salary</span><span class="premium-tag">Pro</span>';
-        // Hide lock icons on map and alert buttons
-        if (mapLockIcon) mapLockIcon.classList.add("hidden");
-        if (alertLockIcon) alertLockIcon.classList.add("hidden");
       } else {
         premiumLock.classList.remove("hidden");
         // Keep sort salary button locked
         sortSalaryBtn.classList.add("locked");
         sortSalaryBtn.classList.remove("unlocked");
-        sortSalaryBtn.innerHTML = '<span class="lock-icon">🔒</span><span>Sort by Salary</span><span class="premium-tag">Pro</span>';
-        // Show lock icons on map and alert buttons
-        if (mapLockIcon) mapLockIcon.classList.remove("hidden");
-        if (alertLockIcon) alertLockIcon.classList.remove("hidden");
+        sortSalaryBtn.innerHTML = '<span>Sort by Salary</span><span class="premium-tag">Pro</span>';
       }
     }
 
@@ -3802,7 +3791,7 @@
 
       // For non-premium users, show a teaser badge that prompts upgrade
       if (!isPremium) {
-        return '<span class="eligibility-badge" style="background:#f3f4f6;color:#9ca3af;cursor:pointer;" title="Upgrade to Pro to see eligibility">🔒 Eligibility</span>';
+        return '<span class="eligibility-badge" style="background:#f3f4f6;color:#9ca3af;cursor:pointer;" title="Upgrade to Pro to see eligibility">Pro</span>';
       }
 
       const delta = calculateDelta(job);
@@ -4762,8 +4751,12 @@
     // Temporary storage for type ratings being edited
     let editingTypeRatings = [];
 
-    // Open modal
+    // Open modal (Premium feature)
     editProfileBtn.addEventListener("click", () => {
+      if (!isPremium) {
+        alert("Edit Profile is a Premium feature. Upgrade to Pro to unlock!");
+        return;
+      }
       populateProfileForm();
       profileModal.classList.add("active");
     });

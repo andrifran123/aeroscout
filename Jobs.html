@@ -3268,6 +3268,7 @@
         const { data, error } = await supabaseClient
           .from('verified_jobs')
           .select('*')
+          .order('featured_order', { ascending: true, nullsFirst: false })
           .order('verified_at', { ascending: false });
 
         if (error) {

@@ -3508,20 +3508,16 @@
     turnOffDeltaBtn.addEventListener("click", () => setDeltaFilterState(false));
     turnOnDeltaBtn.addEventListener("click", () => setDeltaFilterState(true));
 
-    // Premium unlock button - Gumroad integration
-    const premiumLock = el("premiumLock");
-    el("unlockBtn").addEventListener("click", async () => {
-      // Check if user is logged in
+    // Redirect to Gumroad checkout (reusable for all premium features)
+    async function redirectToUpgrade() {
       const { data: { session } } = await supabaseClient.auth.getSession();
 
       if (!session) {
-        // User not logged in - redirect to login
         alert("Please log in to access premium features");
         window.location.href = "login.html";
         return;
       }
 
-      // User is logged in - open Gumroad checkout overlay
       // Store user ID in localStorage so webhook can link the purchase
       localStorage.setItem('pending_gumroad_user_id', session.user.id);
       localStorage.setItem('pending_gumroad_email', session.user.email);
@@ -3529,7 +3525,11 @@
       // Redirect to Gumroad checkout with email prefilled (works on mobile)
       const gumroadUrl = `https://aeroscout.gumroad.com/l/dmtwbg?email=${encodeURIComponent(session.user.email)}&wanted=true`;
       window.location.href = gumroadUrl;
-    });
+    }
+
+    // Premium unlock button - Gumroad integration
+    const premiumLock = el("premiumLock");
+    el("unlockBtn").addEventListener("click", redirectToUpgrade);
 
     // Check login status and premium status on page load
     async function checkLoginStatus() {
@@ -4545,7 +4545,7 @@
 
     function openAlertModal() {
       if (!isPremium) {
-        alert("Job Alerts is a Premium feature. Upgrade to Pro to unlock!");
+        redirectToUpgrade();
         return;
       }
       resetAlertModal();
@@ -4777,7 +4777,7 @@
     // Open modal (Premium feature)
     editProfileBtn.addEventListener("click", () => {
       if (!isPremium) {
-        alert("Edit Profile is a Premium feature. Upgrade to Pro to unlock!");
+        redirectToUpgrade();
         return;
       }
       populateProfileForm();
@@ -4804,8 +4804,7 @@
 
     sortSalaryBtn.addEventListener("click", () => {
       if (!isPremium) {
-        // Non-premium users - show upgrade prompt
-        alert("Sort by Salary is a Premium feature. Upgrade to Pro to unlock!");
+        redirectToUpgrade();
         return;
       }
 
@@ -5477,7 +5476,7 @@
     // Open map overlay (Premium feature)
     function openMap() {
       if (!isPremium) {
-        alert("Search by Map is a Premium feature. Upgrade to Pro to unlock!");
+        redirectToUpgrade();
         return;
       }
 

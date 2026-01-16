@@ -3054,6 +3054,81 @@
       'ATP': 4  // US equivalent of ATPL
     };
 
+    // Region to countries/cities mapping for location filter
+    const REGION_MAPPING = {
+      'Europe': [
+        'Albania', 'Andorra', 'Austria', 'Belarus', 'Belgium', 'Bosnia', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech', 'Czechia',
+        'Denmark', 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Italy',
+        'Kosovo', 'Latvia', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Malta', 'Moldova', 'Monaco', 'Montenegro',
+        'Netherlands', 'North Macedonia', 'Norway', 'Poland', 'Portugal', 'Romania', 'Russia', 'San Marino', 'Serbia',
+        'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland', 'Turkey', 'Ukraine', 'United Kingdom', 'UK', 'Britain',
+        'Vatican', 'Amsterdam', 'Athens', 'Barcelona', 'Berlin', 'Brussels', 'Budapest', 'Copenhagen', 'Dublin', 'Edinburgh',
+        'Frankfurt', 'Geneva', 'Hamburg', 'Helsinki', 'Lisbon', 'London', 'Madrid', 'Milan', 'Munich', 'Oslo', 'Paris',
+        'Prague', 'Rome', 'Stockholm', 'Vienna', 'Warsaw', 'Zurich', 'Manchester', 'Birmingham', 'Glasgow', 'Leeds',
+        'Liverpool', 'Newcastle', 'Bristol', 'Cardiff', 'Belfast', 'Lyon', 'Marseille', 'Nice', 'Toulouse', 'Cologne',
+        'Dusseldorf', 'Stuttgart', 'Hannover', 'Dresden', 'Leipzig', 'Nuremberg', 'Palma', 'Malaga', 'Seville', 'Valencia',
+        'Bilbao', 'Alicante', 'Tenerife', 'Gran Canaria', 'Faro', 'Porto', 'Naples', 'Venice', 'Florence', 'Turin', 'Bologna',
+        'Gothenburg', 'Malmo', 'Stavanger', 'Bergen', 'Reykjavik', 'Riga', 'Tallinn', 'Vilnius', 'Krakow', 'Gdansk',
+        'Bucharest', 'Sofia', 'Zagreb', 'Ljubljana', 'Belgrade', 'Thessaloniki', 'Heraklion', 'Rhodes', 'Corfu'
+      ],
+      'Middle East': [
+        'United Arab Emirates', 'UAE', 'Dubai', 'Abu Dhabi', 'Sharjah', 'Saudi Arabia', 'Riyadh', 'Jeddah', 'Dammam',
+        'Qatar', 'Doha', 'Bahrain', 'Manama', 'Kuwait', 'Oman', 'Muscat', 'Jordan', 'Amman', 'Lebanon', 'Beirut',
+        'Israel', 'Tel Aviv', 'Iraq', 'Baghdad', 'Iran', 'Tehran', 'Syria', 'Damascus', 'Yemen', 'Palestine',
+        'Al Ain', 'Fujairah', 'Ras Al Khaimah', 'Medina', 'Mecca', 'Tabuk', 'Neom'
+      ],
+      'Asia': [
+        'China', 'Japan', 'South Korea', 'Korea', 'India', 'Indonesia', 'Thailand', 'Vietnam', 'Malaysia', 'Singapore',
+        'Philippines', 'Taiwan', 'Hong Kong', 'Macau', 'Pakistan', 'Bangladesh', 'Sri Lanka', 'Nepal', 'Myanmar', 'Cambodia',
+        'Laos', 'Mongolia', 'Brunei', 'Maldives', 'Bhutan', 'Kazakhstan', 'Uzbekistan', 'Turkmenistan', 'Kyrgyzstan', 'Tajikistan',
+        'Afghanistan', 'Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen', 'Chengdu', 'Hangzhou', 'Xian', 'Wuhan', 'Nanjing',
+        'Tokyo', 'Osaka', 'Nagoya', 'Fukuoka', 'Sapporo', 'Seoul', 'Busan', 'Incheon', 'Delhi', 'Mumbai', 'Bangalore',
+        'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Ahmedabad', 'Kochi', 'Goa', 'Jakarta', 'Bali', 'Surabaya', 'Medan',
+        'Bangkok', 'Phuket', 'Chiang Mai', 'Pattaya', 'Ho Chi Minh', 'Hanoi', 'Da Nang', 'Kuala Lumpur', 'Penang', 'Langkawi',
+        'Manila', 'Cebu', 'Clark', 'Taipei', 'Kaohsiung', 'Karachi', 'Lahore', 'Islamabad', 'Dhaka', 'Colombo', 'Kathmandu',
+        'Yangon', 'Phnom Penh', 'Siem Reap', 'Vientiane', 'Ulaanbaatar', 'Male', 'Almaty', 'Nur-Sultan', 'Astana', 'Tashkent'
+      ],
+      'Oceania': [
+        'Australia', 'New Zealand', 'Papua New Guinea', 'Fiji', 'Solomon Islands', 'Vanuatu', 'Samoa', 'Tonga', 'Kiribati',
+        'Micronesia', 'Palau', 'Marshall Islands', 'Nauru', 'Tuvalu', 'Guam', 'New Caledonia', 'French Polynesia', 'Tahiti',
+        'Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Gold Coast', 'Cairns', 'Darwin', 'Hobart', 'Canberra',
+        'Auckland', 'Wellington', 'Christchurch', 'Queenstown', 'Hamilton', 'Dunedin', 'Port Moresby', 'Suva', 'Nadi'
+      ],
+      'United States': [
+        'United States', 'USA', 'US', 'America', 'American',
+        'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
+        'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland',
+        'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+        'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania',
+        'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington',
+        'West Virginia', 'Wisconsin', 'Wyoming', 'Puerto Rico', 'Guam',
+        'New York City', 'NYC', 'Los Angeles', 'LA', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio', 'San Diego',
+        'Dallas', 'San Jose', 'Austin', 'Jacksonville', 'Fort Worth', 'Columbus', 'Charlotte', 'San Francisco', 'Indianapolis',
+        'Seattle', 'Denver', 'Boston', 'El Paso', 'Nashville', 'Detroit', 'Portland', 'Memphis', 'Oklahoma City', 'Las Vegas',
+        'Louisville', 'Baltimore', 'Milwaukee', 'Albuquerque', 'Tucson', 'Fresno', 'Sacramento', 'Mesa', 'Atlanta', 'Kansas City',
+        'Colorado Springs', 'Omaha', 'Raleigh', 'Miami', 'Long Beach', 'Virginia Beach', 'Oakland', 'Minneapolis', 'Tampa',
+        'New Orleans', 'Honolulu', 'Anchorage', 'Fort Lauderdale', 'Orlando', 'Salt Lake City', 'St. Louis', 'Pittsburgh',
+        'Cincinnati', 'Cleveland', 'Tulsa', 'Wichita', 'Arlington', 'Bakersfield', 'Aurora', 'Anaheim', 'Santa Ana', 'Riverside'
+      ]
+    };
+
+    // Function to check if a location matches a region
+    function locationMatchesRegion(jobLocation, selectedRegion) {
+      if (!selectedRegion || selectedRegion === '') return true;
+      if (!jobLocation) return false;
+
+      const locationLower = jobLocation.toLowerCase();
+      const regionCountries = REGION_MAPPING[selectedRegion];
+
+      if (!regionCountries) {
+        // If not a mapped region, do direct match
+        return locationLower.includes(selectedRegion.toLowerCase());
+      }
+
+      // Check if any region country/city is in the job location
+      return regionCountries.some(place => locationLower.includes(place.toLowerCase()));
+    }
+
     // Jobs will be loaded from Supabase
     let JOBS = [];
 
@@ -4003,8 +4078,11 @@
           const blob = `${j.title} ${j.org} ${j.location} ${j.chips.join(" ")}`.toLowerCase();
           if (!blob.includes(f.q)) return false;
         }
-        if (f.loc && !j.location.includes(f.loc)) return false;
-        if (j.flightTime > f.maxFT) return false;
+        if (f.loc && !locationMatchesRegion(j.location, f.loc)) return false;
+        // Flight time filter: job's MAX hour requirement must be <= selected value
+        // A pilot with 200 hours shouldn't see jobs requiring 500 PIC hours even if total hours is 0
+        const jobMaxHours = Math.max(j.flightTime || 0, j.pic || 0, j.jetTime || 0, j.multiEngine || 0);
+        if (jobMaxHours > f.maxFT) return false;
 
         // "Eligible only" checkbox - works for ALL users (in black profile box)
         if (f.eligibleOnly) {

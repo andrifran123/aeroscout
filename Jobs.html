@@ -1291,6 +1291,124 @@
       box-shadow: 0 4px 12px rgba(244, 208, 63, 0.4);
     }
 
+    /* Upgrade Modal */
+    .upgrade-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+    }
+    .upgrade-modal-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    .upgrade-modal {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      max-width: 420px;
+      width: 90%;
+      margin: 20px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+      transform: scale(0.9);
+      transition: transform 0.2s ease;
+      position: relative;
+    }
+    .upgrade-modal-overlay.visible .upgrade-modal {
+      transform: scale(1);
+    }
+    .upgrade-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: #f1f5f9;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      transition: all 0.15s;
+    }
+    .upgrade-modal-close:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    .upgrade-modal h3 {
+      margin: 0 0 20px 0;
+      font-size: 20px;
+      color: #1e293b;
+      text-align: center;
+    }
+    .upgrade-modal h3 span {
+      background: linear-gradient(135deg, #f4d03f, #e9b32a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .upgrade-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px 0;
+    }
+    .upgrade-features li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      font-size: 15px;
+      color: #334155;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .upgrade-features li:last-child {
+      border-bottom: none;
+    }
+    .upgrade-features li svg {
+      flex-shrink: 0;
+      color: #22c55e;
+    }
+    .upgrade-preview-img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    .upgrade-buy-btn {
+      width: 100%;
+      padding: 14px 24px;
+      border: none;
+      background: linear-gradient(135deg, #1b66ff, #0052e0);
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+    .upgrade-buy-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(27, 102, 255, 0.4);
+    }
+    .upgrade-buy-btn .price {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
     .delta-section .section-title {
       margin-bottom: 8px;
       color: #7d6608;
@@ -3048,6 +3166,49 @@
     </div>
   </div>
 
+  <!-- Upgrade to Pro Modal -->
+  <div class="upgrade-modal-overlay" id="upgradeModal">
+    <div class="upgrade-modal">
+      <button class="upgrade-modal-close" id="closeUpgradeModal" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <h3><span>Premium</span> users get</h3>
+      <ul class="upgrade-features">
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Instant email alerts on job matches
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Smart filters for your experience
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Search jobs by map location
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Sort jobs by salary
+        </li>
+      </ul>
+      <img src="images/upgrade-preview.png" alt="Premium features preview" class="upgrade-preview-img" onerror="this.style.display='none'">
+      <button class="upgrade-buy-btn" id="upgradeBuyBtn" type="button">
+        Buy Now <span class="price">$12</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Map Overlay -->
   <div class="map-overlay" id="mapOverlay">
     <div class="map-container">
@@ -3508,8 +3669,27 @@
     turnOffDeltaBtn.addEventListener("click", () => setDeltaFilterState(false));
     turnOnDeltaBtn.addEventListener("click", () => setDeltaFilterState(true));
 
-    // Redirect to Gumroad checkout (reusable for all premium features)
-    async function redirectToUpgrade() {
+    // Show upgrade modal (reusable for all premium features)
+    const upgradeModal = el("upgradeModal");
+
+    function showUpgradeModal() {
+      upgradeModal.classList.add("visible");
+    }
+
+    function closeUpgradeModal() {
+      upgradeModal.classList.remove("visible");
+    }
+
+    // Close modal button
+    el("closeUpgradeModal").addEventListener("click", closeUpgradeModal);
+
+    // Close modal when clicking outside
+    upgradeModal.addEventListener("click", (e) => {
+      if (e.target === upgradeModal) closeUpgradeModal();
+    });
+
+    // Buy button - redirect to Gumroad
+    el("upgradeBuyBtn").addEventListener("click", async () => {
       const { data: { session } } = await supabaseClient.auth.getSession();
 
       if (!session) {
@@ -3525,11 +3705,16 @@
       // Redirect to Gumroad checkout with email prefilled (works on mobile)
       const gumroadUrl = `https://aeroscout.gumroad.com/l/dmtwbg?email=${encodeURIComponent(session.user.email)}&wanted=true`;
       window.location.href = gumroadUrl;
+    });
+
+    // Show upgrade modal when non-premium user tries to access premium feature
+    function redirectToUpgrade() {
+      showUpgradeModal();
     }
 
     // Premium unlock button - Gumroad integration
     const premiumLock = el("premiumLock");
-    el("unlockBtn").addEventListener("click", redirectToUpgrade);
+    el("unlockBtn").addEventListener("click", showUpgradeModal);
 
     // Check login status and premium status on page load
     async function checkLoginStatus() {

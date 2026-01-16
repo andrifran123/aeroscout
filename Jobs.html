@@ -3122,7 +3122,6 @@
         }
 
         console.log('Fetched', data.length, 'verified pilot jobs from Supabase');
-        totalPilotJobCount = data.length;
         // Debug: log first job's license data
         if (data.length > 0) {
           console.log('Sample job license_required:', data[0].license_required, 'type_rated:', data[0].type_rated);
@@ -3192,7 +3191,6 @@
         }
 
         console.log('Fetched', data.length, 'verified cabin crew jobs from Supabase');
-        totalCabinCrewJobCount = data.length;
 
         return data.map(job => {
           let orgName = job.airline || 'Unknown Airline';

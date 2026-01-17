@@ -3997,9 +3997,9 @@
         return '';
       }
 
-      // For non-premium users, show a teaser badge that prompts upgrade
+      // For non-premium users, show nothing
       if (!isPremium) {
-        return '<span class="eligibility-badge" style="background:#f3f4f6;color:#9ca3af;cursor:pointer;" title="Upgrade to Pro to see eligibility">Pro</span>';
+        return '';
       }
 
       const delta = calculateDelta(job);

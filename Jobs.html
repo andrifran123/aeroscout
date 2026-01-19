@@ -3541,14 +3541,14 @@
             org: orgName,
             location: job.location || '',
             chips: [job.position, job.contract_type].filter(Boolean),
-            visa: false,
+            visa: job.visa_sponsor || false,
             direct: false,
             license: '',
             type: 'standard',
             operator_type: job.operator_type || 'airline',
             experienceYears: job.experience_years || 0,
             languageRequirements: job.language_requirements || '',
-            salary: job.salary_usd || 0,
+            salary: job.salary_usd || '',
             contractType: job.contract_type || '',
             workRegion: job.location || 'International',
             logo: job.logo_url || '',
@@ -3556,7 +3556,13 @@
             description: job.description_summary || '',
             requirements: job.requirements || '',
             position: job.position || '',
-            jobType: 'cabin_crew'
+            jobType: 'cabin_crew',
+            // New cabin crew physical requirement fields
+            minHeightCm: job.min_height_cm || null,
+            armReachCm: job.arm_reach_cm || null,
+            swimmingAbility: job.swimming_ability || false,
+            minAge: job.min_age || null,
+            benefits: job.benefits || []
           };
         });
       } catch (err) {
@@ -4115,7 +4121,8 @@
           <span class="attr-item"><b>Position:</b> <span class="attr-pill">${j.position || 'Flight Attendant'}</span></span>
           <span class="attr-item"><b>Location:</b> <span class="attr-pill">${j.location || 'Not specified'}</span></span>
           ${j.contractType ? `<span class="attr-pill">${j.contractType}</span>` : ''}
-          ${j.visa ? '<span class="attr-pill green"><b>Visa sponsor</b></span>' : ''}
+          ${j.visa ? '<span class="attr-pill green"><b>Visa Sponsor</b></span>' : ''}
+          ${j.swimmingAbility ? '<span class="attr-pill" style="background:#e0f2fe;color:#0369a1;">Swimming Required</span>' : ''}
         `;
       } else {
         return `
@@ -4132,9 +4139,26 @@
     // Render stats row based on job type
     function renderStatsRow(j) {
       if (j.jobType === 'cabin_crew') {
-        // For cabin crew, show experience years, languages, contract type
+        // For cabin crew, show physical requirements, experience, languages, salary
         let stats = '';
 
+        // Physical requirements - Height
+        if (j.minHeightCm) {
+          stats += `<div class="stat-box">
+            <span class="stat-label">Min Height</span>
+            <span class="stat-value">${j.minHeightCm} cm</span>
+          </div>`;
+        }
+
+        // Physical requirements - Age
+        if (j.minAge) {
+          stats += `<div class="stat-box">
+            <span class="stat-label">Min Age</span>
+            <span class="stat-value">${j.minAge}+ years</span>
+          </div>`;
+        }
+
+        // Experience
         if (j.experienceYears > 0) {
           stats += `<div class="stat-box">
             <span class="stat-label">Experience</span>

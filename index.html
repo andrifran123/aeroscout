@@ -143,10 +143,10 @@
 
             nav {
                 position: relative;
-                padding: 1.5rem 5%;
+                padding: 1rem 5%;
                 background: var(--primary-navy);
-                flex-direction: column;
-                gap: 8px;
+                flex-direction: row;
+                justify-content: space-between;
             }
 
             nav .logo {
@@ -156,6 +156,14 @@
             nav > div:last-child {
                 font-size: 0.6rem;
                 text-align: center;
+            }
+
+            .nav-tagline {
+                display: none;
+            }
+
+            .about-link {
+                font-size: 0.8rem !important;
             }
 
             header {
@@ -263,8 +271,8 @@
     <nav>
         <div class="logo">AEROSCOUT</div>
         <div style="display: flex; align-items: center; gap: 2rem;">
-            <a href="about.html" style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; font-weight: 500;">About</a>
-            <div style="font-size: 0.7rem; letter-spacing: 2px; color: rgba(255,255,255,0.5);">GLOBAL OPERATIONS CENTER</div>
+            <a href="about.html" class="about-link" style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; font-weight: 500;">About</a>
+            <div class="nav-tagline" style="font-size: 0.7rem; letter-spacing: 2px; color: rgba(255,255,255,0.5);">GLOBAL OPERATIONS CENTER</div>
         </div>
     </nav>
 

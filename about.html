@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | AeroScout - Aviation Job Search Platform for Pilots & Cabin Crew</title>
+    <meta name="description" content="AeroScout is the leading aviation job board connecting pilots, flight attendants, and cabin crew with airlines worldwide. Find pilot jobs, cabin crew positions, and aviation careers at top airlines like Emirates, Qatar Airways, Ryanair, and more.">
+    <meta name="keywords" content="aviation jobs, pilot jobs, cabin crew jobs, flight attendant jobs, airline careers, pilot recruitment, cabin crew recruitment, aviation career, airline pilot jobs, first officer jobs, captain jobs, commercial pilot, private jet pilot, bizav pilot, corporate aviation, flight attendant career, purser jobs, senior cabin crew, Emirates careers, Qatar Airways jobs, Ryanair pilot jobs, easyJet careers, British Airways jobs, Lufthansa pilot recruitment, airline job board, aviation recruitment, pilot job search, cabin crew job search, aviation employment, airline hiring, pilot vacancies, cabin crew vacancies, ATPL jobs, CPL jobs, type rating jobs, A320 pilot jobs, B737 pilot jobs, Boeing pilot jobs, Airbus pilot jobs, narrowbody pilot, widebody pilot, long haul pilot, short haul pilot, low cost carrier jobs, legacy carrier jobs, charter pilot jobs, cargo pilot jobs, flight crew jobs, aircrew jobs, aviation industry jobs, airline industry careers">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="AeroScout">
+    <link rel="canonical" href="https://www.aeroscout.net/about.html">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.aeroscout.net/about.html">
+    <meta property="og:title" content="About AeroScout - Aviation Job Search Platform">
+    <meta property="og:description" content="Connect with top airlines worldwide. Find pilot jobs, cabin crew positions, and aviation careers.">
+    <meta property="og:site_name" content="AeroScout">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1b66ff;
+            --navy-dark: #0B1C3E;
+            --accent-teal: #00b7a8;
+            --white: #ffffff;
+            --text-muted: #64748b;
+            --text-dark: #1e293b;
+            --border-light: #e2e8f0;
+            --bg-light: #f8fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: linear-gradient(rgba(11, 28, 62, 0.4), rgba(11, 28, 62, 0.6)),
+                        url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1950&q=80') center/cover fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .about-container {
+            background: rgba(255, 255, 255, 0.98);
+            width: 100%;
+            max-width: 900px;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .header .brand {
+            font-family: 'Outfit';
+            font-size: 1.4rem;
+            color: var(--navy-dark);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header h1 {
+            font-family: 'Outfit';
+            font-size: 2.5rem;
+            color: var(--navy-dark);
+            letter-spacing: -1px;
+            margin-bottom: 0.75rem;
+        }
+
+        .header .tagline {
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .content {
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        .content h2 {
+            font-family: 'Outfit';
+            font-size: 1.5rem;
+            color: var(--navy-dark);
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-blue);
+            display: inline-block;
+        }
+
+        .content p {
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+        }
+
+        .content ul {
+            margin: 1rem 0 1.5rem 1.5rem;
+        }
+
+        .content li {
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+
+        .content strong {
+            color: var(--navy-dark);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e8f4f8 100%);
+            border-left: 4px solid var(--primary-blue);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .highlight-box h3 {
+            font-family: 'Outfit';
+            color: var(--navy-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg-light);
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+        }
+
+        .stat-box .number {
+            font-family: 'Outfit';
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+
+        .stat-box .label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .cta-section {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .cta-section h3 {
+            font-family: 'Outfit';
+            font-size: 1.5rem;
+            color: var(--navy-dark);
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-teal));
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(27, 102, 255, 0.3);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background: var(--white);
+            color: var(--navy-dark);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid var(--border-light);
+            transition: all 0.2s;
+            margin: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 1rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .about-container { padding: 2rem 1.5rem; }
+            .header h1 { font-size: 2rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .stat-box .number { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <article class="about-container" itemscope itemtype="https://schema.org/Organization">
+        <header class="header">
+            <div class="brand" itemprop="name">AeroScout</div>
+            <h1>About Us</h1>
+            <p class="tagline">Your Gateway to Aviation Careers Worldwide</p>
+        </header>
+
+        <div class="content">
+            <section>
+                <h2>Who We Are</h2>
+                <p>
+                    <strong>AeroScout</strong> is a premier <strong>aviation job search platform</strong> dedicated to connecting
+                    <strong>pilots</strong>, <strong>cabin crew</strong>, and <strong>flight attendants</strong> with leading
+                    <strong>airlines</strong> around the world. We aggregate <strong>pilot jobs</strong> and <strong>cabin crew vacancies</strong>
+                    from hundreds of sources, making it easier than ever to find your dream <strong>aviation career</strong>.
+                </p>
+                <p>
+                    Whether you're a <strong>first officer</strong> looking for <strong>captain upgrade opportunities</strong>,
+                    a <strong>commercial pilot</strong> seeking <strong>airline pilot jobs</strong>, or a <strong>flight attendant</strong>
+                    searching for <strong>cabin crew positions</strong> with top carriers, AeroScout is your one-stop destination for
+                    <strong>aviation recruitment</strong> and <strong>airline careers</strong>.
+                </p>
+            </section>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="number">500+</div>
+                    <div class="label">Active Aviation Jobs</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">150+</div>
+                    <div class="label">Airlines & Operators</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">24/7</div>
+                    <div class="label">Job Scanning</div>
+                </div>
+            </div>
+
+            <section>
+                <h2>Aviation Jobs We Cover</h2>
+                <p>Our comprehensive <strong>aviation job board</strong> covers a wide range of <strong>flight crew positions</strong>:</p>
+
+                <h3 style="font-family: 'Outfit'; color: var(--navy-dark); margin: 1.5rem 0 0.75rem 0; font-size: 1.2rem;">Pilot Jobs</h3>
+                <ul>
+                    <li><strong>Airline Pilot Jobs</strong> - Positions with major carriers, regional airlines, and low-cost carriers</li>
+                    <li><strong>Captain & First Officer Jobs</strong> - Command and co-pilot positions on all aircraft types</li>
+                    <li><strong>Type-Rated Pilot Positions</strong> - <strong>A320 pilot jobs</strong>, <strong>B737 pilot jobs</strong>, <strong>Boeing</strong> and <strong>Airbus</strong> opportunities</li>
+                    <li><strong>Corporate Aviation & Bizav</strong> - <strong>Private jet pilot jobs</strong>, <strong>charter pilot</strong> positions, business aviation careers</li>
+                    <li><strong>Cargo Pilot Jobs</strong> - Freight and cargo airline opportunities</li>
+                    <li><strong>Direct Entry Captain</strong> - Command positions for experienced pilots</li>
+                </ul>
+
+                <h3 style="font-family: 'Outfit'; color: var(--navy-dark); margin: 1.5rem 0 0.75rem 0; font-size: 1.2rem;">Cabin Crew Jobs</h3>
+                <ul>
+                    <li><strong>Flight Attendant Jobs</strong> - Entry-level and experienced cabin crew positions</li>
+                    <li><strong>Senior Cabin Crew</strong> - Leadership roles for experienced flight attendants</li>
+                    <li><strong>Purser & Cabin Manager</strong> - Senior cabin crew management positions</li>
+                    <li><strong>Private Jet Cabin Crew</strong> - VIP and corporate aviation cabin attendant roles</li>
+                    <li><strong>Airline Cabin Crew</strong> - Positions with international and regional carriers</li>
+                </ul>
+            </section>
+
+            <div class="highlight-box">
+                <h3>Airlines We Feature</h3>
+                <p>
+                    Find <strong>pilot jobs</strong> and <strong>cabin crew vacancies</strong> at world-renowned airlines including
+                    <strong>Emirates</strong>, <strong>Qatar Airways</strong>, <strong>Etihad</strong>, <strong>Singapore Airlines</strong>,
+                    <strong>British Airways</strong>, <strong>Lufthansa</strong>, <strong>Air France</strong>, <strong>KLM</strong>,
+                    <strong>Ryanair</strong>, <strong>easyJet</strong>, <strong>Wizz Air</strong>, <strong>Norwegian</strong>,
+                    <strong>Delta</strong>, <strong>United Airlines</strong>, <strong>American Airlines</strong>,
+                    <strong>Cathay Pacific</strong>, <strong>Qantas</strong>, and many more.
+                </p>
+            </div>
+
+            <section>
+                <h2>Why Choose AeroScout?</h2>
+                <ul>
+                    <li><strong>Comprehensive Job Coverage</strong> - We scan airline career pages, recruitment agencies, and job boards 24/7</li>
+                    <li><strong>Global Reach</strong> - <strong>Aviation jobs</strong> from Europe, Middle East, Asia, Americas, and beyond</li>
+                    <li><strong>Real-Time Updates</strong> - New <strong>pilot vacancies</strong> and <strong>cabin crew jobs</strong> added daily</li>
+                    <li><strong>Advanced Filters</strong> - Search by aircraft type, experience level, location, and airline</li>
+                    <li><strong>Direct Applications</strong> - Apply directly to airlines through their official career portals</li>
+                    <li><strong>Job Alerts</strong> - Get notified when new <strong>aviation jobs</strong> matching your criteria are posted</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>For Pilots</h2>
+                <p>
+                    Whether you hold an <strong>ATPL</strong>, <strong>CPL</strong>, or are working towards your <strong>type rating</strong>,
+                    AeroScout helps you find the perfect <strong>pilot job</strong>. We list opportunities for <strong>narrowbody</strong>
+                    and <strong>widebody</strong> aircraft, <strong>short-haul</strong> and <strong>long-haul</strong> operations,
+                    <strong>low-cost carriers</strong> and <strong>legacy airlines</strong>.
+                </p>
+                <p>
+                    From <strong>turboprop pilot jobs</strong> to <strong>jet pilot positions</strong>, <strong>regional airline careers</strong>
+                    to <strong>international airline opportunities</strong>, our <strong>pilot job board</strong> covers the full spectrum of
+                    <strong>commercial aviation careers</strong>.
+                </p>
+            </section>
+
+            <section>
+                <h2>For Cabin Crew</h2>
+                <p>
+                    AeroScout is the ultimate destination for <strong>cabin crew job seekers</strong>. Find <strong>flight attendant jobs</strong>
+                    with airlines that match your career goals. We feature positions requiring various experience levels, language skills,
+                    and base locations across the globe.
+                </p>
+                <p>
+                    Start your <strong>cabin crew career</strong> or advance to <strong>senior cabin crew</strong> and <strong>purser</strong>
+                    positions. Our listings include detailed requirements for height, reach, languages, and experience to help you find
+                    the perfect match.
+                </p>
+            </section>
+
+            <section>
+                <h2>Contact Us</h2>
+                <p>
+                    Have questions about <strong>aviation jobs</strong> or our platform? We're here to help pilots and cabin crew
+                    navigate their <strong>aviation careers</strong>.
+                </p>
+                <p>
+                    <strong>Email:</strong> <a href="mailto:Aero@aeroscout.net" style="color: var(--primary-blue);">Aero@aeroscout.net</a><br>
+                    <strong>Website:</strong> <a href="https://www.aeroscout.net" style="color: var(--primary-blue);" itemprop="url">www.aeroscout.net</a>
+                </p>
+            </section>
+
+            <div class="cta-section">
+                <h3>Ready to Find Your Next Aviation Job?</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                    Join thousands of pilots and cabin crew who trust AeroScout for their job search.
+                </p>
+                <a href="Jobs.html" class="btn-primary">Browse Aviation Jobs</a>
+                <a href="pricing.html" class="btn-secondary">View Plans</a>
+            </div>
+
+            <div class="footer-links">
+                <a href="terms.html">Terms of Service</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="refund.html">Refund Policy</a>
+                <br>
+                <a href="/" class="back-link">Back to AeroScout</a>
+            </div>
+        </div>
+    </article>
+
+    <!-- Vercel Analytics -->
+    <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

@@ -1758,12 +1758,17 @@
     }
 
     .expand-link {
+      grid-column: 3;
+      grid-row: 3;
+      text-align: right;
       color: #64748b;
       font-size: 12px;
       text-decoration: none;
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 6px;
+      align-self: end;
       cursor: pointer;
     }
     .expand-link:hover {
@@ -1869,26 +1874,14 @@
       stroke: #333;
     }
 
-    .expand-row {
-      grid-column: 3;
-      grid-row: 3;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 12px;
-      align-self: end;
-    }
-
     .share-btn {
       display: flex;
       align-items: center;
-      gap: 4px;
       background: none;
       border: none;
       cursor: pointer;
-      padding: 4px 8px;
+      padding: 4px;
       border-radius: 4px;
-      font-size: 12px;
       color: #64748b;
       transition: all 0.15s ease;
     }
@@ -4307,17 +4300,14 @@
             ${renderStatsRow(j)}
           </div>
 
-          <div class="expand-row">
+          <div class="expand-link" onclick="toggleDescription(this)">
             <button class="share-btn" onclick="shareJob(${j.id}, event)" title="Share job">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
               </svg>
-              Share
             </button>
-            <div class="expand-link" onclick="toggleDescription(this)">
-              See job description
-              <div class="arrow-v"></div>
-            </div>
+            See job description
+            <div class="arrow-v"></div>
           </div>
 
           <div class="job-description">
@@ -5494,13 +5484,13 @@
             ${renderStatsRow(job)}
           </div>
 
-          <div class="expand-row">
+          <div class="expand-link">
             <button class="share-btn" onclick="shareJob(${job.id}, event)" title="Share job">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
               </svg>
-              Share
             </button>
+            Share this job
           </div>
 
           <div class="job-description" style="display: block; max-height: none;">

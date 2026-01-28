@@ -1874,6 +1874,27 @@
       stroke: #333;
     }
 
+    .share-btn {
+      position: absolute;
+      top: 0;
+      right: 42px;
+      background: #f5f5f5;
+      border: none;
+      cursor: pointer;
+      padding: 9px 10px;
+      border-radius: 0 0 0 12px;
+      transition: background 0.15s ease;
+    }
+    .share-btn:hover {
+      background: #e0e0e0;
+    }
+    .share-btn svg {
+      stroke: #666;
+    }
+    .share-btn:hover svg {
+      stroke: #1b66ff;
+    }
+
     .mobile-toggle{ display:none; margin-top:12px; width:100%; }
 
     /* Tablet breakpoint */
@@ -4259,6 +4280,12 @@
       const cards = el("cards");
       const jobsHTML = list.map(j => `
         <article class="card${j.visa ? ' visa-sponsor' : ''}" style="position:relative;">
+          <button class="share-btn" onclick="shareJob(${j.id}, event)" title="Share job">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </button>
           <button class="save-btn" title="Save job">
             <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
           </button>
@@ -4538,6 +4565,9 @@
       render(firstBatch);
       updateDisplay();
       updateMatchCount();
+
+      // Update URL with current filters (for shareable links)
+      updateUrlWithFilters();
     }
 
     function clearAll(){
@@ -4569,6 +4599,9 @@
       render(firstBatch);
       updateDisplay();
       updateMatchCount();
+
+      // Clear URL parameters
+      updateUrl({});
     }
 
     // Update match count on any filter change
@@ -4968,6 +5001,9 @@
       render(initialBatch);
       updateDisplay();
       updateMatchCount();
+
+      // Update URL with job type
+      updateUrlWithFilters();
     }
 
     el("pilotBtn").addEventListener("click", () => switchJobType("pilot"));
@@ -5242,12 +5278,270 @@
       }
     }
 
+    // ============================================
+    // SHAREABLE URL SYSTEM
+    // ============================================
+
+    // Single job view mode
+    let singleJobMode = false;
+    let singleJobId = null;
+
+    // Get URL parameters
+    function getUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        job: params.get('job'),           // Single job ID: ?job=4694
+        search: params.get('search'),     // Search query: ?search=a320
+        airline: params.get('airline'),   // Airline filter: ?airline=royal-jordanian
+        location: params.get('location'), // Location filter: ?location=europe
+        aircraft: params.get('aircraft'), // Aircraft filter: ?aircraft=b737
+        type: params.get('type')          // Job type: ?type=cabin_crew
+      };
+    }
+
+    // Update URL without reloading page
+    function updateUrl(params) {
+      const url = new URL(window.location.href);
+
+      // Clear existing search params
+      url.search = '';
+
+      // Add non-empty params
+      Object.entries(params).forEach(([key, value]) => {
+        if (value && value.trim && value.trim() !== '') {
+          url.searchParams.set(key, value);
+        } else if (value && !value.trim) {
+          url.searchParams.set(key, value);
+        }
+      });
+
+      // Update URL without reload
+      window.history.replaceState({}, '', url.toString());
+    }
+
+    // Update URL with current filter state (called after apply())
+    function updateUrlWithFilters() {
+      const searchVal = el("q").value.trim();
+      const locVal = el("loc").value;
+
+      // Build params object - only include non-empty values
+      const params = {};
+
+      if (searchVal) params.search = searchVal;
+      if (locVal) params.location = locVal;
+      if (currentJobType !== 'pilot') params.type = currentJobType;
+
+      // Update URL (empty params = clean URL)
+      updateUrl(params);
+    }
+
+    // Generate shareable link for a job
+    function getShareableJobLink(jobId) {
+      const url = new URL(window.location.href);
+      url.search = '';
+      url.searchParams.set('job', jobId);
+      return url.toString();
+    }
+
+    // Generate shareable link for current filters
+    function getShareableFilterLink() {
+      const url = new URL(window.location.href);
+      url.search = '';
+
+      const searchVal = el("q").value.trim();
+      const locVal = el("loc").value;
+
+      if (searchVal) url.searchParams.set('search', searchVal);
+      if (locVal) url.searchParams.set('location', locVal);
+      if (currentJobType !== 'pilot') url.searchParams.set('type', currentJobType);
+
+      return url.toString();
+    }
+
+    // Copy to clipboard helper
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (err) {
+        console.error('Failed to copy:', err);
+        return false;
+      }
+    }
+
+    // Share job function (called from share button)
+    async function shareJob(jobId, event) {
+      event.stopPropagation();
+      const link = getShareableJobLink(jobId);
+
+      if (await copyToClipboard(link)) {
+        // Show toast notification
+        showToast('Link copied to clipboard!');
+      }
+    }
+
+    // Show toast notification
+    function showToast(message) {
+      // Remove existing toast if any
+      const existingToast = document.querySelector('.share-toast');
+      if (existingToast) existingToast.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'share-toast';
+      toast.textContent = message;
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0b2a6f;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 10000;
+        animation: toastFade 2s ease-in-out forwards;
+      `;
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.remove(), 2000);
+    }
+
+    // Add toast animation CSS
+    const toastStyle = document.createElement('style');
+    toastStyle.textContent = `
+      @keyframes toastFade {
+        0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+      }
+    `;
+    document.head.appendChild(toastStyle);
+
+    // Apply URL parameters to filters
+    function applyUrlParams(params) {
+      if (params.search) {
+        el("q").value = params.search;
+      }
+      if (params.location) {
+        el("loc").value = params.location;
+      }
+      if (params.type === 'cabin_crew') {
+        // Switch to cabin crew tab
+        currentJobType = 'cabin_crew';
+      }
+    }
+
+    // Render single job view
+    function renderSingleJob(job) {
+      const cards = el("cards");
+
+      // Add back button and single job view
+      cards.innerHTML = `
+        <div class="single-job-header" style="margin-bottom: 16px;">
+          <button onclick="exitSingleJobView()" class="back-btn" style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #0b2a6f, #1b66ff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+          ">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to all jobs
+          </button>
+        </div>
+      `;
+
+      // Render the single job card
+      const jobHTML = `
+        <article class="card${job.visa ? ' visa-sponsor' : ''}" style="position:relative;">
+          <button class="share-btn" onclick="shareJob(${job.id}, event)" title="Share job">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </button>
+          <button class="save-btn" title="Save job">
+            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </button>
+
+          <div class="company-logo">
+            <img src="${job.logo}" alt="${job.org}" onerror="this.parentElement.textContent='${iconLetter(job.org)}'">
+          </div>
+
+          <h2 class="job-title">${job.title}<span class="airline-name">${job.org}</span></h2>
+
+          <div class="apply-container">
+            <a href="${job.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer">Apply Now</a>
+          </div>
+
+          <div class="attributes">
+            ${renderAttributes(job)}
+          </div>
+
+          <div class="stats-row">
+            ${renderStatsRow(job)}
+          </div>
+
+          <div class="job-description" style="display: block; max-height: none;">
+            ${job.description ? `<div class="job-description-content">${job.description}</div>` : ''}
+            ${job.requirements ? `
+              <div class="requirements-title">Requirements</div>
+              ${renderRequirements(job.requirements)}
+            ` : ''}
+          </div>
+        </article>
+      `;
+
+      cards.innerHTML += jobHTML;
+    }
+
+    // Exit single job view
+    function exitSingleJobView() {
+      singleJobMode = false;
+      singleJobId = null;
+
+      // Clear URL params
+      const url = new URL(window.location.href);
+      url.search = '';
+      window.history.replaceState({}, '', url.toString());
+
+      // Re-render all jobs
+      currentFilteredJobs = JOBS;
+      const initialBatch = JOBS.slice(0, JOBS_PER_PAGE);
+      render(initialBatch);
+      updateDisplay();
+      updateMatchCount();
+    }
+
     // Initialize: fetch jobs from Supabase and render
     async function init() {
       // Load user profile first
       await loadUserProfile();
       // Show loading state
       el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">Loading jobs...</div>';
+
+      // Get URL parameters BEFORE fetching
+      const urlParams = getUrlParams();
+
+      // Switch job type if specified in URL
+      if (urlParams.type === 'cabin_crew') {
+        currentJobType = 'cabin_crew';
+        // Update UI tabs
+        document.querySelectorAll('.job-type-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.type === 'cabin_crew');
+        });
+      }
 
       // Fetch accurate job counts from API for both job types
       await Promise.all([
@@ -5262,6 +5556,57 @@
         return;
       }
 
+      // Handle URL parameters AFTER jobs are loaded
+      const urlParams = getUrlParams();
+
+      // SINGLE JOB VIEW: ?job=4694
+      if (urlParams.job) {
+        const jobId = parseInt(urlParams.job);
+        const job = JOBS.find(j => j.id === jobId);
+
+        if (job) {
+          singleJobMode = true;
+          singleJobId = jobId;
+          renderSingleJob(job);
+          updateDisplay();
+          return; // Don't render normal list
+        } else {
+          // Job not found in current type, try fetching from the other type
+          const otherJobs = currentJobType === 'pilot' ? await fetchCabinCrewJobs() : await fetchPilotJobs();
+          const otherJob = otherJobs.find(j => j.id === jobId);
+
+          if (otherJob) {
+            singleJobMode = true;
+            singleJobId = jobId;
+            renderSingleJob(otherJob);
+            updateDisplay();
+            return;
+          } else {
+            // Job truly not found
+            showToast('Job not found');
+          }
+        }
+      }
+
+      // SEARCH/FILTER VIEW: ?search=a320&airline=emirates&location=europe
+      if (urlParams.search || urlParams.airline || urlParams.location) {
+        // Apply search term (combines airline and general search)
+        const searchTerms = [urlParams.search, urlParams.airline].filter(Boolean).join(' ');
+        if (searchTerms) {
+          el("q").value = searchTerms;
+        }
+
+        // Apply location filter
+        if (urlParams.location) {
+          el("loc").value = urlParams.location;
+        }
+
+        // Apply filters and render
+        apply();
+        return;
+      }
+
+      // Default: show all jobs
       currentFilteredJobs = JOBS;
       const initialBatch = JOBS.slice(0, JOBS_PER_PAGE);
       render(initialBatch);

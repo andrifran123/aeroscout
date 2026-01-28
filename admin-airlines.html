@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroScout Admin | Manage Airlines</title>
+    <style>
+        :root {
+            --nav: #0b2a6f;
+            --nav2: #081a45;
+            --text: #0e1830;
+            --muted: #6b7890;
+            --accent: #1b66ff;
+            --accent2: #00b7a8;
+            --danger: #e53935;
+            --warning: #ff9800;
+            --success: #4caf50;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+            background: linear-gradient(135deg, #07183d 0%, #0b2a6f 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 30px;
+        }
+
+        /* Input Section */
+        .input-section {
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 14px 18px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+        }
+
+        input[type="text"]::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        button {
+            padding: 14px 24px;
+            border-radius: 10px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #1557d9;
+        }
+
+        .btn-primary:disabled {
+            background: rgba(255,255,255,0.2);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: #000;
+        }
+
+        /* Results Section */
+        .results-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .results-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .match-count {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        /* Match Cards */
+        .match-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .match-card.exact {
+            border-left-color: var(--danger);
+            background: rgba(229, 57, 53, 0.15);
+        }
+
+        .match-card.high {
+            border-left-color: var(--warning);
+            background: rgba(255, 152, 0, 0.1);
+        }
+
+        .match-card.medium {
+            border-left-color: var(--accent2);
+        }
+
+        .match-info {
+            flex: 1;
+        }
+
+        .match-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .match-meta {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .match-score {
+            font-size: 24px;
+            font-weight: 700;
+            margin-right: 16px;
+        }
+
+        .match-score.exact { color: var(--danger); }
+        .match-score.high { color: var(--warning); }
+        .match-score.medium { color: var(--accent2); }
+
+        .match-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .match-actions button {
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+
+        /* Status Messages */
+        .status {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .status.show { display: block; }
+
+        .status.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .status.error {
+            background: rgba(229, 57, 53, 0.2);
+            border: 1px solid var(--danger);
+            color: #ff6b6b;
+        }
+
+        .status.warning {
+            background: rgba(255, 152, 0, 0.2);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+        }
+
+        /* No matches state */
+        .no-matches {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .no-matches .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .loading.show { display: block; }
+
+        /* Checkbox for active status */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 16px 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: #0b2a6f;
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .modal h2 {
+            margin: 0 0 8px 0;
+            font-size: 1.5rem;
+        }
+
+        .modal-subtitle {
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .modal-field {
+            margin-bottom: 20px;
+        }
+
+        .modal-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .modal-field input[type="text"] {
+            width: 100%;
+        }
+
+        /* File upload area */
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: rgba(27, 102, 255, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent);
+            background: rgba(27, 102, 255, 0.15);
+        }
+
+        .upload-area.has-file {
+            border-color: var(--success);
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .upload-text {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+        }
+
+        .upload-text strong {
+            color: var(--accent);
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        /* Logo preview */
+        .logo-preview {
+            display: none;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .logo-preview.show {
+            display: block;
+        }
+
+        .logo-preview img {
+            max-width: 150px;
+            max-height: 100px;
+            border-radius: 8px;
+            background: #fff;
+            padding: 8px;
+        }
+
+        .logo-preview .filename {
+            margin-top: 8px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .logo-preview .remove-btn {
+            margin-top: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            background: rgba(229, 57, 53, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        /* Modal buttons */
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+        }
+
+        /* Upload progress */
+        .upload-progress {
+            display: none;
+            margin-top: 12px;
+        }
+
+        .upload-progress.show {
+            display: block;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 6px;
+            text-align: center;
+        }
+
+        /* Delete button */
+        .btn-danger {
+            background: rgba(229, 57, 53, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: rgba(229, 57, 53, 0.4);
+        }
+
+        /* Delete confirmation modal */
+        .delete-warning {
+            background: rgba(229, 57, 53, 0.15);
+            border: 1px solid var(--danger);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .delete-warning-title {
+            color: var(--danger);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .delete-warning-text {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+        }
+
+        .delete-info {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .delete-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .delete-info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .delete-info-label {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .delete-info-value {
+            font-weight: 600;
+        }
+
+        /* Merge button */
+        .btn-merge {
+            background: rgba(27, 102, 255, 0.2);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .btn-merge:hover {
+            background: rgba(27, 102, 255, 0.4);
+        }
+
+        /* Merge modal */
+        .merge-info {
+            background: rgba(27, 102, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .merge-info-title {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .merge-companies {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .merge-company-card {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 16px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .merge-company-card:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .merge-company-card.selected {
+            border-color: var(--success);
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .merge-company-card.to-delete {
+            border-color: var(--danger);
+            background: rgba(229, 57, 53, 0.1);
+            opacity: 0.7;
+        }
+
+        .merge-company-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .merge-company-meta {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .merge-company-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .merge-company-badge.keep {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .merge-company-badge.delete {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .merge-arrow {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .merge-summary {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .merge-summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .merge-summary-row:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Logo in match cards */
+        .match-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .match-logo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .match-logo img {
+            max-width: 40px;
+            max-height: 40px;
+            object-fit: contain;
+        }
+
+        .match-logo.no-logo {
+            background: rgba(255,255,255,0.1);
+            border: 2px dashed rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.4);
+            font-size: 20px;
+        }
+
+        .match-logo.no-logo:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Edit Logo Modal */
+        .logo-modal-preview {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-modal-preview img {
+            max-width: 200px;
+            max-height: 150px;
+            background: #fff;
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        .logo-modal-preview .no-logo-placeholder {
+            width: 200px;
+            height: 120px;
+            background: rgba(255,255,255,0.05);
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 48px;
+            margin: 0 auto;
+        }
+
+        .logo-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .logo-actions button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Airline Management</h1>
+        <p class="subtitle">Add airlines to final_companies with duplicate detection</p>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="totalCompanies">-</div>
+                <div class="stat-label">Total Companies</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="activeCompanies">-</div>
+                <div class="stat-label">Active Companies</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="totalAliases">-</div>
+                <div class="stat-label">Aliases</div>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="airlineInput" placeholder="Enter airline name (e.g., Wizz Air Hungary)">
+                <button class="btn-primary" id="checkBtn">Check</button>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="activeCheckbox" checked>
+                <label for="activeCheckbox">Add as active (is_active = TRUE)</label>
+            </div>
+        </div>
+
+        <!-- Status Messages -->
+        <div class="status" id="statusMsg"></div>
+
+        <!-- Results Section -->
+        <div class="results-section">
+            <div class="results-header">
+                <h3>Similar Companies Found</h3>
+                <span class="match-count" id="matchCount">0 matches</span>
+            </div>
+
+            <div class="loading" id="loading">Searching...</div>
+
+            <div id="matchResults">
+                <div class="no-matches">
+                    <div class="icon">🔍</div>
+                    <p>Enter an airline name to check for duplicates</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Logo Modal -->
+    <div class="modal-overlay" id="logoModal">
+        <div class="modal">
+            <h2>Edit Company Logo</h2>
+            <p class="modal-subtitle" id="logoModalName">Company: </p>
+
+            <div class="logo-modal-preview" id="logoModalPreview">
+                <!-- Populated dynamically -->
+            </div>
+
+            <div class="modal-field">
+                <label>Upload New Logo</label>
+                <div class="upload-area" id="logoUploadArea">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">
+                        <strong>Click to upload</strong> or drag and drop<br>
+                        PNG, JPG, SVG, WebP (max 2MB)
+                    </div>
+                    <input type="file" id="logoEditFile" accept="image/png,image/jpeg,image/svg+xml,image/webp">
+                </div>
+                <div class="logo-preview" id="logoEditPreview">
+                    <img id="logoEditPreviewImg" src="" alt="Logo preview">
+                    <div class="filename" id="logoEditFileName"></div>
+                    <button class="remove-btn" onclick="removeEditLogo()">Remove</button>
+                </div>
+                <div class="upload-progress" id="logoEditProgress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="logoEditProgressFill"></div>
+                    </div>
+                    <div class="progress-text" id="logoEditProgressText">Uploading...</div>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeLogoModal()">Cancel</button>
+                <button class="btn-danger" id="removeLogoBtn" onclick="confirmRemoveLogo()" style="display: none;">Remove Logo</button>
+                <button class="btn-success" id="saveLogoBtn" onclick="saveLogo()" disabled>Save Logo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Merge Companies Modal -->
+    <div class="modal-overlay" id="mergeModal">
+        <div class="modal" style="max-width: 650px;">
+            <h2>Merge Companies</h2>
+            <p class="modal-subtitle">Select which company to keep (click to select)</p>
+
+            <div class="merge-info">
+                <div class="merge-info-title">What happens when you merge:</div>
+                <ul style="margin: 0; padding-left: 20px; color: rgba(255,255,255,0.7); font-size: 14px;">
+                    <li>All jobs from deleted company → moved to kept company</li>
+                    <li>All aliases from deleted company → moved to kept company</li>
+                    <li>Deleted company name → added as alias to kept company</li>
+                    <li>Logo from kept company is preserved (or copied if missing)</li>
+                </ul>
+            </div>
+
+            <div class="merge-companies" id="mergeCompanies">
+                <!-- Populated dynamically -->
+            </div>
+
+            <div class="merge-summary" id="mergeSummary">
+                <div class="merge-summary-row">
+                    <span style="color: rgba(255,255,255,0.5);">Jobs to transfer:</span>
+                    <span id="mergeJobCount">-</span>
+                </div>
+                <div class="merge-summary-row">
+                    <span style="color: rgba(255,255,255,0.5);">Aliases to transfer:</span>
+                    <span id="mergeAliasCount">-</span>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeMergeModal()">Cancel</button>
+                <button class="btn-primary" id="confirmMergeBtn" onclick="confirmMerge()" disabled>Select a company to keep</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <h2>Delete Company</h2>
+            <p class="modal-subtitle" id="deleteModalName">Delete: </p>
+
+            <div class="delete-warning">
+                <div class="delete-warning-title">⚠️ Warning</div>
+                <div class="delete-warning-text">
+                    This will permanently delete the company and all its aliases. Jobs linked to this company will have their company_id set to NULL.
+                </div>
+            </div>
+
+            <div class="delete-info" id="deleteInfo">
+                <div class="delete-info-row">
+                    <span class="delete-info-label">Company ID:</span>
+                    <span class="delete-info-value" id="deleteCompanyId">-</span>
+                </div>
+                <div class="delete-info-row">
+                    <span class="delete-info-label">Aliases:</span>
+                    <span class="delete-info-value" id="deleteAliasCount">-</span>
+                </div>
+                <div class="delete-info-row">
+                    <span class="delete-info-label">Linked Jobs:</span>
+                    <span class="delete-info-value" id="deleteJobCount">-</span>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn-danger" id="confirmDeleteBtn" onclick="confirmDeleteCompany()">Delete Company</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Company Modal -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal">
+            <h2>Add New Company</h2>
+            <p class="modal-subtitle" id="modalAirlineName">Adding: </p>
+
+            <div class="modal-field">
+                <label>Company Logo (optional)</label>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">
+                        <strong>Click to upload</strong> or drag and drop<br>
+                        PNG, JPG, SVG, WebP (max 2MB)
+                    </div>
+                    <input type="file" id="logoFile" accept="image/png,image/jpeg,image/svg+xml,image/webp">
+                </div>
+                <div class="logo-preview" id="logoPreview">
+                    <img id="previewImg" src="" alt="Logo preview">
+                    <div class="filename" id="fileName"></div>
+                    <button class="remove-btn" onclick="removeLogo()">Remove</button>
+                </div>
+                <div class="upload-progress" id="uploadProgress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Uploading...</div>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-success" id="confirmAddBtn" onclick="confirmAddCompany()">Add Company</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://ziboktbmbyjbhifsdypa.supabase.co';
+        // Service role key for admin operations (storage upload requires elevated permissions)
+        const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2Njc2MzA4NSwiZXhwIjoyMDgyMzM5MDg1fQ.9fLTXBWtCnEmetPc5ua8LlWNezY32_A25DrXkmCEVng';
+
+        const { createClient } = supabase;
+        const db = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
+        // DOM elements
+        const airlineInput = document.getElementById('airlineInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const activeCheckbox = document.getElementById('activeCheckbox');
+        const statusMsg = document.getElementById('statusMsg');
+        const matchResults = document.getElementById('matchResults');
+        const matchCount = document.getElementById('matchCount');
+        const loading = document.getElementById('loading');
+
+        // Load stats on page load
+        async function loadStats() {
+            try {
+                // Total companies
+                const { count: total } = await db.from('final_companies').select('*', { count: 'exact', head: true });
+                document.getElementById('totalCompanies').textContent = total || 0;
+
+                // Active companies
+                const { count: active } = await db.from('final_companies').select('*', { count: 'exact', head: true }).eq('is_active', true);
+                document.getElementById('activeCompanies').textContent = active || 0;
+
+                // Aliases
+                const { count: aliases } = await db.from('final_company_aliases').select('*', { count: 'exact', head: true });
+                document.getElementById('totalAliases').textContent = aliases || 0;
+            } catch (err) {
+                console.error('Failed to load stats:', err);
+            }
+        }
+
+        // Normalize airline name for comparison
+        function normalize(name) {
+            if (!name) return '';
+            let n = name.toLowerCase().trim();
+
+            // Replace hyphens with spaces FIRST
+            // This ensures "K5-Aviation" and "K5 Aviation" are treated the same
+            n = n.replace(/-/g, ' ');
+
+            // Remove ALL matching suffixes (loop until no more match)
+            // This handles "K5-Aviation GmbH" → "k5 aviation gmbh" → "k5 aviation" → "k5"
+            // Includes both spaced and non-spaced versions for compound words (Luminair vs Lumin Air)
+            const suffixes = [' airlines', ' airways', ' airline', ' airway', ' aviation', ' air lines', ' air', ' jets', ' jet', ' cargo', ' express', ' regional', ' international', ' ltd', ' llc', ' inc', ' corp', ' group', ' gmbh', ' s.a.', ' plc', ' limited', ' holding', ' holdings'];
+
+            // Also check non-spaced suffixes for compound words like "Luminair"
+            const compoundSuffixes = ['airlines', 'airways', 'airline', 'airway', 'aviation', 'airlines', 'air', 'jets', 'jet', 'cargo', 'express'];
+
+            let changed = true;
+            while (changed) {
+                changed = false;
+                // First check spaced suffixes
+                for (const suffix of suffixes) {
+                    if (n.endsWith(suffix)) {
+                        n = n.slice(0, -suffix.length).trim();
+                        changed = true;
+                    }
+                }
+                // Then check compound suffixes (only if word has remaining content)
+                for (const suffix of compoundSuffixes) {
+                    if (n.endsWith(suffix) && n.length > suffix.length) {
+                        n = n.slice(0, -suffix.length).trim();
+                        changed = true;
+                    }
+                }
+            }
+
+            // Remove special characters (except spaces)
+            n = n.replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
+            return n;
+        }
+
+        // Levenshtein distance for fuzzy matching
+        function levenshtein(a, b) {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
+
+            const matrix = [];
+            for (let i = 0; i <= b.length; i++) {
+                matrix[i] = [i];
+            }
+            for (let j = 0; j <= a.length; j++) {
+                matrix[0][j] = j;
+            }
+
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            return matrix[b.length][a.length];
+        }
+
+        // Raw similarity - compares names without normalization (for picking best display name)
+        function rawSimilarity(a, b) {
+            const la = a.toLowerCase().trim();
+            const lb = b.toLowerCase().trim();
+            if (la === lb) return 100;
+            if (la.includes(lb) || lb.includes(la)) return 90;
+            const maxLen = Math.max(la.length, lb.length);
+            if (maxLen === 0) return 100;
+            const distance = levenshtein(la, lb);
+            return Math.round((1 - distance / maxLen) * 100);
+        }
+
+        // Calculate similarity score (0-100) using normalized names
+        function similarity(a, b) {
+            const normA = normalize(a);
+            const normB = normalize(b);
+
+            // Exact match after normalization
+            if (normA === normB) return 100;
+
+            // Check if one contains the other (substring match)
+            // This handles cases like "DAT" matching "Danish Air Transport (DAT)"
+            if (normA.length >= 2 && normB.includes(normA)) {
+                // Give score based on how much of the target is matched (no floor)
+                const containsScore = Math.round((normA.length / normB.length) * 100);
+                return containsScore;
+            }
+            if (normB.length >= 2 && normA.includes(normB)) {
+                const containsScore = Math.round((normB.length / normA.length) * 100);
+                return containsScore;
+            }
+
+            // Check if search term matches any word in the company name
+            // Require at least 4 chars to avoid matching short common words
+            const wordsA = normA.split(' ');
+            const wordsB = normB.split(' ');
+            for (const wordA of wordsA) {
+                if (wordA.length >= 4 && wordsB.includes(wordA)) {
+                    return 75; // Word match
+                }
+            }
+            for (const wordB of wordsB) {
+                if (wordB.length >= 4 && wordsA.includes(wordB)) {
+                    return 75; // Word match
+                }
+            }
+
+            // Calculate Levenshtein-based similarity
+            const maxLen = Math.max(normA.length, normB.length);
+            if (maxLen === 0) return 100;
+
+            const distance = levenshtein(normA, normB);
+            const score = Math.round((1 - distance / maxLen) * 100);
+
+            return Math.max(0, score);
+        }
+
+        // Check for similar companies
+        async function checkForDuplicates(inputName) {
+            loading.classList.add('show');
+            matchResults.innerHTML = '';
+
+            try {
+                // Fetch all companies
+                const { data: companies, error } = await db
+                    .from('final_companies')
+                    .select('id, name, logo_url, is_active')
+                    .order('name');
+
+                if (error) throw error;
+
+                // Fetch aliases too
+                const { data: aliases } = await db
+                    .from('final_company_aliases')
+                    .select('alias_name, final_company_id');
+
+                // Simple search: show everything that CONTAINS the search term
+                // Also compare without spaces to handle "Bahamas air" matching "BahamasAir"
+                const matches = [];
+                const searchLower = inputName.toLowerCase().trim();
+                const searchNoSpaces = searchLower.replace(/\s+/g, '');
+
+                // Helper to check if search matches a name
+                function matchesSearch(name) {
+                    const nameLower = name.toLowerCase();
+                    const nameNoSpaces = nameLower.replace(/\s+/g, '');
+                    return nameLower.includes(searchLower) ||
+                           searchLower.includes(nameLower) ||
+                           nameNoSpaces.includes(searchNoSpaces) ||
+                           searchNoSpaces.includes(nameNoSpaces);
+                }
+
+                // Helper to calculate score
+                function calcScore(name) {
+                    const nameLower = name.toLowerCase();
+                    const nameNoSpaces = nameLower.replace(/\s+/g, '');
+                    if (nameLower === searchLower || nameNoSpaces === searchNoSpaces) {
+                        return 100;
+                    }
+                    return 90;
+                }
+
+                // Check against company names
+                for (const company of companies) {
+                    if (matchesSearch(company.name)) {
+                        matches.push({
+                            type: 'company',
+                            id: company.id,
+                            name: company.name,
+                            logo_url: company.logo_url,
+                            is_active: company.is_active,
+                            score: calcScore(company.name)
+                        });
+                    }
+                }
+
+                // Check against aliases
+                for (const alias of aliases || []) {
+                    if (matchesSearch(alias.alias_name)) {
+                        const company = companies.find(c => c.id === alias.final_company_id);
+                        if (company) {
+                            matches.push({
+                                type: 'alias',
+                                id: company.id,
+                                name: company.name,
+                                logo_url: company.logo_url,
+                                is_active: company.is_active,
+                                score: calcScore(alias.alias_name),
+                                aliasName: alias.alias_name
+                            });
+                        }
+                    }
+                }
+
+                // Sort by score descending
+                matches.sort((a, b) => b.score - a.score);
+
+                // Update UI
+                loading.classList.remove('show');
+                matchCount.textContent = `${matches.length} matches`;
+
+                if (matches.length === 0) {
+                    matchResults.innerHTML = `
+                        <div class="no-matches">
+                            <div class="icon">✅</div>
+                            <p>No similar companies found!</p>
+                            <button class="btn-success" onclick="addNewCompany('${inputName.replace(/'/g, "\\'")}')">
+                                Add "${inputName}" as New Company
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // Check if exact match exists
+                    const exactMatch = matches.find(m => m.score === 100);
+
+                    let html = '';
+
+                    if (exactMatch) {
+                        html += `
+                            <div class="status warning show" style="margin-bottom: 16px;">
+                                ⚠️ Exact match found! "${inputName}" already exists as "${exactMatch.name}"
+                            </div>
+                        `;
+                    }
+
+                    // No deduplication - show ALL matches (company names AND aliases)
+                    // User wants to see everything that contains the search term
+                    const uniqueMatches = matches;
+
+                    for (const match of uniqueMatches.slice(0, 15)) { // Show top 15 unique companies
+                        const scoreClass = match.score === 100 ? 'exact' : match.score >= 80 ? 'high' : 'medium';
+
+                        // Display name: show alias name if it's an alias match, otherwise company name
+                        const displayName = match.aliasName || match.name;
+                        const isAlias = match.type === 'alias';
+                        const aliasInfo = isAlias ? ` → ${match.name}` : '';
+
+                        // Get all aliases for this company to show "Also known as" info
+                        const companyAliases = (aliases || [])
+                            .filter(a => a.final_company_id === match.id)
+                            .map(a => a.alias_name);
+                        const aliasListHtml = companyAliases.length > 0 && !isAlias
+                            ? `<div style="color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 2px;">Also: ${companyAliases.join(', ')}</div>`
+                            : '';
+
+                        // Logo HTML
+                        const logoHtml = match.logo_url
+                            ? `<div class="match-logo" onclick="openLogoModal(${match.id}, '${match.name.replace(/'/g, "\\'")}', '${match.logo_url.replace(/'/g, "\\'")}')"><img src="${match.logo_url}" alt="${match.name}" onerror="this.parentElement.innerHTML='❌'"></div>`
+                            : `<div class="match-logo no-logo" onclick="openLogoModal(${match.id}, '${match.name.replace(/'/g, "\\'")}', '')" title="Click to add logo">+</div>`;
+
+                        html += `
+                            <div class="match-card ${scoreClass}" data-company-id="${match.id}">
+                                ${logoHtml}
+                                <div class="match-score ${scoreClass}">${match.score}%</div>
+                                <div class="match-info">
+                                    <div class="match-name">${displayName}${isAlias ? ' <span style="color: rgba(255,255,255,0.5); font-size: 13px;">(alias)</span>' : ''}</div>
+                                    <div class="match-meta">
+                                        ${isAlias ? `→ ${match.name} | ` : ''}ID: ${match.id} | ${match.is_active ? '✅ Active' : '❌ Inactive'}
+                                    </div>
+                                    ${aliasListHtml}
+                                </div>
+                                <div class="match-actions">
+                                    <button class="btn-merge" onclick="selectForMerge(${match.id}, '${match.name.replace(/'/g, "\\'")}', '${(match.logo_url || '').replace(/'/g, "\\'")}', ${match.is_active})">
+                                        Merge
+                                    </button>
+                                    <button class="btn-secondary" onclick="addAsAlias('${inputName.replace(/'/g, "\\'")}', ${match.id}, '${match.name.replace(/'/g, "\\'")}')">
+                                        Add as Alias
+                                    </button>
+                                    <button class="btn-danger" onclick="deleteCompany(${match.id}, '${match.name.replace(/'/g, "\\'")}')">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // Add button to add as new anyway (unless exact match)
+                    if (!exactMatch) {
+                        html += `
+                            <div style="margin-top: 20px; text-align: center;">
+                                <button class="btn-warning" onclick="addNewCompany('${inputName.replace(/'/g, "\\'")}')">
+                                    Add "${inputName}" as New Company Anyway
+                                </button>
+                            </div>
+                        `;
+                    }
+
+                    matchResults.innerHTML = html;
+                }
+
+            } catch (err) {
+                loading.classList.remove('show');
+                showStatus('Error: ' + err.message, 'error');
+            }
+        }
+
+        // Modal state
+        let pendingCompanyName = '';
+        let selectedLogoFile = null;
+
+        // Open modal to add new company
+        function addNewCompany(name) {
+            pendingCompanyName = name;
+            selectedLogoFile = null;
+
+            document.getElementById('modalAirlineName').textContent = `Adding: ${name}`;
+            document.getElementById('addModal').classList.add('show');
+            document.getElementById('logoPreview').classList.remove('show');
+            document.getElementById('uploadArea').classList.remove('has-file');
+            document.getElementById('uploadProgress').classList.remove('show');
+            document.getElementById('logoFile').value = '';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('addModal').classList.remove('show');
+            pendingCompanyName = '';
+            selectedLogoFile = null;
+        }
+
+        // Remove selected logo
+        function removeLogo() {
+            selectedLogoFile = null;
+            document.getElementById('logoPreview').classList.remove('show');
+            document.getElementById('uploadArea').classList.remove('has-file');
+            document.getElementById('logoFile').value = '';
+        }
+
+        // Generate slug from company name
+        function generateSlug(name) {
+            return name
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-|-$/g, '');
+        }
+
+        // Upload logo to Supabase Storage using REST API
+        async function uploadLogo(file, companyName) {
+            const progressBar = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const uploadProgress = document.getElementById('uploadProgress');
+
+            uploadProgress.classList.add('show');
+            progressBar.style.width = '0%';
+            progressText.textContent = 'Preparing upload...';
+
+            try {
+                // Generate filename - sanitize for URL
+                const ext = file.name.split('.').pop().toLowerCase();
+                const safeName = companyName
+                    .replace(/[^a-zA-Z0-9]+/g, '_')
+                    .replace(/^_|_$/g, '');
+                const filename = `${safeName}.${ext}`;
+
+                progressBar.style.width = '30%';
+                progressText.textContent = 'Uploading to storage...';
+
+                // Upload using REST API (more reliable than JS client for storage)
+                const uploadUrl = `${SUPABASE_URL}/storage/v1/object/logos/${filename}`;
+
+                const response = await fetch(uploadUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                        'Content-Type': file.type,
+                        'x-upsert': 'true'
+                    },
+                    body: file
+                });
+
+                progressBar.style.width = '80%';
+                progressText.textContent = 'Processing...';
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    // Check if file already exists (which is fine with upsert)
+                    if (errorText.toLowerCase().includes('already exists')) {
+                        console.log('File already exists, using existing URL');
+                    } else {
+                        throw new Error(`Upload failed: ${response.status} - ${errorText}`);
+                    }
+                }
+
+                // Construct public URL
+                const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/logos/${filename}`;
+
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Complete!';
+
+                return publicUrl;
+
+            } catch (err) {
+                progressText.textContent = 'Upload failed: ' + err.message;
+                throw err;
+            }
+        }
+
+        // Confirm and add company
+        async function confirmAddCompany() {
+            const confirmBtn = document.getElementById('confirmAddBtn');
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Adding...';
+
+            const isActive = activeCheckbox.checked;
+            let logoUrl = null;
+
+            try {
+                // Upload logo if selected
+                if (selectedLogoFile) {
+                    logoUrl = await uploadLogo(selectedLogoFile, pendingCompanyName);
+                }
+
+                // Insert company
+                const insertData = {
+                    name: pendingCompanyName,
+                    is_active: isActive
+                };
+
+                if (logoUrl) {
+                    insertData.logo_url = logoUrl;
+                }
+
+                const { data, error } = await db
+                    .from('final_companies')
+                    .insert(insertData)
+                    .select()
+                    .single();
+
+                if (error) {
+                    if (error.code === '23505') {
+                        showStatus(`"${pendingCompanyName}" already exists!`, 'error');
+                    } else {
+                        throw error;
+                    }
+                    return;
+                }
+
+                const logoMsg = logoUrl ? ' with logo' : '';
+                showStatus(`✅ Added "${pendingCompanyName}"${logoMsg} (ID: ${data.id}, Active: ${isActive})`, 'success');
+
+                closeModal();
+                airlineInput.value = '';
+                matchResults.innerHTML = `
+                    <div class="no-matches">
+                        <div class="icon">✅</div>
+                        <p>Enter an airline name to check for duplicates</p>
+                    </div>
+                `;
+                matchCount.textContent = '0 matches';
+                loadStats();
+
+            } catch (err) {
+                showStatus('Error: ' + err.message, 'error');
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Add Company';
+            }
+        }
+
+        // File upload handlers
+        const uploadArea = document.getElementById('uploadArea');
+        const logoFileInput = document.getElementById('logoFile');
+
+        uploadArea.addEventListener('click', () => logoFileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleFileSelect(file);
+            }
+        });
+
+        logoFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileSelect(file);
+            }
+        });
+
+        function handleFileSelect(file) {
+            // Validate file size (2MB max)
+            if (file.size > 2 * 1024 * 1024) {
+                showStatus('File too large. Max size is 2MB.', 'error');
+                return;
+            }
+
+            selectedLogoFile = file;
+            uploadArea.classList.add('has-file');
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('logoPreview').classList.add('show');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('addModal').addEventListener('click', (e) => {
+            if (e.target.id === 'addModal') {
+                closeModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Add as alias to existing company
+        async function addAsAlias(aliasName, companyId, companyName) {
+            try {
+                const { error } = await db
+                    .from('final_company_aliases')
+                    .insert({ alias_name: aliasName, final_company_id: companyId });
+
+                if (error) {
+                    if (error.code === '23505') {
+                        showStatus(`Alias "${aliasName}" already exists!`, 'error');
+                    } else {
+                        throw error;
+                    }
+                    return;
+                }
+
+                showStatus(`✅ Added "${aliasName}" as alias for "${companyName}"`, 'success');
+                airlineInput.value = '';
+                matchResults.innerHTML = `
+                    <div class="no-matches">
+                        <div class="icon">✅</div>
+                        <p>Enter an airline name to check for duplicates</p>
+                    </div>
+                `;
+                matchCount.textContent = '0 matches';
+                loadStats();
+
+            } catch (err) {
+                showStatus('Error: ' + err.message, 'error');
+            }
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            statusMsg.textContent = message;
+            statusMsg.className = `status show ${type}`;
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                statusMsg.classList.remove('show');
+            }, 5000);
+        }
+
+        // ============== LOGO EDIT FUNCTIONALITY ==============
+        let editLogoCompanyId = null;
+        let editLogoCompanyName = '';
+        let editLogoCurrentUrl = '';
+        let editLogoNewFile = null;
+
+        // Open logo edit modal
+        function openLogoModal(companyId, companyName, currentLogoUrl) {
+            editLogoCompanyId = companyId;
+            editLogoCompanyName = companyName;
+            editLogoCurrentUrl = currentLogoUrl;
+            editLogoNewFile = null;
+
+            document.getElementById('logoModalName').textContent = `Company: ${companyName} (ID: ${companyId})`;
+
+            // Show current logo or placeholder
+            const previewContainer = document.getElementById('logoModalPreview');
+            if (currentLogoUrl) {
+                previewContainer.innerHTML = `<img src="${currentLogoUrl}" alt="${companyName}" onerror="this.parentElement.innerHTML='<div class=\\'no-logo-placeholder\\'>❌</div>'">`;
+                document.getElementById('removeLogoBtn').style.display = 'block';
+            } else {
+                previewContainer.innerHTML = `<div class="no-logo-placeholder">📷</div>`;
+                document.getElementById('removeLogoBtn').style.display = 'none';
+            }
+
+            // Reset upload area
+            document.getElementById('logoEditPreview').classList.remove('show');
+            document.getElementById('logoUploadArea').classList.remove('has-file');
+            document.getElementById('logoEditFile').value = '';
+            document.getElementById('logoEditProgress').classList.remove('show');
+            document.getElementById('saveLogoBtn').disabled = true;
+
+            document.getElementById('logoModal').classList.add('show');
+        }
+
+        // Close logo modal
+        function closeLogoModal() {
+            document.getElementById('logoModal').classList.remove('show');
+            editLogoCompanyId = null;
+            editLogoCompanyName = '';
+            editLogoCurrentUrl = '';
+            editLogoNewFile = null;
+        }
+
+        // Remove selected new logo
+        function removeEditLogo() {
+            editLogoNewFile = null;
+            document.getElementById('logoEditPreview').classList.remove('show');
+            document.getElementById('logoUploadArea').classList.remove('has-file');
+            document.getElementById('logoEditFile').value = '';
+            document.getElementById('saveLogoBtn').disabled = true;
+        }
+
+        // Handle file select for logo edit
+        function handleLogoEditFileSelect(file) {
+            if (file.size > 2 * 1024 * 1024) {
+                showStatus('File too large. Max size is 2MB.', 'error');
+                return;
+            }
+
+            editLogoNewFile = file;
+            document.getElementById('logoUploadArea').classList.add('has-file');
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('logoEditPreviewImg').src = e.target.result;
+                document.getElementById('logoEditFileName').textContent = file.name;
+                document.getElementById('logoEditPreview').classList.add('show');
+                document.getElementById('saveLogoBtn').disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Upload logo and update company
+        async function saveLogo() {
+            if (!editLogoCompanyId || !editLogoNewFile) return;
+
+            const saveBtn = document.getElementById('saveLogoBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Uploading...';
+
+            const progressBar = document.getElementById('logoEditProgressFill');
+            const progressText = document.getElementById('logoEditProgressText');
+            const uploadProgress = document.getElementById('logoEditProgress');
+
+            uploadProgress.classList.add('show');
+            progressBar.style.width = '0%';
+            progressText.textContent = 'Preparing upload...';
+
+            try {
+                // Generate filename
+                const ext = editLogoNewFile.name.split('.').pop().toLowerCase();
+                const safeName = editLogoCompanyName.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '');
+                const filename = `${safeName}.${ext}`;
+
+                progressBar.style.width = '30%';
+                progressText.textContent = 'Uploading to storage...';
+
+                // Upload to Supabase storage
+                const uploadUrl = `${SUPABASE_URL}/storage/v1/object/logos/${filename}`;
+                const response = await fetch(uploadUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                        'Content-Type': editLogoNewFile.type,
+                        'x-upsert': 'true'
+                    },
+                    body: editLogoNewFile
+                });
+
+                progressBar.style.width = '60%';
+                progressText.textContent = 'Updating database...';
+
+                if (!response.ok && !response.text().then(t => t.toLowerCase().includes('already exists'))) {
+                    const errorText = await response.text();
+                    throw new Error(`Upload failed: ${errorText}`);
+                }
+
+                const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/logos/${filename}`;
+
+                // Update company in database
+                const { error } = await db
+                    .from('final_companies')
+                    .update({ logo_url: publicUrl })
+                    .eq('id', editLogoCompanyId);
+
+                if (error) throw error;
+
+                // Also update any jobs with this company
+                await db
+                    .from('verified_jobs')
+                    .update({ logo_url: publicUrl })
+                    .eq('company_id', editLogoCompanyId);
+
+                await db
+                    .from('verified_cabin_crew_jobs')
+                    .update({ logo_url: publicUrl })
+                    .eq('company_id', editLogoCompanyId);
+
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Complete!';
+
+                showStatus(`✅ Updated logo for "${editLogoCompanyName}"`, 'success');
+                closeLogoModal();
+
+                // Refresh search results
+                const searchTerm = airlineInput.value.trim();
+                if (searchTerm) {
+                    checkForDuplicates(searchTerm);
+                }
+
+            } catch (err) {
+                showStatus('Error uploading logo: ' + err.message, 'error');
+                progressText.textContent = 'Upload failed';
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Logo';
+            }
+        }
+
+        // Remove logo from company
+        async function confirmRemoveLogo() {
+            if (!editLogoCompanyId) return;
+
+            const removeBtn = document.getElementById('removeLogoBtn');
+            removeBtn.disabled = true;
+            removeBtn.textContent = 'Removing...';
+
+            try {
+                // Update company to remove logo
+                const { error } = await db
+                    .from('final_companies')
+                    .update({ logo_url: null })
+                    .eq('id', editLogoCompanyId);
+
+                if (error) throw error;
+
+                showStatus(`🗑️ Removed logo from "${editLogoCompanyName}"`, 'success');
+                closeLogoModal();
+
+                // Refresh search results
+                const searchTerm = airlineInput.value.trim();
+                if (searchTerm) {
+                    checkForDuplicates(searchTerm);
+                }
+
+            } catch (err) {
+                showStatus('Error removing logo: ' + err.message, 'error');
+            } finally {
+                removeBtn.disabled = false;
+                removeBtn.textContent = 'Remove Logo';
+            }
+        }
+
+        // Logo edit modal file upload handlers
+        const logoUploadArea = document.getElementById('logoUploadArea');
+        const logoEditFileInput = document.getElementById('logoEditFile');
+
+        logoUploadArea.addEventListener('click', () => logoEditFileInput.click());
+
+        logoUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            logoUploadArea.classList.add('dragover');
+        });
+
+        logoUploadArea.addEventListener('dragleave', () => {
+            logoUploadArea.classList.remove('dragover');
+        });
+
+        logoUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            logoUploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleLogoEditFileSelect(file);
+            }
+        });
+
+        logoEditFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleLogoEditFileSelect(file);
+            }
+        });
+
+        // Close logo modal on overlay click
+        document.getElementById('logoModal').addEventListener('click', (e) => {
+            if (e.target.id === 'logoModal') {
+                closeLogoModal();
+            }
+        });
+
+        // ============== MERGE FUNCTIONALITY ==============
+        let mergeCompanies = [];
+        let selectedKeepId = null;
+
+        // Select a company for merging
+        function selectForMerge(id, name, logoUrl, isActive) {
+            // Check if already selected (same ID)
+            const existingIndex = mergeCompanies.findIndex(c => c.id === id);
+            if (existingIndex >= 0) {
+                // Already in list, remove it
+                mergeCompanies.splice(existingIndex, 1);
+                showStatus(`Removed "${name}" from merge selection`, 'warning');
+                return;
+            }
+
+            // Check if trying to add same company twice (same ID as first selection)
+            if (mergeCompanies.length === 1 && mergeCompanies[0].id === id) {
+                showStatus(`"${name}" is the same company as "${mergeCompanies[0].name}" (both ID: ${id}). Select a different company to merge.`, 'error');
+                return;
+            }
+
+            // Add to selection
+            mergeCompanies.push({ id, name, logoUrl, isActive });
+
+            if (mergeCompanies.length === 1) {
+                showStatus(`Selected "${name}" for merge. Click "Merge" on another company to combine them.`, 'success');
+            } else if (mergeCompanies.length === 2) {
+                // Open merge modal
+                openMergeModal();
+            } else {
+                // More than 2, just keep last 2
+                mergeCompanies = mergeCompanies.slice(-2);
+                openMergeModal();
+            }
+        }
+
+        // Open merge modal with selected companies
+        async function openMergeModal() {
+            if (mergeCompanies.length < 2) {
+                showStatus('Select 2 companies to merge', 'error');
+                return;
+            }
+
+            selectedKeepId = null;
+            const [companyA, companyB] = mergeCompanies;
+
+            // Fetch job and alias counts for both
+            const [jobsA, jobsB, aliasesA, aliasesB] = await Promise.all([
+                db.from('verified_jobs').select('*', { count: 'exact', head: true }).eq('company_id', companyA.id),
+                db.from('verified_jobs').select('*', { count: 'exact', head: true }).eq('company_id', companyB.id),
+                db.from('final_company_aliases').select('*', { count: 'exact', head: true }).eq('final_company_id', companyA.id),
+                db.from('final_company_aliases').select('*', { count: 'exact', head: true }).eq('final_company_id', companyB.id)
+            ]);
+
+            companyA.jobCount = jobsA.count || 0;
+            companyB.jobCount = jobsB.count || 0;
+            companyA.aliasCount = aliasesA.count || 0;
+            companyB.aliasCount = aliasesB.count || 0;
+
+            // Render company cards
+            document.getElementById('mergeCompanies').innerHTML = `
+                <div class="merge-company-card" id="mergeCard-${companyA.id}" onclick="selectKeepCompany(${companyA.id})">
+                    <div class="merge-company-name">${companyA.name}</div>
+                    <div class="merge-company-meta">
+                        ID: ${companyA.id} | ${companyA.isActive ? '✅ Active' : '❌ Inactive'}<br>
+                        Jobs: ${companyA.jobCount} | Aliases: ${companyA.aliasCount}<br>
+                        Logo: ${companyA.logoUrl ? '✅ Yes' : '❌ None'}
+                    </div>
+                    <div class="merge-company-badge keep" style="display: none;">KEEP</div>
+                    <div class="merge-company-badge delete" style="display: none;">DELETE</div>
+                </div>
+                <div class="merge-arrow">→</div>
+                <div class="merge-company-card" id="mergeCard-${companyB.id}" onclick="selectKeepCompany(${companyB.id})">
+                    <div class="merge-company-name">${companyB.name}</div>
+                    <div class="merge-company-meta">
+                        ID: ${companyB.id} | ${companyB.isActive ? '✅ Active' : '❌ Inactive'}<br>
+                        Jobs: ${companyB.jobCount} | Aliases: ${companyB.aliasCount}<br>
+                        Logo: ${companyB.logoUrl ? '✅ Yes' : '❌ None'}
+                    </div>
+                    <div class="merge-company-badge keep" style="display: none;">KEEP</div>
+                    <div class="merge-company-badge delete" style="display: none;">DELETE</div>
+                </div>
+            `;
+
+            document.getElementById('mergeJobCount').textContent = '-';
+            document.getElementById('mergeAliasCount').textContent = '-';
+            document.getElementById('confirmMergeBtn').disabled = true;
+            document.getElementById('confirmMergeBtn').textContent = 'Select a company to keep';
+
+            document.getElementById('mergeModal').classList.add('show');
+        }
+
+        // Select which company to keep
+        function selectKeepCompany(keepId) {
+            selectedKeepId = keepId;
+            const [companyA, companyB] = mergeCompanies;
+            const deleteCompany = keepId === companyA.id ? companyB : companyA;
+            const keepCompany = keepId === companyA.id ? companyA : companyB;
+
+            // Update card styles
+            document.querySelectorAll('.merge-company-card').forEach(card => {
+                card.classList.remove('selected', 'to-delete');
+                card.querySelectorAll('.merge-company-badge').forEach(b => b.style.display = 'none');
+            });
+
+            const keepCard = document.getElementById(`mergeCard-${keepId}`);
+            const deleteCard = document.getElementById(`mergeCard-${deleteCompany.id}`);
+
+            keepCard.classList.add('selected');
+            keepCard.querySelector('.merge-company-badge.keep').style.display = 'inline-block';
+
+            deleteCard.classList.add('to-delete');
+            deleteCard.querySelector('.merge-company-badge.delete').style.display = 'inline-block';
+
+            // Update summary
+            document.getElementById('mergeJobCount').textContent = `${deleteCompany.jobCount} jobs will be moved to "${keepCompany.name}"`;
+            document.getElementById('mergeAliasCount').textContent = `${deleteCompany.aliasCount + 1} aliases will be added (including "${deleteCompany.name}")`;
+
+            // Enable button
+            document.getElementById('confirmMergeBtn').disabled = false;
+            document.getElementById('confirmMergeBtn').textContent = `Merge into "${keepCompany.name}"`;
+        }
+
+        // Close merge modal
+        function closeMergeModal() {
+            document.getElementById('mergeModal').classList.remove('show');
+            mergeCompanies = [];
+            selectedKeepId = null;
+        }
+
+        // Confirm and execute merge
+        async function confirmMerge() {
+            if (!selectedKeepId || mergeCompanies.length < 2) return;
+
+            const confirmBtn = document.getElementById('confirmMergeBtn');
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Merging...';
+
+            const keepCompany = mergeCompanies.find(c => c.id === selectedKeepId);
+            const deleteCompany = mergeCompanies.find(c => c.id !== selectedKeepId);
+
+            try {
+                // 1. Move all aliases from deleteCompany to keepCompany
+                const { error: aliasUpdateError } = await db
+                    .from('final_company_aliases')
+                    .update({ final_company_id: keepCompany.id })
+                    .eq('final_company_id', deleteCompany.id);
+                if (aliasUpdateError) console.error('Alias update error:', aliasUpdateError);
+
+                // 2. Add deleteCompany's name as an alias to keepCompany
+                const { error: aliasInsertError } = await db
+                    .from('final_company_aliases')
+                    .insert({ alias_name: deleteCompany.name, final_company_id: keepCompany.id });
+                if (aliasInsertError && aliasInsertError.code !== '23505') {
+                    console.error('Alias insert error:', aliasInsertError);
+                }
+
+                // 3. Move all verified_jobs to keepCompany
+                const { error: jobsError } = await db
+                    .from('verified_jobs')
+                    .update({ company_id: keepCompany.id })
+                    .eq('company_id', deleteCompany.id);
+                if (jobsError) console.error('Jobs update error:', jobsError);
+
+                // 4. Move all verified_cabin_crew_jobs to keepCompany
+                const { error: cabinJobsError } = await db
+                    .from('verified_cabin_crew_jobs')
+                    .update({ company_id: keepCompany.id })
+                    .eq('company_id', deleteCompany.id);
+                // Ignore if table doesn't exist
+
+                // 5. If keepCompany has no logo but deleteCompany does, copy the logo
+                if (!keepCompany.logoUrl && deleteCompany.logoUrl) {
+                    const { error: logoError } = await db
+                        .from('final_companies')
+                        .update({ logo_url: deleteCompany.logoUrl })
+                        .eq('id', keepCompany.id);
+                    if (logoError) console.error('Logo update error:', logoError);
+                }
+
+                // 6. Delete the deleteCompany
+                const { error: deleteError } = await db
+                    .from('final_companies')
+                    .delete()
+                    .eq('id', deleteCompany.id);
+
+                if (deleteError) throw deleteError;
+
+                showStatus(`✅ Merged "${deleteCompany.name}" into "${keepCompany.name}"`, 'success');
+
+                closeMergeModal();
+                loadStats();
+
+                // Re-run search
+                const searchTerm = airlineInput.value.trim();
+                if (searchTerm) {
+                    checkForDuplicates(searchTerm);
+                }
+
+            } catch (err) {
+                showStatus('Error merging: ' + err.message, 'error');
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Merge';
+            }
+        }
+
+        // Close merge modal on overlay click
+        document.getElementById('mergeModal').addEventListener('click', (e) => {
+            if (e.target.id === 'mergeModal') {
+                closeMergeModal();
+            }
+        });
+
+        // Event listeners
+        checkBtn.addEventListener('click', () => {
+            const name = airlineInput.value.trim();
+            if (name) {
+                checkForDuplicates(name);
+            }
+        });
+
+        airlineInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const name = airlineInput.value.trim();
+                if (name) {
+                    checkForDuplicates(name);
+                }
+            }
+        });
+
+        // Delete company functionality
+        let pendingDeleteId = null;
+        let pendingDeleteName = '';
+
+        // Open delete confirmation modal
+        async function deleteCompany(companyId, companyName) {
+            pendingDeleteId = companyId;
+            pendingDeleteName = companyName;
+
+            document.getElementById('deleteModalName').textContent = `Delete: ${companyName}`;
+            document.getElementById('deleteCompanyId').textContent = companyId;
+            document.getElementById('deleteAliasCount').textContent = 'Loading...';
+            document.getElementById('deleteJobCount').textContent = 'Loading...';
+            document.getElementById('deleteModal').classList.add('show');
+
+            // Fetch alias count
+            try {
+                const { count: aliasCount } = await db
+                    .from('final_company_aliases')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('final_company_id', companyId);
+                document.getElementById('deleteAliasCount').textContent = aliasCount || 0;
+            } catch (err) {
+                document.getElementById('deleteAliasCount').textContent = 'Error';
+            }
+
+            // Fetch job count
+            try {
+                const { count: jobCount } = await db
+                    .from('verified_jobs')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('company_id', companyId);
+                document.getElementById('deleteJobCount').textContent = jobCount || 0;
+            } catch (err) {
+                document.getElementById('deleteJobCount').textContent = 'Error';
+            }
+        }
+
+        // Close delete modal
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            pendingDeleteId = null;
+            pendingDeleteName = '';
+        }
+
+        // Confirm and delete company
+        async function confirmDeleteCompany() {
+            if (!pendingDeleteId) return;
+
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Deleting...';
+
+            try {
+                // First delete aliases (foreign key constraint)
+                const { error: aliasError } = await db
+                    .from('final_company_aliases')
+                    .delete()
+                    .eq('final_company_id', pendingDeleteId);
+
+                if (aliasError) {
+                    console.error('Error deleting aliases:', aliasError);
+                }
+
+                // Set company_id to NULL on verified_jobs
+                const { error: jobsError } = await db
+                    .from('verified_jobs')
+                    .update({ company_id: null })
+                    .eq('company_id', pendingDeleteId);
+
+                if (jobsError) {
+                    console.error('Error updating jobs:', jobsError);
+                }
+
+                // Also update verified_cabin_crew_jobs if exists
+                const { error: cabinJobsError } = await db
+                    .from('verified_cabin_crew_jobs')
+                    .update({ company_id: null })
+                    .eq('company_id', pendingDeleteId);
+
+                // Ignore error if table doesn't exist
+
+                // Delete the company
+                const { error: deleteError } = await db
+                    .from('final_companies')
+                    .delete()
+                    .eq('id', pendingDeleteId);
+
+                if (deleteError) throw deleteError;
+
+                showStatus(`🗑️ Deleted "${pendingDeleteName}" (ID: ${pendingDeleteId})`, 'success');
+
+                closeDeleteModal();
+                loadStats();
+
+                // Re-run the search to update results
+                const searchTerm = airlineInput.value.trim();
+                if (searchTerm) {
+                    checkForDuplicates(searchTerm);
+                } else {
+                    matchResults.innerHTML = `
+                        <div class="no-matches">
+                            <div class="icon">🔍</div>
+                            <p>Enter an airline name to check for duplicates</p>
+                        </div>
+                    `;
+                    matchCount.textContent = '0 matches';
+                }
+
+            } catch (err) {
+                showStatus('Error deleting: ' + err.message, 'error');
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Delete Company';
+            }
+        }
+
+        // Close delete modal on overlay click
+        document.getElementById('deleteModal').addEventListener('click', (e) => {
+            if (e.target.id === 'deleteModal') {
+                closeDeleteModal();
+            }
+        });
+
+        // Load stats on page load
+        loadStats();
+    </script>
+</body>
+</html>

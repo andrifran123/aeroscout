@@ -9,6 +9,23 @@
     gtag('js', new Date());
     gtag('config', 'AW-17913133972');
   </script>
+  <!-- Event snippet for Page view conversion page -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17913133972/GUwKCJ61xu4bEJT30t1C',
+        'value': 1.0,
+        'currency': 'USD',
+        'event_callback': callback
+      });
+      return false;
+    }
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AeroScout | Browse Roles</title>
@@ -4317,7 +4334,7 @@
           <h2 class="job-title">${j.title}<span class="airline-name">${j.org}</span></h2>
 
           <div class="apply-container">
-            <a href="${j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer">Apply Now</a>
+            <a href="${j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="attributes">
@@ -5504,7 +5521,7 @@
           <h2 class="job-title">${job.title}<span class="airline-name">${job.org}</span></h2>
 
           <div class="apply-container">
-            <a href="${job.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer">Apply Now</a>
+            <a href="${job.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="attributes">
@@ -5999,7 +6016,7 @@
           <h2 class="job-title">${j.title}<span class="airline-name">${j.org}</span></h2>
 
           <div class="apply-container">
-            <a href="${j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer">Apply Now</a>
+            <a href="${j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="attributes">

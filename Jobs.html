@@ -1874,25 +1874,35 @@
       stroke: #333;
     }
 
+    .card-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+
     .share-btn {
-      position: absolute;
-      top: 0;
-      right: 42px;
-      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
       border: none;
       cursor: pointer;
-      padding: 9px 10px;
-      border-radius: 0 0 0 12px;
-      transition: background 0.15s ease;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #666;
+      transition: all 0.15s ease;
     }
     .share-btn:hover {
-      background: #e0e0e0;
+      background: #f0f4ff;
+      color: #1b66ff;
     }
     .share-btn svg {
-      stroke: #666;
-    }
-    .share-btn:hover svg {
-      stroke: #1b66ff;
+      stroke: currentColor;
     }
 
     .mobile-toggle{ display:none; margin-top:12px; width:100%; }
@@ -4280,12 +4290,6 @@
       const cards = el("cards");
       const jobsHTML = list.map(j => `
         <article class="card${j.visa ? ' visa-sponsor' : ''}" style="position:relative;">
-          <button class="share-btn" onclick="shareJob(${j.id}, event)" title="Share job">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-            </svg>
-          </button>
           <button class="save-btn" title="Save job">
             <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
           </button>
@@ -4308,9 +4312,17 @@
             ${renderStatsRow(j)}
           </div>
 
-          <div class="expand-link" onclick="toggleDescription(this)">
-            See job description
-            <div class="arrow-v"></div>
+          <div class="card-actions-row">
+            <button class="share-btn" onclick="shareJob(${j.id}, event)" title="Share job">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
+              Share
+            </button>
+            <div class="expand-link" onclick="toggleDescription(this)">
+              See job description
+              <div class="arrow-v"></div>
+            </div>
           </div>
 
           <div class="job-description">
@@ -5465,12 +5477,6 @@
       // Render the single job card
       const jobHTML = `
         <article class="card${job.visa ? ' visa-sponsor' : ''}" style="position:relative;">
-          <button class="share-btn" onclick="shareJob(${job.id}, event)" title="Share job">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-            </svg>
-          </button>
           <button class="save-btn" title="Save job">
             <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
           </button>
@@ -5491,6 +5497,15 @@
 
           <div class="stats-row">
             ${renderStatsRow(job)}
+          </div>
+
+          <div class="card-actions-row" style="border-top: none;">
+            <button class="share-btn" onclick="shareJob(${job.id}, event)" title="Share job">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
+              Share
+            </button>
           </div>
 
           <div class="job-description" style="display: block; max-height: none;">

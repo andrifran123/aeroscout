@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "aeroscout.net"
+        }
+      ],
+      "destination": "https://www.aeroscout.net/:path*",
+      "permanent": true
+    }
+  ]
+}

@@ -166,7 +166,7 @@
     .topbar{
       background: linear-gradient(90deg, var(--nav), var(--nav2));
       border-radius: 18px;
-      padding: 14px 14px 14px 160px; /* extra left padding for AEROSCOUT logo */
+      padding: 14px;
       color:#fff;
       box-shadow: var(--softShadow);
       position:sticky;
@@ -184,9 +184,6 @@
 
     /* Topbar responsive - hide location dropdown to make room on smaller screens */
     @media (max-width: 1200px) {
-      .topbar {
-        padding-left: 140px;
-      }
       .topbar-row {
         grid-template-columns: 1fr auto;
         gap: 10px;
@@ -207,12 +204,6 @@
       }
       .meta {
         grid-column: 1 / -1;
-      }
-    }
-
-    @media (max-width: 980px) {
-      .topbar {
-        padding-left: 130px;
       }
     }
 

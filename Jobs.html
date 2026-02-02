@@ -127,7 +127,7 @@
     .topbar{
       background: linear-gradient(90deg, var(--nav), var(--nav2));
       border-radius: 18px;
-      padding: 14px 14px;
+      padding: 14px;
       color:#fff;
       box-shadow: var(--softShadow);
       position:sticky;
@@ -141,6 +141,20 @@
       grid-template-columns: 1.7fr 1fr auto;
       gap:12px;
       align-items:center;
+    }
+
+    /* Topbar responsive adjustments */
+    @media (max-width: 1200px) {
+      .topbar-row {
+        grid-template-columns: 1.5fr 1fr auto;
+        gap: 10px;
+      }
+      .pill {
+        padding: 12px 16px;
+      }
+      .pill input, .pill select {
+        font-size: 14px;
+      }
     }
 
     .brand{
@@ -1662,7 +1676,7 @@
       border: 1px solid #e2e8f0;
       padding: 16px 20px;
       display: grid;
-      grid-template-columns: 110px 1fr 150px;
+      grid-template-columns: 100px 1fr 150px;
       grid-template-rows: auto auto auto;
       gap: 6px 14px;
       transition: all 0.2s ease;
@@ -1679,14 +1693,15 @@
 
     .company-logo {
       grid-row: 1 / span 2;
-      width: 98px;
-      height: 98px;
+      width: 100px;
+      height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
       font-size: 24px;
       color: #0b2a6f;
+      flex-shrink: 0;
     }
     .company-logo img {
       width: 100%;
@@ -1936,12 +1951,87 @@
     .mobile-toggle{ display:none; margin-top:12px; width:100%; }
 
     /* Tablet breakpoint */
+    /* Large Desktop - 1441px+ */
+    @media (min-width: 1441px) {
+      .card {
+        grid-template-columns: 110px 1fr 160px;
+        padding: 18px 22px;
+      }
+      .company-logo {
+        width: 110px;
+        height: 110px;
+        font-size: 26px;
+      }
+      .job-title {
+        font-size: 17px;
+      }
+      .apply-btn {
+        padding: 10px 18px;
+        font-size: 14px;
+      }
+      .stats-row {
+        gap: 28px;
+      }
+    }
+
+    /* Desktop - 1025px to 1440px (default styles already cover this) */
+    /* Default: grid-template-columns: 100px 1fr 150px, logo: 100px x 100px */
+
+    /* Tablet & Laptop - 769px to 1024px */
+    @media (max-width: 1024px) {
+      .card {
+        grid-template-columns: 90px 1fr 140px;
+        padding: 14px 16px;
+        gap: 5px 12px;
+      }
+      .company-logo {
+        width: 90px;
+        height: 90px;
+        font-size: 22px;
+      }
+      .job-title {
+        font-size: 15px;
+      }
+      .apply-btn {
+        padding: 7px 14px;
+        font-size: 12px;
+      }
+      .attributes {
+        font-size: 11px;
+        gap: 8px;
+      }
+      .stats-row {
+        gap: 20px;
+      }
+    }
+
+    /* Medium Screens - Tablet Portrait */
     @media (max-width: 980px){
       .topbar-row{ grid-template-columns: 1fr; }
       .meta{ justify-content: flex-start; }
       .grid{ grid-template-columns: 1fr; }
       .mobile-toggle{ display: block; }
-      .card{ grid-template-columns: 52px 1fr; }
+      .card{
+        grid-template-columns: 80px 1fr 120px;
+        padding: 14px 16px;
+        gap: 5px 10px;
+      }
+      .company-logo {
+        width: 80px;
+        height: 80px;
+        font-size: 20px;
+      }
+      .job-title {
+        font-size: 14px;
+      }
+      .apply-btn {
+        padding: 7px 12px;
+        font-size: 11px;
+      }
+      .attributes {
+        font-size: 11px;
+        gap: 6px;
+      }
       .stats{ display: none; }
       .stage::before, .stage::after{ position: absolute; }
       #filtersPanel { display: none; }
@@ -2156,8 +2246,8 @@
       }
 
       .company-logo {
-        width: 83px;
-        height: 83px;
+        width: 80px;
+        height: 80px;
         font-size: 20px;
         float: left;
         margin-right: 14px;
@@ -2283,6 +2373,31 @@
     }
 
     /* Small phones */
+    @media (max-width: 480px) {
+      .company-logo {
+        width: 70px;
+        height: 70px;
+        font-size: 18px;
+        margin-right: 12px;
+      }
+      .job-title {
+        font-size: 13px;
+        padding-right: 85px;
+      }
+      .apply-btn {
+        padding: 7px 12px;
+        font-size: 10px;
+      }
+      .attr-pill {
+        font-size: 9px;
+        padding: 2px 6px;
+      }
+      .stat-value {
+        font-size: 12px;
+      }
+    }
+
+    /* Extra Small phones */
     @media (max-width: 380px) {
       .topbar { padding: 10px 12px; }
 
@@ -2292,7 +2407,19 @@
       .cards { padding: 10px; gap: 8px; }
 
       .card { padding: 12px; }
-      .job-title { font-size: 13px; padding-right: 90px; }
+
+      .company-logo {
+        width: 65px;
+        height: 65px;
+        font-size: 16px;
+        margin-right: 10px;
+      }
+
+      .job-title {
+        font-size: 12px;
+        padding-right: 80px;
+      }
+
       .airline-name {
         display: block;
         font-size: 11px;
@@ -2304,16 +2431,44 @@
       }
       .airline-name::before { content: none; }
 
-      .company-logo { width: 70px; height: 70px; }
+      .apply-btn {
+        padding: 6px 10px;
+        font-size: 10px;
+      }
 
-      .apply-btn { padding: 6px 10px; font-size: 10px; }
+      .attr-pill {
+        font-size: 9px;
+        padding: 2px 5px;
+      }
 
-      .attr-pill { font-size: 9px; padding: 2px 5px; }
+      .stats-row {
+        gap: 12px;
+      }
 
-      .stats-row { gap: 12px; }
-      .stat-value { font-size: 12px; }
+      .stat-value {
+        font-size: 11px;
+      }
 
-      .expand-link { font-size: 11px; }
+      .expand-link {
+        font-size: 11px;
+      }
+    }
+
+    /* Very small screens */
+    @media (max-width: 320px) {
+      .company-logo {
+        width: 60px;
+        height: 60px;
+        font-size: 15px;
+      }
+      .job-title {
+        font-size: 11px;
+        padding-right: 75px;
+      }
+      .apply-btn {
+        padding: 5px 8px;
+        font-size: 9px;
+      }
     }
 
     .svg{display:block}

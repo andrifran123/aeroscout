@@ -335,6 +335,15 @@
         </div>
     </header>
 
+    <!-- Redirect to email-confirmed page if coming from Supabase email confirmation -->
+    <script>
+        // Check if URL has auth tokens (from email confirmation)
+        if (window.location.hash && window.location.hash.includes('access_token')) {
+            // Redirect to email-confirmed page with the hash
+            window.location.replace('/email-confirmed.html' + window.location.hash);
+        }
+    </script>
+
     <!-- Vercel Analytics -->
     <script defer src="/_vercel/insights/script.js"></script>
 </body>

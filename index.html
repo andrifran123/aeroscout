@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Redirect to email-confirmed page if coming from email confirmation -->
-    <script>
-        (function() {
-            // Check if URL has auth tokens (from Supabase email confirmation)
-            if (window.location.hash && window.location.hash.includes('access_token')) {
-                // Redirect to email-confirmed page with the hash
-                window.location.href = '/email-confirmed.html' + window.location.hash;
-            }
-        })();
-    </script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17913572733"></script>
     <script>

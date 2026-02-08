@@ -1678,7 +1678,7 @@
                 await db
                     .from('verified_cabin_crew_jobs')
                     .update({ logo_url: publicUrl })
-                    .eq('company_id', editLogoCompanyId);
+                    .eq('airline', editLogoCompanyName);
 
                 progressBar.style.width = '100%';
                 progressText.textContent = 'Complete!';

@@ -3629,20 +3629,38 @@
       ]
     };
 
-    // Function to check if a location matches a region
-    function locationMatchesRegion(jobLocation, selectedRegion) {
-      if (!selectedRegion || selectedRegion === '') return true;
-      if (!jobLocation) return false;
+    // Map region names to location_bucket prefixes
+    const BUCKET_REGION_MAP = {
+      'Europe': /^(GB|FR|DE|IT|ES|NL|BE|CH|AT|PT|SE|NO|DK|FI|IS|PL|CZ|HU|RO|BG|HR|RS|SI|SK|EE|LV|LT|CY|MT|LU|GR|IE|AL|BA|ME|MK|XK|MD|TR|UA|EUROPE|EU)(_|$)/,
+      'Middle East': /^(AE|SA|QA|BH|OM|KW|JO|LB|IL|IQ|IR|SY|YE|PS|MIDDLE_EAST)(_|$)/,
+      'Asia': /^(JP|KR|CN|HK|TW|IN|ID|TH|VN|MY|SG|PH|PK|BD|LK|NP|MM|KH|LA|MN|BN|MV|BT|KZ|UZ|TM|KG|TJ|AF|ASIA)(_|$)/,
+      'Oceania': /^(AU|NZ|PG|FJ|SB|VU|WS|TO|KI|FM|PW|MH|NR|TV|GU|NC|PF|OCEANIA)(_|$)/,
+      'United States': /^(US)(_|$)/
+    };
 
+    // Function to check if a location matches a region
+    function locationMatchesRegion(jobLocation, jobLocationBucket, selectedRegion) {
+      if (!selectedRegion || selectedRegion === '') return true;
+
+      // Primary: use location_bucket if available and classifiable
+      if (jobLocationBucket && jobLocationBucket !== 'UNKNOWN' && jobLocationBucket !== '' && jobLocationBucket !== 'LOCATION_UNSPECIFIED') {
+        // Worldwide/global jobs match every region
+        if (jobLocationBucket === 'WORLDWIDE' || jobLocationBucket.startsWith('GLOBAL_')) return true;
+        const bucketRegex = BUCKET_REGION_MAP[selectedRegion];
+        if (bucketRegex) {
+          return bucketRegex.test(jobLocationBucket);
+        }
+      }
+
+      // Fallback: text matching on location string
+      if (!jobLocation) return false;
       const locationLower = jobLocation.toLowerCase();
       const regionCountries = REGION_MAPPING[selectedRegion];
 
       if (!regionCountries) {
-        // If not a mapped region, do direct match
         return locationLower.includes(selectedRegion.toLowerCase());
       }
 
-      // Check if any region country/city is in the job location
       return regionCountries.some(place => locationLower.includes(place.toLowerCase()));
     }
 
@@ -3774,7 +3792,8 @@
             roster: job.roster || '',
             jobType: 'pilot',
             latitude: job.latitude || null,
-            longitude: job.longitude || null
+            longitude: job.longitude || null,
+            locationBucket: job.location_bucket || ''
           };
         });
       } catch (err) {
@@ -3843,7 +3862,8 @@
             minAge: job.min_age || null,
             benefits: job.benefits || [],
             latitude: job.latitude || null,
-            longitude: job.longitude || null
+            longitude: job.longitude || null,
+            locationBucket: job.location_bucket || ''
           };
         });
       } catch (err) {
@@ -4705,7 +4725,7 @@
           const blob = `${j.title} ${j.org} ${j.location} ${j.chips.join(" ")}`.toLowerCase();
           if (!blob.includes(f.q)) return false;
         }
-        if (f.loc && !locationMatchesRegion(j.location, f.loc)) return false;
+        if (f.loc && !locationMatchesRegion(j.location, j.locationBucket, f.loc)) return false;
         // Flight time filter: job's MAX hour requirement must be within selected range
         // A pilot with 200 hours shouldn't see jobs requiring 500 PIC hours even if total hours is 0
         const jobMaxHours = Math.max(j.flightTime || 0, j.pic || 0, j.jetTime || 0, j.multiEngine || 0);

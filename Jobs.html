@@ -4885,6 +4885,64 @@
       return { any, map };
     }
 
+    // Search scoring: returns 0 for no match, higher = better match
+    function searchScore(job, query) {
+      if (!query) return 1; // no query = everything matches
+
+      const title = (job.title || '').toLowerCase();
+      const org = (job.org || '').toLowerCase();
+      const location = (job.location || '').toLowerCase();
+      const chips = (job.chips || []).join(' ').toLowerCase();
+      const rank = (job.rank || '').toLowerCase();
+      const aircraft = (job.aircraft || '').toLowerCase();
+
+      // Build searchable blob (with spaces) and compact version (no spaces)
+      const blob = `${title} ${org} ${location} ${chips} ${rank} ${aircraft}`;
+      const blobCompact = blob.replace(/\s+/g, '');
+
+      // Split query into tokens
+      const tokens = query.split(/\s+/).filter(t => t.length > 0);
+      if (tokens.length === 0) return 1;
+
+      // Also try the query as one compact string (for "fly dubai" -> "flydubai")
+      const queryCompact = tokens.join('');
+
+      // Check: all tokens must match somewhere in the blob OR compact matches
+      const allTokensMatch = tokens.every(token => blob.includes(token));
+      const compactMatch = blobCompact.includes(queryCompact);
+
+      if (!allTokensMatch && !compactMatch) return 0; // no match
+
+      // Score based on where/how it matches
+      let score = 1;
+
+      // Exact phrase match in blob (highest value)
+      if (blob.includes(query)) score += 50;
+
+      // Compact match (e.g. "fly dubai" matches "flydubai")
+      if (compactMatch) score += 40;
+
+      // Airline name match (very valuable)
+      if (org.includes(query) || org.replace(/\s+/g, '').includes(queryCompact)) score += 30;
+
+      // Title match
+      if (title.includes(query) || title.replace(/\s+/g, '').includes(queryCompact)) score += 25;
+
+      // Aircraft match
+      if (aircraft.includes(query) || aircraft.replace(/\s+/g, '').includes(queryCompact)) score += 20;
+
+      // Individual token bonuses
+      for (const token of tokens) {
+        if (org.includes(token)) score += 10;
+        if (title.includes(token)) score += 8;
+        if (aircraft.includes(token)) score += 6;
+        if (rank.includes(token)) score += 5;
+        if (location.includes(token)) score += 3;
+      }
+
+      return score;
+    }
+
     function getFilteredJobs(){
       const f = getFilters();
       const lic = matchesAny(f.license);
@@ -4892,10 +4950,15 @@
       const opType = matchesAny(f.operatorType);
       const perk = matchesAny(f.perks);
 
+      // Pre-compute search scores for all jobs
+      const searchScores = new Map();
+      if (f.q) {
+        JOBS.forEach(j => searchScores.set(j.id, searchScore(j, f.q)));
+      }
+
       return JOBS.filter(j => {
         if (f.q){
-          const blob = `${j.title} ${j.org} ${j.location} ${j.chips.join(" ")}`.toLowerCase();
-          if (!blob.includes(f.q)) return false;
+          if ((searchScores.get(j.id) || 0) === 0) return false;
         }
         if (f.loc && !locationMatchesRegion(j.location, j.locationBucket, f.loc)) return false;
         // Flight time filter: job's MAX hour requirement must be within selected range
@@ -5001,6 +5064,12 @@
           if (salaryA === 0) return 1;  // a goes after b
           if (salaryB === 0) return -1; // b goes after a
           return salaryB - salaryA;
+        }
+        // Sort by search relevance when there's a query
+        if (f.q) {
+          const scoreA = searchScores.get(a.id) || 0;
+          const scoreB = searchScores.get(b.id) || 0;
+          if (scoreA !== scoreB) return scoreB - scoreA;
         }
         return 0; // No sorting, keep original order
       });

@@ -94,7 +94,7 @@
     }
     @media (max-width: 768px) {
       .site-logo {
-        display: none;
+        font-size: 1.1rem;
       }
     }
 
@@ -1994,7 +1994,7 @@
       top: 1px;
     }
 
-    .mobile-toggle{ display:none; margin-top:12px; width:100%; }
+    .mobile-toggle{ display:none; margin-top:12px; width:100%; gap:8px; justify-content:center; }
 
     /* Tablet breakpoint */
     /* Large Desktop - 1441px+ */
@@ -2890,7 +2890,12 @@
             </div>
           </div>
 
-          <button class="btn mobile-toggle" id="toggleFilters" type="button">Toggle Filters</button>
+          <button class="btn mobile-toggle" id="toggleFilters" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+              <line x1="4" y1="6" x2="20" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="8" y1="18" x2="16" y2="18"/>
+            </svg>
+            Filters
+          </button>
         </header>
 
         <main class="grid">

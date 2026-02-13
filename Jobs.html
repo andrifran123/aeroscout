@@ -48,9 +48,7 @@
     "description": "The largest aviation job database for pilots and cabin crew"
   }
   </script>
-  <!-- Mapbox GL JS -->
-  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
-  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+  <!-- Mapbox GL JS - lazy loaded when map is opened -->
   <style>
     :root{
       --nav:#0b2a6f;
@@ -3543,8 +3541,37 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://gumroad.com/js/gumroad.js"></script>
   <script>
+    // Lazy-load external scripts on demand
+    let mapboxLoaded = false;
+    function loadMapbox() {
+      if (mapboxLoaded) return Promise.resolve();
+      return new Promise((resolve, reject) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css';
+        document.head.appendChild(link);
+
+        const script = document.createElement('script');
+        script.src = 'https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js';
+        script.onload = () => { mapboxLoaded = true; resolve(); };
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    let gumroadLoaded = false;
+    function loadGumroad() {
+      if (gumroadLoaded) return Promise.resolve();
+      return new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = 'https://gumroad.com/js/gumroad.js';
+        script.onload = () => { gumroadLoaded = true; resolve(); };
+        script.onerror = () => { gumroadLoaded = true; resolve(); }; // non-critical, don't block
+        document.head.appendChild(script);
+      });
+    }
+
     // Supabase configuration
     const SUPABASE_URL = 'https://ziboktbmbyjbhifsdypa.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY';
@@ -6120,6 +6147,8 @@
       }
 
       try {
+        // Lazy-load Mapbox GL JS on first use
+        await loadMapbox();
         mapboxgl.accessToken = MAPBOX_TOKEN;
 
         mapInstance = new mapboxgl.Map({

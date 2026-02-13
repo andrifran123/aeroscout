@@ -31,6 +31,23 @@
   <meta name="description" content="Browse 1000+ pilot jobs and cabin crew positions worldwide. Find openings at Emirates, Qatar Airways, Ryanair, easyJet and more. Updated daily with new aviation jobs." />
   <meta name="robots" content="index, follow" />
   <title>AeroScout | Browse Pilot & Cabin Crew Jobs</title>
+  <link rel="canonical" href="https://www.aeroscout.net/Jobs.html" />
+  <meta property="og:title" content="AeroScout | Browse Pilot & Cabin Crew Jobs" />
+  <meta property="og:description" content="Browse 1000+ pilot jobs and cabin crew positions worldwide. Find openings at Emirates, Qatar Airways, Ryanair, easyJet and more." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.aeroscout.net/Jobs.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="AeroScout | Browse Pilot & Cabin Crew Jobs" />
+  <meta name="twitter:description" content="Browse 1000+ pilot jobs and cabin crew positions worldwide." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AeroScout",
+    "url": "https://www.aeroscout.net",
+    "description": "The largest aviation job database for pilots and cabin crew"
+  }
+  </script>
   <!-- Mapbox GL JS -->
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
@@ -3881,6 +3898,123 @@
       }
     }
 
+    // Generate JSON-LD structured data for Google Jobs
+    function injectJobPostingSchema(jobs) {
+      // Remove any existing schema
+      const existing = document.getElementById('jobposting-schema');
+      if (existing) existing.remove();
+
+      const schema = jobs.slice(0, 20).map(j => {
+        const posting = {
+          '@type': 'JobPosting',
+          'title': j.title,
+          'description': j.description || j.title,
+          'url': j.applyUrl && j.applyUrl !== '#' ? j.applyUrl : `https://www.aeroscout.net/Jobs.html?job=${j.id}`,
+          'hiringOrganization': {
+            '@type': 'Organization',
+            'name': j.org
+          },
+          'jobLocationType': 'TELECOMMUTE'
+        };
+
+        if (j.logo) {
+          posting.hiringOrganization.logo = j.logo;
+        }
+
+        if (j.location) {
+          posting.jobLocation = {
+            '@type': 'Place',
+            'address': j.location
+          };
+          delete posting.jobLocationType;
+        }
+
+        if (j.salary && j.salary > 0) {
+          posting.baseSalary = {
+            '@type': 'MonetaryAmount',
+            'currency': 'USD',
+            'value': {
+              '@type': 'QuantitativeValue',
+              'value': j.salary,
+              'unitText': 'YEAR'
+            }
+          };
+        }
+
+        if (j.rank) posting.occupationalCategory = j.rank;
+        if (j.aircraft) posting.skills = j.aircraft;
+
+        return posting;
+      });
+
+      const script = document.createElement('script');
+      script.id = 'jobposting-schema';
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': schema
+      });
+      document.head.appendChild(script);
+    }
+
+    // Generate single job schema for ?job= view
+    function injectSingleJobSchema(j) {
+      const existing = document.getElementById('jobposting-schema');
+      if (existing) existing.remove();
+
+      const posting = {
+        '@context': 'https://schema.org',
+        '@type': 'JobPosting',
+        'title': j.title,
+        'description': j.description || j.title,
+        'url': `https://www.aeroscout.net/Jobs.html?job=${j.id}`,
+        'directApply': true,
+        'hiringOrganization': {
+          '@type': 'Organization',
+          'name': j.org
+        }
+      };
+
+      if (j.logo) {
+        posting.hiringOrganization.logo = j.logo;
+      }
+
+      if (j.location) {
+        posting.jobLocation = {
+          '@type': 'Place',
+          'address': j.location
+        };
+      }
+
+      if (j.salary && j.salary > 0) {
+        posting.baseSalary = {
+          '@type': 'MonetaryAmount',
+          'currency': 'USD',
+          'value': {
+            '@type': 'QuantitativeValue',
+            'value': j.salary,
+            'unitText': 'YEAR'
+          }
+        };
+      }
+
+      if (j.applyUrl && j.applyUrl !== '#') {
+        posting.applicationContact = {
+          '@type': 'ContactPoint',
+          'url': j.applyUrl
+        };
+      }
+
+      if (j.rank) posting.occupationalCategory = j.rank;
+      if (j.aircraft) posting.skills = j.aircraft;
+
+      const script = document.createElement('script');
+      script.id = 'jobposting-schema';
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(posting);
+      document.head.appendChild(script);
+    }
+
     const el = (id) => document.getElementById(id);
 
     // Dual range slider for flight time
@@ -5847,6 +5981,7 @@
           singleJobMode = true;
           singleJobId = jobId;
           renderSingleJob(job);
+          injectSingleJobSchema(job);
           updateDisplay();
           return; // Don't render normal list
         } else {
@@ -5858,6 +5993,7 @@
             singleJobMode = true;
             singleJobId = jobId;
             renderSingleJob(otherJob);
+            injectSingleJobSchema(otherJob);
             updateDisplay();
             return;
           } else {
@@ -5882,6 +6018,7 @@
 
         // Apply filters and render
         apply();
+        injectJobPostingSchema(JOBS);
         return;
       }
 
@@ -5889,6 +6026,7 @@
       currentFilteredJobs = JOBS;
       const initialBatch = JOBS.slice(0, JOBS_PER_PAGE);
       render(initialBatch);
+      injectJobPostingSchema(JOBS);
       updateDisplay();
       updateMatchCount();
 

@@ -322,16 +322,10 @@ function buildPage(j, jobType) {
     160
   ));
 
-  // OG image: dynamically generated branded card
-  const ogParams = new URLSearchParams({
-    title: j.title || '',
-    airline: j.org || '',
-    location: j.location || '',
-    aircraft: j.aircraft || '',
-    rank: j.rank || '',
-    type: jobType,
-  });
-  const ogImage = `https://www.aeroscout.net/api/og?${ogParams.toString()}`;
+  // OG image: composite logo onto branded card when logo exists, otherwise same fallback as before
+  const ogImage = j.logo
+    ? `https://www.aeroscout.net/api/og?logo=${encodeURIComponent(j.logo)}`
+    : 'https://www.aeroscout.net/images/og-default.png';
 
   // JSON-LD
   const schema = buildJobPostingSchema(j, canonicalUrl);

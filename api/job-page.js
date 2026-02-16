@@ -322,10 +322,8 @@ function buildPage(j, jobType) {
     160
   ));
 
-  // OG image: composite logo onto branded card when logo exists, otherwise same fallback as before
-  const ogImage = j.logo
-    ? `https://www.aeroscout.net/api/og?logo=${encodeURIComponent(j.logo)}`
-    : 'https://www.aeroscout.net/images/og-default.png';
+  // OG image: use company logo or fallback
+  const ogImage = j.logo || 'https://www.aeroscout.net/images/og-default.png';
 
   // JSON-LD
   const schema = buildJobPostingSchema(j, canonicalUrl);
@@ -372,10 +370,9 @@ function buildPage(j, jobType) {
   <meta property="og:image" content="${escapeHtml(ogImage)}">
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="${pageTitle}">
   <meta name="twitter:description" content="${metaDesc}">
-  <meta name="twitter:image" content="${escapeHtml(ogImage)}">
 
   <!-- JSON-LD JobPosting Schema (server-rendered) -->
   <script type="application/ld+json">

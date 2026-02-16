@@ -3762,6 +3762,30 @@
         'Colorado Springs', 'Omaha', 'Raleigh', 'Miami', 'Long Beach', 'Virginia Beach', 'Oakland', 'Minneapolis', 'Tampa',
         'New Orleans', 'Honolulu', 'Anchorage', 'Fort Lauderdale', 'Orlando', 'Salt Lake City', 'St. Louis', 'Pittsburgh',
         'Cincinnati', 'Cleveland', 'Tulsa', 'Wichita', 'Arlington', 'Bakersfield', 'Aurora', 'Anaheim', 'Santa Ana', 'Riverside'
+      ],
+      'Africa': [
+        'South Africa', 'Nigeria', 'Kenya', 'Ethiopia', 'Egypt', 'Morocco', 'Ghana', 'Tanzania', 'Angola', 'Mozambique',
+        'Cameroon', 'Senegal', 'Tunisia', 'Algeria', 'Libya', 'Sudan', 'Uganda', 'Rwanda', 'Botswana', 'Namibia',
+        'Zimbabwe', 'Zambia', 'Malawi', 'Madagascar', 'Mauritius', 'Seychelles', 'Cape Verde', 'Ivory Coast',
+        'Johannesburg', 'Cape Town', 'Durban', 'Lagos', 'Abuja', 'Nairobi', 'Addis Ababa', 'Cairo', 'Casablanca',
+        'Marrakech', 'Accra', 'Dar es Salaam', 'Luanda', 'Maputo', 'Douala', 'Dakar', 'Tunis', 'Algiers', 'Tripoli',
+        'Khartoum', 'Kampala', 'Kigali', 'Gaborone', 'Windhoek', 'Harare', 'Lusaka', 'Antananarivo', 'Zanzibar'
+      ],
+      'Canada': [
+        'Canada', 'Canadian',
+        'Toronto', 'Montreal', 'Vancouver', 'Calgary', 'Edmonton', 'Ottawa', 'Winnipeg', 'Quebec City',
+        'Hamilton', 'Halifax', 'Victoria', 'Saskatoon', 'Regina', 'St. Johns', 'Kelowna', 'Thunder Bay',
+        'Ontario', 'Quebec', 'British Columbia', 'Alberta', 'Manitoba', 'Saskatchewan', 'Nova Scotia',
+        'New Brunswick', 'Newfoundland', 'Prince Edward Island', 'Yukon', 'Northwest Territories', 'Nunavut'
+      ],
+      'South America': [
+        'Brazil', 'Argentina', 'Colombia', 'Chile', 'Peru', 'Venezuela', 'Ecuador', 'Bolivia', 'Paraguay', 'Uruguay',
+        'Guyana', 'Suriname', 'French Guiana', 'Panama', 'Costa Rica', 'Guatemala', 'Honduras', 'El Salvador',
+        'Nicaragua', 'Belize', 'Mexico', 'Cuba', 'Jamaica', 'Dominican Republic', 'Trinidad', 'Barbados', 'Bahamas',
+        'Sao Paulo', 'Rio de Janeiro', 'Brasilia', 'Buenos Aires', 'Bogota', 'Santiago', 'Lima', 'Caracas', 'Quito',
+        'La Paz', 'Asuncion', 'Montevideo', 'Georgetown', 'Paramaribo', 'Cayenne', 'Panama City', 'San Jose',
+        'Guatemala City', 'Tegucigalpa', 'San Salvador', 'Managua', 'Mexico City', 'Cancun', 'Guadalajara', 'Monterrey',
+        'Havana', 'Kingston', 'Santo Domingo', 'Port of Spain', 'Nassau', 'Medellin', 'Cartagena', 'Cali'
       ]
     };
 
@@ -3771,7 +3795,23 @@
       'Middle East': /^(AE|SA|QA|BH|OM|KW|JO|LB|IL|IQ|IR|SY|YE|PS|MIDDLE_EAST)(_|$)/,
       'Asia': /^(JP|KR|CN|HK|TW|IN|ID|TH|VN|MY|SG|PH|PK|BD|LK|NP|MM|KH|LA|MN|BN|MV|BT|KZ|UZ|TM|KG|TJ|AF|ASIA)(_|$)/,
       'Oceania': /^(AU|NZ|PG|FJ|SB|VU|WS|TO|KI|FM|PW|MH|NR|TV|GU|NC|PF|OCEANIA)(_|$)/,
-      'United States': /^(US)(_|$)/
+      'United States': /^(US)(_|$)/,
+      'Africa': /^(ZA|NG|KE|ET|EG|MA|GH|TZ|AO|MZ|CM|SN|TN|DZ|LY|SD|UG|RW|BW|NA|ZW|ZM|MW|MG|MU|SC|CV|CI|AFRICA)(_|$)/,
+      'Canada': /^(CA)(_|$)/,
+      'South America': /^(BR|AR|CO|CL|PE|VE|EC|BO|PY|UY|GY|SR|GF|PA|CR|GT|HN|SV|NI|BZ|MX|CU|JM|DO|TT|BB|BS|SOUTH_AMERICA|LATIN_AMERICA|CENTRAL_AMERICA)(_|$)/
+    };
+
+    // Map pilot work rights values to REGION_MAPPING keys
+    const WORK_RIGHTS_TO_REGION = {
+      'EU': 'Europe',
+      'USA': 'United States',
+      'UK': 'Europe',          // UK is included in Europe region mapping
+      'Middle East': 'Middle East',
+      'Asia': 'Asia',
+      'Africa': 'Africa',
+      'Australia': 'Oceania',
+      'Canada': 'Canada',
+      'South America': 'South America'
     };
 
     // Function to check if a location matches a region
@@ -4459,6 +4499,16 @@
       const picGap = Math.max(0, job.pic - pilot.picHours);
       const picMet = pilot.picHours >= job.pic;
 
+      // 2b. Jet Time Delta - only check if job requires jet time
+      const jobJetTime = job.jetTime || 0;
+      const jetGap = jobJetTime > 0 ? Math.max(0, jobJetTime - pilot.jetTime) : 0;
+      const jetMet = jobJetTime > 0 ? pilot.jetTime >= jobJetTime : true;
+
+      // 2c. Multi-Engine Time Delta - only check if job requires multi-engine time
+      const jobME = job.multiEngine || 0;
+      const meGap = jobME > 0 ? Math.max(0, jobME - pilot.multiEngineTime) : 0;
+      const meMet = jobME > 0 ? pilot.multiEngineTime >= jobME : true;
+
       // 3. Type Rating Check
       // Only check type rating if the job REQUIRES it (typeRated === true)
       // NTR jobs (typeRated === false) don't require type rating
@@ -4488,23 +4538,31 @@
       const jobLicenseDisplay = jobLicenses.join('/');  // e.g., "CPL/ATPL"
 
       // 6. Work Rights Check - can pilot legally work in this region?
-      // If job provides visa sponsorship, work rights are not required
-      // Note: For now, skip work rights check since job.workRegion contains full location strings
-      // (e.g., "Dubai, UAE") but pilot.workRights contains region codes (e.g., "EU", "USA")
-      // TODO: Implement proper location-to-region mapping
-      const needsWorkRights = false;  // Disabled until we have proper region mapping
-      const hasWorkRights = true;
-      const missingWorkRightsBlocker = false;
+      // Skip if job offers visa sponsorship or pilot has no work rights set
+      const jobLocation = job.workRegion || '';
+      const jobBucket = job.locationBucket || '';
+      const pilotRights = pilot.workRights || [];
+      const needsWorkRights = pilotRights.length > 0 && !job.visa && jobLocation !== '';
+      let hasWorkRights = true;
+      if (needsWorkRights) {
+        // Check if ANY of the pilot's work right regions match the job location
+        hasWorkRights = pilotRights.some(right => {
+          const regionKey = WORK_RIGHTS_TO_REGION[right];
+          if (!regionKey) return false;
+          return locationMatchesRegion(jobLocation, jobBucket, regionKey);
+        });
+      }
+      const missingWorkRightsBlocker = needsWorkRights && !hasWorkRights;
 
-      // 7. The "hours gap" includes TT, PIC, and type time (things you can fly toward)
+      // 7. The "hours gap" includes TT, PIC, jet, multi-engine, and type time (things you can fly toward)
       // Hard blockers (missing type, license, work rights) are NOT included
-      const hoursGap = Math.max(ttGap, picGap, typeTimeGap);
+      const hoursGap = Math.max(ttGap, picGap, jetGap, meGap, typeTimeGap);
 
       // 8. Any hard blocker present?
       const hasBlocker = missingTypeBlocker || missingLicenseBlocker || missingWorkRightsBlocker;
 
       // 9. Overall eligibility = ALL requirements must be met
-      const isEligible = ttMet && picMet && typeTimeMet && !hasBlocker;
+      const isEligible = ttMet && picMet && jetMet && meMet && typeTimeMet && !hasBlocker;
 
       return {
         // Hours gaps (can be worked toward)
@@ -4512,9 +4570,15 @@
         ttMet,
         picGap,
         picMet,
+        jetGap,
+        jetMet,
+        jobJetTime,
+        meGap,
+        meMet,
+        jobME,
         typeTimeGap,
         typeTimeMet,
-        hoursGap,           // Max of TT, PIC, and type time gaps
+        hoursGap,           // Max of TT, PIC, jet, ME, and type time gaps
 
         // Type rating
         needsType,
@@ -4544,6 +4608,8 @@
         jobTT: job.flightTime,
         pilotPIC: pilot.picHours,
         jobPIC: job.pic,
+        pilotJetTime: pilot.jetTime,
+        pilotMETime: pilot.multiEngineTime,
         pilotTypeTime: pilot.typeTime[job.requiredType] || 0,
         requiredType: job.requiredType,
         minTypeTime: job.minTypeTime
@@ -4594,6 +4660,26 @@
               ${!delta.picMet ? `<span class="tooltip-gap">(${delta.picGap.toLocaleString()} short)</span>` : ''}
             </span>
           </div>
+
+          ${delta.jobJetTime > 0 ? `
+          <div class="tooltip-row">
+            <span class="tooltip-label">Jet Time</span>
+            <span class="tooltip-value ${delta.jetMet ? 'met' : 'short'}">
+              ${delta.pilotJetTime.toLocaleString()} / ${delta.jobJetTime.toLocaleString()}
+              ${!delta.jetMet ? `<span class="tooltip-gap">(${delta.jetGap.toLocaleString()} short)</span>` : ''}
+            </span>
+          </div>
+          ` : ''}
+
+          ${delta.jobME > 0 ? `
+          <div class="tooltip-row">
+            <span class="tooltip-label">Multi-Engine</span>
+            <span class="tooltip-value ${delta.meMet ? 'met' : 'short'}">
+              ${delta.pilotMETime.toLocaleString()} / ${delta.jobME.toLocaleString()}
+              ${!delta.meMet ? `<span class="tooltip-gap">(${delta.meGap.toLocaleString()} short)</span>` : ''}
+            </span>
+          </div>
+          ` : ''}
 
           ${delta.needsType ? `
           <div class="tooltip-row">
@@ -5061,15 +5147,6 @@
         // "Eligible only" checkbox - works for ALL users (in black profile box)
         if (f.eligibleOnly) {
           const delta = calculateDelta(j);
-          // Debug: log why jobs are being filtered
-          if (!delta.isEligible) {
-            console.log(`Job "${j.title}" not eligible:`, {
-              ttMet: delta.ttMet, pilotTT: PILOT_PROFILE.totalHours, jobTT: j.flightTime,
-              picMet: delta.picMet, pilotPIC: PILOT_PROFILE.picHours, jobPIC: j.pic,
-              hasLicense: delta.hasLicense, pilotLicense: PILOT_PROFILE.license, jobLicense: j.license,
-              hasBlocker: delta.hasBlocker, missingTypeBlocker: delta.missingTypeBlocker, missingLicenseBlocker: delta.missingLicenseBlocker
-            });
-          }
           if (!delta.isEligible) return false;
         }
 
@@ -5654,8 +5731,13 @@
     }
     closeProfileModal.addEventListener("click", closeModal);
     cancelProfileBtn.addEventListener("click", closeModal);
+    let mouseDownOnOverlay = false;
+    profileModal.addEventListener("mousedown", (e) => {
+      mouseDownOnOverlay = (e.target === profileModal);
+    });
     profileModal.addEventListener("click", (e) => {
-      if (e.target === profileModal) closeModal();
+      if (e.target === profileModal && mouseDownOnOverlay) closeModal();
+      mouseDownOnOverlay = false;
     });
 
     // ============================================

@@ -5993,12 +5993,8 @@
     // Searchable type rating dropdown
     function renderTypeRatingDropdown(query) {
       const q = (query || '').toLowerCase().trim();
-      if (!q) {
-        typeRatingDropdown.classList.remove('visible');
-        return;
-      }
 
-      const matches = AIRCRAFT_FAMILIES.filter(fam => {
+      const matches = !q ? AIRCRAFT_FAMILIES : AIRCRAFT_FAMILIES.filter(fam => {
         return fam.typeRating.toLowerCase().includes(q) ||
                fam.label.toLowerCase().includes(q) ||
                fam.variants.some(v => v.toLowerCase().includes(q));
@@ -6040,9 +6036,7 @@
     });
 
     newTypeRatingInput.addEventListener("focus", () => {
-      if (newTypeRatingInput.value.trim()) {
-        renderTypeRatingDropdown(newTypeRatingInput.value);
-      }
+      renderTypeRatingDropdown(newTypeRatingInput.value);
     });
 
     // Close dropdown when clicking outside

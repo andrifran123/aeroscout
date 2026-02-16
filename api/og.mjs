@@ -1,7 +1,7 @@
 import { ImageResponse } from '@vercel/og';
 
 export default async function handler(req) {
-  const { searchParams } = new URL(req.url);
+  const { searchParams } = new URL(req.url, 'https://www.aeroscout.net');
   const logo = searchParams.get('logo') || '';
   const title = searchParams.get('title') || 'Aviation Job';
   const airline = searchParams.get('airline') || '';

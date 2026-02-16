@@ -543,6 +543,50 @@
       font-size: 13px;
       cursor: pointer;
     }
+    .type-rating-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 10001;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      margin-top: 4px;
+    }
+    .type-rating-dropdown.visible {
+      display: block;
+    }
+    .type-rating-option {
+      padding: 8px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .type-rating-option:last-child {
+      border-bottom: none;
+    }
+    .type-rating-option:hover {
+      background: #f0f7ff;
+    }
+    .type-rating-option .tr-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e3a5f;
+    }
+    .type-rating-option .tr-label {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 1px;
+    }
+    .type-rating-option.disabled {
+      opacity: 0.4;
+      cursor: default;
+      pointer-events: none;
+    }
     .work-rights-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -3498,9 +3542,9 @@
           <div class="type-ratings-container" id="typeRatingsContainer">
             <!-- Type rating chips will be added here dynamically -->
           </div>
-          <div class="add-type-rating">
-            <input type="text" id="newTypeRating" placeholder="e.g. A320, B737, ATR 72...">
-            <button type="button" id="addTypeRatingBtn">Add</button>
+          <div class="add-type-rating" style="position: relative;">
+            <input type="text" id="newTypeRating" placeholder="Search type ratings..." autocomplete="off">
+            <div class="type-rating-dropdown" id="typeRatingDropdown"></div>
           </div>
           <div class="profile-form-row" style="margin-top: 12px;">
             <div class="profile-form-group full-width">
@@ -3813,6 +3857,126 @@
       'Canada': 'Canada',
       'South America': 'South America'
     };
+
+    // Aircraft type rating families - grouped by type certificate
+    // Each entry: typeRating (stored in profile), label (shown in dropdown), variants (DB strings that match)
+    const AIRCRAFT_FAMILIES = [
+      // Airbus
+      { typeRating: 'A220', label: 'A220 (CS300/BD-500)', variants: ['A220'] },
+      { typeRating: 'A320', label: 'A320 Family (A318-A321)', variants: ['A320', 'A320 family', 'A320 Family', 'A320fam', 'A32X', 'A321', 'A321neo'] },
+      { typeRating: 'A330', label: 'A330', variants: ['A330'] },
+      { typeRating: 'A340', label: 'A340', variants: ['A340'] },
+      { typeRating: 'A350', label: 'A350', variants: ['A350'] },
+      { typeRating: 'A380', label: 'A380', variants: ['A380'] },
+      // Boeing
+      { typeRating: 'B737', label: 'B737 (all variants incl. NG, MAX)', variants: ['B737', 'B737NG', 'B737 NG', 'B737-200', 'B737-300/900', 'B737 300-900', 'B737-300-900', 'B737-800', 'B737 MAX', 'B737NG/MAX', 'BBJ'] },
+      { typeRating: 'B747', label: 'B747 (all variants)', variants: ['B747', 'B747-400', 'B747-8'] },
+      { typeRating: 'B757', label: 'B757', variants: ['B757'] },
+      { typeRating: 'B767', label: 'B767', variants: ['B767'] },
+      { typeRating: 'B777', label: 'B777', variants: ['B777'] },
+      { typeRating: 'B787', label: 'B787', variants: ['B787'] },
+      // Embraer
+      { typeRating: 'ERJ-145', label: 'ERJ-135/145 Family', variants: ['EMB-145', 'ERJ 145', 'ERJ-145', 'ERJ 135/145', 'ERJ family EMB-145', 'EMB135/145'] },
+      { typeRating: 'EMB-120', label: 'EMB-120 Brasilia', variants: ['EMB-120'] },
+      { typeRating: 'E170/175', label: 'E-Jet E170/E175', variants: ['E170', 'E175', 'EMB 175'] },
+      { typeRating: 'E190/195', label: 'E-Jet E190/E195', variants: ['E190', 'E195', 'E195-E2', 'EMB 190', 'Embraer 190-E2'] },
+      { typeRating: 'EMB-500', label: 'Phenom 100 (EMB-500)', variants: ['Phenom 100', 'EMB 500'] },
+      { typeRating: 'EMB-505', label: 'Phenom 300 (EMB-505)', variants: ['Phenom 300', 'Phenom 300E', 'EMB 505'] },
+      { typeRating: 'EMB-135BJ', label: 'Legacy 600/650', variants: ['Legacy 600', 'Legacy 650', 'E35L Legacy'] },
+      { typeRating: 'EMB-550', label: 'Legacy 500 / Praetor 600', variants: ['Legacy 500', 'Embraer 550', 'Praetor 600', 'Embraer Praetor 600', 'EMB-550', 'EMB-550 (Praetor)', 'EMB550'] },
+      { typeRating: 'E190-Lineage', label: 'Lineage 1000', variants: ['Embraer Lineage 1000'] },
+      // Bombardier
+      { typeRating: 'CL-600 (CRJ)', label: 'CRJ Series', variants: ['CRJ', 'CRJ 550', 'CRJ-200', 'CRJ1000', 'CRJ Series'] },
+      { typeRating: 'CL-600 (Challenger)', label: 'Challenger 604/605/650', variants: ['Challenger 604', 'Challenger 605', 'Challenger 650', 'Challenger 605/650', 'Challenger 650/604/605', 'CL-604', 'CL604', 'CL-605', 'CL605', 'CL-650', 'CL604/605', 'CL-604/605', 'CL-605/650', 'CL605/650'] },
+      { typeRating: 'CL-30', label: 'Challenger 300/350/3500', variants: ['CL-30', 'CL30', 'CL-350', 'CL35', 'CL300', 'CL350', 'CL300/350', 'CL300/CL350', 'CL350/3500', 'Challenger 300', 'Challenger 350', 'Challenger 3500', 'Challenger 300/350', 'Challenger 350-3500'] },
+      { typeRating: 'BD-700', label: 'Global Express/5000/6000/7500/8000', variants: ['BD-700', 'BD700', 'BD-700 (Global Express)', 'Global', 'Global Express', 'Global 5000', 'Global 6000', 'Global 6500', 'Global 7500', 'Global 8000', 'G7500', 'Bombardier Global 8000'] },
+      { typeRating: 'Dash 8', label: 'Dash 8 / Q400 (DHC-8)', variants: ['Dash 8', 'DHC-8', 'Dash 8-100', 'Dash 8-300', 'Dash 8-400', 'Dash 8-Q400', 'Dash Q400', 'Q400', 'Dash 8-100/300'] },
+      // Gulfstream
+      { typeRating: 'G-IV', label: 'Gulfstream IV/350/400/450', variants: ['G-IV', 'G450', 'G-IV/G350/G400/G450', 'Gulfstream GIV', 'Gulfstream IV-SP', 'Gulfstream 450'] },
+      { typeRating: 'G-V', label: 'Gulfstream V/500/550', variants: ['G-V', 'GV', 'G500', 'G550', 'Gulfstream 550', 'Gulfstream G500', 'Gulfstream 500'] },
+      { typeRating: 'G200', label: 'Gulfstream G200/G280', variants: ['G200', 'G280', 'Gulfstream 280'] },
+      { typeRating: 'G150', label: 'Gulfstream G150', variants: ['G150'] },
+      { typeRating: 'G600', label: 'Gulfstream G600', variants: ['G600'] },
+      { typeRating: 'G650', label: 'Gulfstream G650/G650ER', variants: ['G650', 'G650ER', 'Gulfstream G650ER', 'Gulfstream G650'] },
+      { typeRating: 'G700', label: 'Gulfstream G700/G800', variants: ['G700', 'Gulfstream G800'] },
+      // Dassault Falcon
+      { typeRating: 'Falcon 2000', label: 'Falcon 2000 series', variants: ['Falcon 2000', 'Falcon 2000LX', 'Falcon 2000LXS', 'Falcon 2000S', 'Falcon 2000EX EASy', 'Falcon DA-EASY/DA-2EASY'] },
+      { typeRating: 'Falcon 900', label: 'Falcon 900 series', variants: ['Falcon 900', 'Falcon 900EX', 'Falcon 900EX EASy', 'Falcon 900LX', 'Falcon 900DX', 'Falcon 900 EASy', 'Falcon 900LX/DX'] },
+      { typeRating: 'Falcon 7X', label: 'Falcon 7X/8X', variants: ['Falcon 7X', 'Falcon 7X/8X'] },
+      { typeRating: 'Falcon 6X', label: 'Falcon 6X', variants: ['Falcon 6X'] },
+      { typeRating: 'Falcon 20', label: 'Falcon 20/200', variants: ['Falcon 20/200'] },
+      // Cessna Citation
+      { typeRating: 'CE-500', label: 'Citation I/II/V/Ultra/Bravo/Encore', variants: ['CE-500', 'CE500', 'Citation Ultra', 'Citation Bravo', 'Citation Ultra/Bravo', 'Citation Ultra/Encore', 'Citation II/SII/Bravo', 'Citation V (560)', 'Citation I / I/SP', 'C500/550/560', 'CE550'] },
+      { typeRating: 'CE-525', label: 'Citation CJ1/CJ2/CJ3/CJ4/M2', variants: ['C525', 'CE-525', 'CE525', 'Citation 525', 'CE510S/CE525S', 'CJ3', 'CJ4', 'CJ1+', 'Citation CJ2+', 'Citation CJ3/CJ2/CJ1+', 'Citation M2', 'Citation M2/CJ series', 'Citation M2/CJ', 'M2/CJ series', 'C525A (CJ2)', 'Cessna Citation C525A (CJ2)'] },
+      { typeRating: 'CE-560', label: 'Citation Excel/XLS/XLS+', variants: ['CE-560', 'CE-560E', 'CE-560XL', 'CE-560 XLS', 'C560 Citation', 'C560XL/XLS', 'C56X', 'Cessna 560 XLS+', 'Citation Excel', 'Citation XLS', 'CITATION XLS', 'Citation XLS+', 'Citation XLS/XLS+', 'Citation Excel/XLS/XLS+', '560XLS+', 'XLS/XLS+', 'XLS+'] },
+      { typeRating: 'CE-680', label: 'Citation Sovereign/Latitude', variants: ['C680', 'C680A', 'Citation Sovereign', 'Citation Sovereign 680', 'Citation Sovereign+', 'Citation Latitude'] },
+      { typeRating: 'CE-750', label: 'Citation X/X+', variants: ['CE-750', 'Citation X', 'Citation 650'] },
+      // Learjet
+      { typeRating: 'LR-45', label: 'Learjet 40/45/75', variants: ['LR-45', 'LR45', 'Learjet 45', 'Lear 45', 'Learjet 45 XR', 'Lear45XR', 'LJ45', 'Learjet 40XR', 'Lear 40XR', 'Learjet 75'] },
+      { typeRating: 'LR-60', label: 'Learjet 55/60', variants: ['LR-60', 'LR60', 'Learjet 60', 'Lear 60', 'Learjet 60XR', 'Learjet 60/XR', 'Lear 60XR', 'LEAR 60/60XR', 'Learjet 55'] },
+      { typeRating: 'Learjet 35', label: 'Learjet 31/35', variants: ['Learjet', 'Learjet 35', 'Learjet 31A/35A'] },
+      // Hawker / BAe
+      { typeRating: 'HS-125', label: 'Hawker 800/850/900/4000', variants: ['HS-125', 'Hawker', 'Hawker 800', 'Hawker 800XP', 'Hawker 800XP/850XP', 'Hawker 800/850/900', 'Hawker 900XP', 'Hawker 4000', 'Nextant 400XT'] },
+      { typeRating: 'BAe 146', label: 'BAe 146 / Avro RJ', variants: ['BAe 146 / Avro RJ', 'BAe 146-RJ100', 'Avro RJ', 'RJ85/100'] },
+      // Beechcraft / King Air
+      { typeRating: 'King Air 90', label: 'King Air 90/C90', variants: ['King Air', 'King Air 90', 'King Air C90', 'BE90'] },
+      { typeRating: 'King Air 200', label: 'King Air 200 (BE-200)', variants: ['King Air 200', 'B200', 'B200 King Air', 'BE200GT', 'BE20', 'BE20 King Air 200', 'BE02', 'Super King Air'] },
+      { typeRating: 'King Air 350', label: 'King Air 350 (BE-300)', variants: ['King Air 350', 'BE-300', 'BE260/360'] },
+      { typeRating: 'B1900', label: 'Beechcraft 1900', variants: ['B1900', 'B190', 'BE1900', 'Beechcraft 1900', 'Beechcraft 1900D'] },
+      // Turboprops
+      { typeRating: 'PC-12', label: 'Pilatus PC-12', variants: ['PC-12', 'PC12', 'PC-12-47E', 'PC-12/47E', 'PC-12NGX', 'PC-12NGX/PRO'] },
+      { typeRating: 'PC-24', label: 'Pilatus PC-24', variants: ['PC-24', 'PC24'] },
+      { typeRating: 'ATR-42', label: 'ATR 42', variants: ['ATR-42', 'ATR 42'] },
+      { typeRating: 'ATR-72', label: 'ATR 72', variants: ['ATR-72', 'ATR 72-600', 'ATR 72/600', 'ATR72-600', 'ATR 72-500', 'ATR72-500/600'] },
+      { typeRating: 'DHC-6', label: 'DHC-6 Twin Otter', variants: ['DHC-6', 'DHC-6 Twin Otter', 'DHC-6-300/DHC-6-400', 'DHC6', 'Twin Otter'] },
+      { typeRating: 'Saab 340', label: 'Saab 340', variants: ['Saab 340'] },
+      { typeRating: 'Saab 2000', label: 'Saab 2000', variants: ['Saab 2000'] },
+      { typeRating: 'C208', label: 'Cessna 208 Caravan', variants: ['C208', 'C-208', 'C208B', 'C-208 Amphibian', 'Cessna 208', 'Cessna 208 Caravan', 'Cessna 208B Supervan', 'Cessna Caravan', 'Cessna Grand Caravan', 'Caravan', '208B Grand Caravan'] },
+      { typeRating: 'Metro', label: 'Fairchild Metro/Merlin', variants: ['Metro', 'Metroliner', 'SA226/227', 'SA227', 'Metro 2', 'Metro 3', 'Metro 23', 'Merlin'] },
+      { typeRating: 'PA-31', label: 'Piper Navajo/Chieftain', variants: ['PA-31', 'PA-31-350', 'PA31 Navajo'] },
+      { typeRating: 'Dornier 228', label: 'Dornier 228', variants: ['Dornier 228'] },
+      { typeRating: 'DO-328', label: 'Dornier 328', variants: ['DO328-100TP', 'Dornier 328-300'] },
+      { typeRating: 'BN-2', label: 'BN-2 Islander', variants: ['BN-2', 'BN-2 Islander', 'BN2 Islander', 'Tecnam P2012'] },
+      { typeRating: 'DHC-3', label: 'DHC-3 Otter', variants: ['DHC-3 Otter', 'DHC-3T'] },
+      { typeRating: 'DHC-2', label: 'DHC-2 Beaver', variants: ['DHC-2 Beaver', 'deHavilland Beaver'] },
+      { typeRating: 'Jetstream 31', label: 'BAe Jetstream 31/32', variants: ['Jetstream 31/32'] },
+      // HondaJet
+      { typeRating: 'HA-420', label: 'HondaJet HA-420', variants: ['HA-420', 'HA-420 HondaJet', 'HondaJet'] }
+    ];
+
+    // Build lookup: variant string (lowercase) → typeRating
+    const VARIANT_TO_TYPE = {};
+    AIRCRAFT_FAMILIES.forEach(fam => {
+      fam.variants.forEach(v => {
+        VARIANT_TO_TYPE[v.toLowerCase()] = fam.typeRating;
+      });
+    });
+
+    // Check if pilot has the type rating required for a job
+    // Handles exact matches AND compound/multi-type job aircraft strings
+    function pilotHasTypeForJob(pilotTypeRatings, jobAircraft) {
+      if (!jobAircraft || !pilotTypeRatings || pilotTypeRatings.length === 0) return false;
+      const jobLower = jobAircraft.toLowerCase();
+
+      // For each pilot type rating, get its family and check
+      return pilotTypeRatings.some(pilotType => {
+        const family = AIRCRAFT_FAMILIES.find(f => f.typeRating === pilotType);
+        if (!family) {
+          // Legacy/custom type rating — fall back to simple string match
+          return jobLower.includes(pilotType.toLowerCase());
+        }
+        // Check if any variant of this family matches the job aircraft
+        return family.variants.some(variant => {
+          const varLower = variant.toLowerCase();
+          // Exact match
+          if (jobLower === varLower) return true;
+          // Contains match for compound strings (e.g. "A320/B737" contains "A320")
+          // Only match if variant is 3+ chars to avoid false positives
+          if (varLower.length >= 3 && jobLower.includes(varLower)) return true;
+          return false;
+        });
+      });
+    }
 
     // Function to check if a location matches a region
     function locationMatchesRegion(jobLocation, jobLocationBucket, selectedRegion) {
@@ -4513,7 +4677,7 @@
       // Only check type rating if the job REQUIRES it (typeRated === true)
       // NTR jobs (typeRated === false) don't require type rating
       const needsType = job.typeRated === true && job.requiredType;
-      const hasType = needsType ? pilot.typeRatings.includes(job.requiredType) : true;
+      const hasType = needsType ? pilotHasTypeForJob(pilot.typeRatings, job.requiredType) : true;
       const missingTypeBlocker = needsType && !hasType;
 
       // 4. Type Time Gap (only if pilot HAS the type rating)
@@ -5710,7 +5874,7 @@
     const saveProfileBtn = el("saveProfileBtn");
     const typeRatingsContainer = el("typeRatingsContainer");
     const newTypeRatingInput = el("newTypeRating");
-    const addTypeRatingBtn = el("addTypeRatingBtn");
+    const typeRatingDropdown = el("typeRatingDropdown");
 
     // Temporary storage for type ratings being edited
     let editingTypeRatings = [];
@@ -5728,6 +5892,7 @@
     // Close modal
     function closeModal() {
       profileModal.classList.remove("active");
+      if (typeRatingDropdown) typeRatingDropdown.classList.remove('visible');
     }
     closeProfileModal.addEventListener("click", closeModal);
     cancelProfileBtn.addEventListener("click", closeModal);
@@ -5825,21 +5990,79 @@
       });
     }
 
-    // Add new type rating
-    addTypeRatingBtn.addEventListener("click", () => {
-      const newType = newTypeRatingInput.value.trim().toUpperCase();
-      if (newType && !editingTypeRatings.includes(newType)) {
-        editingTypeRatings.push(newType);
-        renderTypeRatings();
-        newTypeRatingInput.value = '';
+    // Searchable type rating dropdown
+    function renderTypeRatingDropdown(query) {
+      const q = (query || '').toLowerCase().trim();
+      if (!q) {
+        typeRatingDropdown.classList.remove('visible');
+        return;
+      }
+
+      const matches = AIRCRAFT_FAMILIES.filter(fam => {
+        return fam.typeRating.toLowerCase().includes(q) ||
+               fam.label.toLowerCase().includes(q) ||
+               fam.variants.some(v => v.toLowerCase().includes(q));
+      });
+
+      if (matches.length === 0) {
+        typeRatingDropdown.classList.remove('visible');
+        return;
+      }
+
+      typeRatingDropdown.innerHTML = matches.map(fam => {
+        const alreadyAdded = editingTypeRatings.includes(fam.typeRating);
+        return `
+          <div class="type-rating-option${alreadyAdded ? ' disabled' : ''}" data-type="${fam.typeRating}">
+            <div class="tr-name">${fam.typeRating}${alreadyAdded ? ' ✓' : ''}</div>
+            <div class="tr-label">${fam.label}</div>
+          </div>
+        `;
+      }).join('');
+
+      typeRatingDropdown.classList.add('visible');
+
+      // Add click handlers to options
+      typeRatingDropdown.querySelectorAll('.type-rating-option:not(.disabled)').forEach(opt => {
+        opt.addEventListener('click', () => {
+          const type = opt.dataset.type;
+          if (!editingTypeRatings.includes(type)) {
+            editingTypeRatings.push(type);
+            renderTypeRatings();
+          }
+          newTypeRatingInput.value = '';
+          typeRatingDropdown.classList.remove('visible');
+        });
+      });
+    }
+
+    newTypeRatingInput.addEventListener("input", () => {
+      renderTypeRatingDropdown(newTypeRatingInput.value);
+    });
+
+    newTypeRatingInput.addEventListener("focus", () => {
+      if (newTypeRatingInput.value.trim()) {
+        renderTypeRatingDropdown(newTypeRatingInput.value);
       }
     });
 
-    // Enter key to add type rating
-    newTypeRatingInput.addEventListener("keypress", (e) => {
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest('.add-type-rating')) {
+        typeRatingDropdown.classList.remove('visible');
+      }
+    });
+
+    // Keyboard navigation for dropdown
+    newTypeRatingInput.addEventListener("keydown", (e) => {
+      if (e.key === 'Escape') {
+        typeRatingDropdown.classList.remove('visible');
+      }
       if (e.key === 'Enter') {
         e.preventDefault();
-        addTypeRatingBtn.click();
+        const firstOption = typeRatingDropdown.querySelector('.type-rating-option:not(.disabled)');
+        if (firstOption && typeRatingDropdown.classList.contains('visible')) {
+          firstOption.click();
+        }
       }
     });
 

@@ -4005,7 +4005,7 @@
         '@type': 'JobPosting',
         'title': j.title,
         'description': j.description || j.title,
-        'url': `https://www.aeroscout.net/Jobs.html?job=${j.id}`,
+        'url': `https://www.aeroscout.net/jobs/${j.id}`,
         'directApply': true,
         'hiringOrganization': {
           '@type': 'Organization',
@@ -5854,10 +5854,13 @@
 
     // Generate shareable link for a job
     function getShareableJobLink(jobId) {
-      const url = new URL(window.location.href);
-      url.search = '';
-      url.searchParams.set('job', jobId);
-      return url.toString();
+      // Use SSR URL for shared links (proper OG tags + SEO)
+      const job = JOBS.find(j => j.id === jobId);
+      const base = `https://www.aeroscout.net/jobs/${jobId}`;
+      if (job && job.jobType === 'cabin_crew') {
+        return base + '?type=cabin_crew';
+      }
+      return base;
     }
 
     // Generate shareable link for current filters
@@ -5936,6 +5939,26 @@
       }
     `;
     document.head.appendChild(toastStyle);
+
+    // Intercept mailto: apply links - show popup instead of opening mail
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a.apply-btn');
+      if (!link) return;
+      const href = link.getAttribute('href') || '';
+      if (!href.startsWith('mailto:')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const email = href.replace('mailto:', '');
+      const existing = document.getElementById('emailModal');
+      if (existing) existing.remove();
+      const modal = document.createElement('div');
+      modal.id = 'emailModal';
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;';
+      modal.innerHTML = '<div style="background:white;border-radius:10px;padding:24px 28px;max-width:360px;width:90%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.25);position:relative;"><button onclick="document.getElementById(\'emailModal\').remove()" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:20px;cursor:pointer;color:#999;">&times;</button><p style="margin:0 0 10px;color:#555;font-size:14px;">Send resume to</p><p style="margin:0;font-size:17px;font-weight:700;color:#0b2a6f;">' + email + '</p></div>';
+      modal.addEventListener('click', function(ev) { if (ev.target === modal) modal.remove(); });
+      document.body.appendChild(modal);
+      return false;
+    }, true);
 
     // Apply URL parameters to filters
     function applyUrlParams(params) {

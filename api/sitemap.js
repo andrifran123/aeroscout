@@ -71,7 +71,7 @@ module.exports = async (req, res) => {
     for (const job of pilotJobs) {
       const lastmod = job.verified_at ? job.verified_at.split('T')[0] : today;
       xml += '  <url>\n';
-      xml += `    <loc>https://www.aeroscout.net/Jobs.html?job=${job.id}</loc>\n`;
+      xml += `    <loc>https://www.aeroscout.net/jobs/${job.id}</loc>\n`;
       xml += `    <lastmod>${lastmod}</lastmod>\n`;
       xml += '    <changefreq>weekly</changefreq>\n';
       xml += '    <priority>0.8</priority>\n';
@@ -82,7 +82,7 @@ module.exports = async (req, res) => {
     for (const job of cabinJobs) {
       const lastmod = job.verified_at ? job.verified_at.split('T')[0] : today;
       xml += '  <url>\n';
-      xml += `    <loc>https://www.aeroscout.net/Jobs.html?job=${job.id}&amp;type=cabin_crew</loc>\n`;
+      xml += `    <loc>https://www.aeroscout.net/jobs/${job.id}?type=cabin_crew</loc>\n`;
       xml += `    <lastmod>${lastmod}</lastmod>\n`;
       xml += '    <changefreq>weekly</changefreq>\n';
       xml += '    <priority>0.8</priority>\n';

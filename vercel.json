@@ -3,6 +3,10 @@
     {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
+    },
+    {
+      "source": "/jobs/:id",
+      "destination": "/api/job-page?id=:id"
     }
   ],
   "redirects": [

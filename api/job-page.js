@@ -322,8 +322,13 @@ function buildPage(j, jobType) {
     160
   ));
 
-  // OG image: use company logo or fallback
-  const ogImage = j.logo || 'https://www.aeroscout.net/images/og-default.png';
+  // OG image: dynamic branded card via /api/og
+  const ogParams = new URLSearchParams();
+  ogParams.set('title', j.title || 'Aviation Job');
+  if (j.org) ogParams.set('airline', j.org);
+  if (j.location) ogParams.set('location', j.location);
+  if (j.logo) ogParams.set('logo', j.logo);
+  const ogImage = `https://www.aeroscout.net/api/og?${ogParams.toString()}`;
 
   // JSON-LD
   const schema = buildJobPostingSchema(j, canonicalUrl);
@@ -368,10 +373,13 @@ function buildPage(j, jobType) {
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AeroScout">
   <meta property="og:image" content="${escapeHtml(ogImage)}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${pageTitle}">
+  <meta name="twitter:image" content="${escapeHtml(ogImage)}">
   <meta name="twitter:description" content="${metaDesc}">
 
   <!-- JSON-LD JobPosting Schema (server-rendered) -->

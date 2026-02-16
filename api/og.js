@@ -1,31 +1,31 @@
-import { ImageResponse } from '@vercel/og';
+module.exports = async function handler(req, res) {
+  const { ImageResponse } = await import('@vercel/og');
 
-export default async function handler(req) {
-  const { searchParams } = new URL(req.url, 'https://www.aeroscout.net');
-  const logo = searchParams.get('logo') || '';
-  const title = searchParams.get('title') || 'Aviation Job';
-  const airline = searchParams.get('airline') || '';
-  const location = searchParams.get('location') || '';
+  const url = new URL(req.url, 'https://www.aeroscout.net');
+  const logo = url.searchParams.get('logo') || '';
+  const title = url.searchParams.get('title') || 'Aviation Job';
+  const airline = url.searchParams.get('airline') || '';
+  const location = url.searchParams.get('location') || '';
 
-  // Fetch logo if provided, with fallback
+  // Fetch logo if provided
   let logoSrc = null;
   if (logo) {
     try {
-      const res = await fetch(logo, { headers: { 'Accept': 'image/*' } });
-      if (res.ok) {
-        const contentType = res.headers.get('content-type') || 'image/png';
-        const buf = await res.arrayBuffer();
-        if (buf.byteLength > 0 && buf.byteLength < 2_000_000) {
+      const logoRes = await fetch(logo, { headers: { 'Accept': 'image/*' } });
+      if (logoRes.ok) {
+        const contentType = logoRes.headers.get('content-type') || 'image/png';
+        const buf = await logoRes.arrayBuffer();
+        if (buf.byteLength > 0 && buf.byteLength < 2000000) {
           const bytes = new Uint8Array(buf);
           let binary = '';
           for (let i = 0; i < bytes.length; i++) {
             binary += String.fromCharCode(bytes[i]);
           }
-          logoSrc = `data:${contentType};base64,${btoa(binary)}`;
+          logoSrc = 'data:' + contentType + ';base64,' + btoa(binary);
         }
       }
     } catch (e) {
-      // Logo fetch failed, will use fallback
+      // Logo fetch failed, use fallback
     }
   }
 
@@ -35,13 +35,10 @@ export default async function handler(req) {
   if (location) subtitleParts.push(location);
   const subtitle = subtitleParts.join(' · ');
 
-  // Truncate title
   const displayTitle = title.length > 60 ? title.substring(0, 57) + '...' : title;
-
-  // First letter fallback for logo
   const firstLetter = (airline || title).charAt(0).toUpperCase();
 
-  return new ImageResponse(
+  const imageResponse = new ImageResponse(
     {
       type: 'div',
       props: {
@@ -94,7 +91,7 @@ export default async function handler(req) {
               ],
             },
           },
-          // Main content area
+          // Main content
           {
             type: 'div',
             props: {
@@ -107,7 +104,7 @@ export default async function handler(req) {
                 gap: '50px',
               },
               children: [
-                // Logo container
+                // Logo box
                 {
                   type: 'div',
                   props: {
@@ -149,7 +146,7 @@ export default async function handler(req) {
                         },
                   },
                 },
-                // Text content
+                // Text
                 {
                   type: 'div',
                   props: {
@@ -169,7 +166,6 @@ export default async function handler(req) {
                             fontWeight: 700,
                             color: '#ffffff',
                             lineHeight: 1.2,
-                            letterSpacing: '-0.5px',
                           },
                           children: displayTitle,
                         },
@@ -236,7 +232,7 @@ export default async function handler(req) {
               ],
             },
           },
-          // Accent line at bottom
+          // Accent line
           {
             type: 'div',
             props: {
@@ -257,9 +253,18 @@ export default async function handler(req) {
     {
       width: 1200,
       height: 630,
-      headers: {
-        'Cache-Control': 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800',
-      },
     },
   );
-}
+
+  // Stream the ImageResponse body to the Node.js response
+  res.setHeader('Content-Type', 'image/png');
+  res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800');
+
+  const reader = imageResponse.body.getReader();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    res.write(Buffer.from(value));
+  }
+  res.end();
+};

@@ -1,8 +1,23 @@
-const { ImageResponse } = require('@vercel/og');
+import { ImageResponse } from '@vercel/og';
 
-module.exports = async function handler(req, res) {
-  const url = new URL(req.url, `https://${req.headers.host}`);
-  const searchParams = url.searchParams;
+export const config = {
+  runtime: 'edge',
+};
+
+// Helper to create satori-compatible elements without JSX
+function h(type, props, ...children) {
+  const flatChildren = children.flat().filter(c => c != null && c !== false);
+  return {
+    type,
+    props: {
+      ...props,
+      children: flatChildren.length === 1 ? flatChildren[0] : flatChildren.length === 0 ? undefined : flatChildren,
+    },
+  };
+}
+
+export default async function handler(req) {
+  const { searchParams } = new URL(req.url);
 
   const title = searchParams.get('title') || 'Aviation Job';
   const airline = searchParams.get('airline') || '';
@@ -20,18 +35,6 @@ module.exports = async function handler(req, res) {
   if (location) subtitleParts.push(location);
   const subtitle = subtitleParts.join('  \u2022  ');
 
-  // Helper to create elements (satori accepts {type, props} objects)
-  function h(type, props, ...children) {
-    const flatChildren = children.flat().filter(Boolean);
-    return {
-      type,
-      props: {
-        ...props,
-        children: flatChildren.length === 1 ? flatChildren[0] : flatChildren.length === 0 ? undefined : flatChildren,
-      },
-    };
-  }
-
   const element = h('div', {
     style: {
       width: '100%',
@@ -48,7 +51,6 @@ module.exports = async function handler(req, res) {
     h('div', {
       style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
     },
-      // Logo
       h('div', {
         style: { display: 'flex', alignItems: 'center', gap: '12px' },
       },
@@ -75,7 +77,6 @@ module.exports = async function handler(req, res) {
           },
         }, 'AEROSCOUT')
       ),
-      // Badge
       h('div', {
         style: {
           background: isPilot ? 'rgba(37, 99, 235, 0.2)' : 'rgba(168, 85, 247, 0.2)',
@@ -148,14 +149,11 @@ module.exports = async function handler(req, res) {
     )
   );
 
-  const imageResponse = new ImageResponse(element, {
+  return new ImageResponse(element, {
     width: 1200,
     height: 630,
+    headers: {
+      'Cache-Control': 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400',
+    },
   });
-
-  // Convert the Response to a Node.js response
-  const buffer = await imageResponse.arrayBuffer();
-  res.setHeader('Content-Type', 'image/png');
-  res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400');
-  res.status(200).send(Buffer.from(buffer));
-};
+}

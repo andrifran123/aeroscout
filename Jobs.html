@@ -5853,10 +5853,23 @@
     }
 
     // Generate shareable link for a job
+    function slugifyStr(str) {
+      return String(str).toLowerCase().trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
     function getShareableJobLink(jobId) {
-      // Use SSR URL for shared links (proper OG tags + SEO)
+      // Use SSR URL with SEO slug for shared links
       const job = JOBS.find(j => j.id === jobId);
-      const base = `https://www.aeroscout.net/jobs/${jobId}`;
+      let slug = String(jobId);
+      if (job) {
+        const parts = [job.title, job.org].filter(Boolean).map(slugifyStr).filter(Boolean);
+        if (parts.length > 0) slug = `${parts.join('-')}-${jobId}`;
+      }
+      const base = `https://www.aeroscout.net/jobs/${slug}`;
       if (job && job.jobType === 'cabin_crew') {
         return base + '?type=cabin_crew';
       }

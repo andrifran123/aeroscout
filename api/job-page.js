@@ -5,6 +5,30 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
 );
 
+// ── Slug helper ──────────────────────────────────────────────────────────────
+
+function slugify(str) {
+  return String(str)
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function buildSlug(job) {
+  const parts = [job.title, job.org].filter(Boolean).map(slugify).filter(Boolean);
+  return parts.length > 0 ? `${parts.join('-')}-${job.id}` : String(job.id);
+}
+
+function extractIdFromSlug(slug) {
+  // Extract trailing numeric ID: "pc-12-first-officer-private-air-5391" → 5391
+  // Also handles plain numeric IDs: "5391" → 5391
+  const match = String(slug).match(/(\d+)$/);
+  return match ? parseInt(match[1], 10) : NaN;
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function escapeHtml(str) {
@@ -281,10 +305,10 @@ function buildJobPostingSchema(j, canonicalUrl) {
 
 function buildPage(j, jobType) {
   const isCabinCrew = jobType === 'cabin_crew';
-  const id = j.id;
+  const slug = buildSlug(j);
   const canonicalUrl = isCabinCrew
-    ? `https://www.aeroscout.net/jobs/${id}?type=cabin_crew`
-    : `https://www.aeroscout.net/jobs/${id}`;
+    ? `https://www.aeroscout.net/jobs/${slug}?type=cabin_crew`
+    : `https://www.aeroscout.net/jobs/${slug}`;
 
   // Build page title: "A320 Captain at Emirates - Dubai | AeroScout"
   const titleParts = [j.title];
@@ -780,12 +804,18 @@ module.exports = async (req, res) => {
 
   const { id, type } = req.query;
 
-  if (!id || isNaN(parseInt(id, 10))) {
+  if (!id) {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.status(404).send(build404());
   }
 
-  const jobId = parseInt(id, 10);
+  // Extract numeric ID from slug (e.g., "pc-12-first-officer-private-air-5391" → 5391)
+  const jobId = extractIdFromSlug(id);
+  if (isNaN(jobId)) {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.status(404).send(build404());
+  }
+
   const isCabinCrew = type === 'cabin_crew';
 
   try {
@@ -821,6 +851,17 @@ module.exports = async (req, res) => {
 
     // Map the raw row to our job object
     const job = jobType === 'cabin_crew' ? mapCabinCrewJob(data) : mapPilotJob(data);
+
+    // 301 redirect if URL doesn't have the correct slug (e.g., /jobs/5391 → /jobs/pc-12-first-officer-private-air-5391)
+    const correctSlug = buildSlug(job);
+    if (id !== correctSlug) {
+      const redirectUrl = isCabinCrew
+        ? `/jobs/${correctSlug}?type=cabin_crew`
+        : `/jobs/${correctSlug}`;
+      res.setHeader('Location', redirectUrl);
+      res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+      return res.status(301).end();
+    }
 
     // Build and send the full HTML page
     const html = buildPage(job, jobType);

@@ -18,8 +18,23 @@ const STATIC_PAGES = [
   { loc: '/refund.html', changefreq: 'yearly', priority: '0.3' },
 ];
 
-async function fetchJobIds(table) {
-  const ids = [];
+function slugify(str) {
+  return String(str)
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function buildSlug(job) {
+  const parts = [job.title, job.airline].filter(Boolean).map(slugify).filter(Boolean);
+  return parts.length > 0 ? `${parts.join('-')}-${job.id}` : String(job.id);
+}
+
+async function fetchJobs(table) {
+  const jobs = [];
   let page = 0;
   const pageSize = 1000;
   let hasMore = true;
@@ -27,17 +42,17 @@ async function fetchJobIds(table) {
   while (hasMore) {
     const { data, error } = await supabase
       .from(table)
-      .select('id, verified_at')
+      .select('id, verified_at, title, airline')
       .order('verified_at', { ascending: false })
       .range(page * pageSize, (page + 1) * pageSize - 1);
 
     if (error || !data || data.length === 0) break;
-    ids.push(...data);
+    jobs.push(...data);
     hasMore = data.length === pageSize;
     page++;
   }
 
-  return ids;
+  return jobs;
 }
 
 module.exports = async (req, res) => {
@@ -50,8 +65,8 @@ module.exports = async (req, res) => {
 
     // Fetch all job IDs from both tables
     const [pilotJobs, cabinJobs] = await Promise.all([
-      fetchJobIds('verified_jobs'),
-      fetchJobIds('verified_cabin_crew_jobs'),
+      fetchJobs('verified_jobs'),
+      fetchJobs('verified_cabin_crew_jobs'),
     ]);
 
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -71,7 +86,7 @@ module.exports = async (req, res) => {
     for (const job of pilotJobs) {
       const lastmod = job.verified_at ? job.verified_at.split('T')[0] : today;
       xml += '  <url>\n';
-      xml += `    <loc>https://www.aeroscout.net/jobs/${job.id}</loc>\n`;
+      xml += `    <loc>https://www.aeroscout.net/jobs/${buildSlug(job)}</loc>\n`;
       xml += `    <lastmod>${lastmod}</lastmod>\n`;
       xml += '    <changefreq>weekly</changefreq>\n';
       xml += '    <priority>0.8</priority>\n';
@@ -82,7 +97,7 @@ module.exports = async (req, res) => {
     for (const job of cabinJobs) {
       const lastmod = job.verified_at ? job.verified_at.split('T')[0] : today;
       xml += '  <url>\n';
-      xml += `    <loc>https://www.aeroscout.net/jobs/${job.id}?type=cabin_crew</loc>\n`;
+      xml += `    <loc>https://www.aeroscout.net/jobs/${buildSlug(job)}?type=cabin_crew</loc>\n`;
       xml += `    <lastmod>${lastmod}</lastmod>\n`;
       xml += '    <changefreq>weekly</changefreq>\n';
       xml += '    <priority>0.8</priority>\n';

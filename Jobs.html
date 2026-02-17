@@ -173,7 +173,7 @@
 
     .topbar-row{
       display:grid;
-      grid-template-columns: auto 1fr 1fr auto auto;
+      grid-template-columns: auto 1fr 1fr auto auto auto;
       gap: 16px;
       align-items:center;
     }
@@ -181,7 +181,7 @@
     /* Topbar responsive - hide location dropdown to make room on smaller screens */
     @media (max-width: 1200px) {
       .topbar-row {
-        grid-template-columns: auto 1fr auto auto;
+        grid-template-columns: auto 1fr auto auto auto;
         gap: 12px;
       }
       .topbar-row > .pill:has(select) {
@@ -1888,6 +1888,10 @@
       grid-column: 3;
       grid-row: 1;
       align-self: center;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
     }
     .apply-btn {
       background: #0b2a6f;
@@ -2065,6 +2069,45 @@
       stroke: #0b4ecf;
     }
 
+    /* Track Button (Option A - below Apply Now, beta only) */
+    .track-btn {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      background: #fff;
+      border: 1.5px solid #e2e8f0;
+      color: #475569;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .track-btn:hover {
+      border-color: #059669;
+      color: #059669;
+    }
+    .track-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+    .track-btn.tracked {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #059669;
+    }
+    .track-btn.tracked:hover {
+      background: #d1fae5;
+    }
+    .beta-active .track-btn {
+      display: inline-flex;
+    }
+
     .share-btn {
       display: flex;
       align-items: center;
@@ -2150,7 +2193,7 @@
 
     /* Medium Screens - Tablet Portrait */
     @media (max-width: 980px){
-      .topbar-row{ grid-template-columns: auto 1fr auto auto; }
+      .topbar-row{ grid-template-columns: auto 1fr auto auto auto; }
       .meta{ justify-content: flex-start; }
       .grid{ grid-template-columns: 1fr; }
       .mobile-toggle{ display: block; }
@@ -2220,7 +2263,7 @@
       .topbar-row {
         gap: 8px;
         display: grid;
-        grid-template-columns: 1fr auto auto;
+        grid-template-columns: 1fr auto auto auto;
         align-items: center;
       }
 
@@ -2500,6 +2543,11 @@
       .save-btn svg {
         width: 16px;
         height: 16px;
+      }
+
+      .track-btn {
+        padding: 5px 10px;
+        font-size: 10px;
       }
 
       /* Load more section */
@@ -3011,6 +3059,13 @@
                 <span id="savedCount">0</span>
               </span>
             </button>
+
+            <a href="Tracker.html" class="saved-jobs-btn" style="text-decoration:none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+              </svg>
+              <span>Tracker</span>
+            </a>
 
             <div class="meta" style="grid-column: 1 / -1;">
               <span id="count" style="font-size:15px;font-weight:700;"><span id="jobTypeLabel">Active pilot jobs</span> as of <span id="gmtTime"></span>: <span id="jobCount">0</span></span>
@@ -3718,6 +3773,15 @@
     // Saved jobs state
     let savedJobIds = new Set();
     let showingSavedOnly = false;
+
+    // Tracked jobs state (beta feature)
+    let trackedJobIds = new Set();
+
+    // Beta mode detection
+    const isBetaMode = new URLSearchParams(window.location.search).get('beta') === 'true';
+    if (isBetaMode) {
+      document.body.classList.add('beta-active');
+    }
 
     // Delta filter state - when false, eligibility badges and filtering are disabled
     let deltaFilterEnabled = true;
@@ -4539,6 +4603,8 @@
 
       // Load saved jobs after auth check
       await loadSavedJobs();
+      // Load tracked jobs (beta feature)
+      await loadTrackedJobs();
     }
     checkLoginStatus();
 
@@ -5079,6 +5145,10 @@
 
           <div class="apply-container">
             <a href="${j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
+            <button class="track-btn${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' tracked' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleTrackJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Track application">
+              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              <span>${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? 'Tracked' : 'Track'}</span>
+            </button>
           </div>
 
           <div class="attributes">
@@ -5121,6 +5191,8 @@
 
       // Mark saved jobs after rendering
       updateSaveButtons();
+      // Mark tracked jobs after rendering
+      updateTrackButtons();
     }
 
     function updateDisplay() {
@@ -6439,6 +6511,77 @@
     }
     // ── End Saved Jobs Functions ──────────────────────────────────────
 
+    // ── Tracked Jobs Functions (Beta) ────────────────────────────────
+    async function loadTrackedJobs() {
+      if (!isLoggedIn) { trackedJobIds.clear(); return; }
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return;
+        const { data } = await supabaseClient
+          .from('tracked_jobs')
+          .select('job_id, job_type')
+          .eq('user_id', session.user.id);
+        trackedJobIds = new Set((data || []).map(d => `${d.job_type}_${d.job_id}`));
+        updateTrackButtons();
+      } catch (err) {
+        console.error('Failed to load tracked jobs:', err);
+      }
+    }
+
+    async function toggleTrackJob(jobId, jobType, event) {
+      event.stopPropagation();
+      if (!isLoggedIn) {
+        showToast('Log in to track jobs');
+        setTimeout(() => { window.location.href = 'login.html'; }, 800);
+        return;
+      }
+      const key = `${jobType}_${jobId}`;
+      const btn = event.currentTarget;
+
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return;
+
+        if (trackedJobIds.has(key)) {
+          await supabaseClient.from('tracked_jobs')
+            .delete()
+            .eq('user_id', session.user.id)
+            .eq('job_id', jobId)
+            .eq('job_type', jobType);
+          trackedJobIds.delete(key);
+          btn.classList.remove('tracked');
+          btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span>Track</span>`;
+          showToast('Removed from tracker');
+        } else {
+          await supabaseClient.from('tracked_jobs')
+            .insert({ user_id: session.user.id, job_id: jobId, job_type: jobType, status: 'saved', notes: '' });
+          trackedJobIds.add(key);
+          btn.classList.add('tracked');
+          btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span>Tracked</span>`;
+          showToast('Added to tracker!');
+        }
+      } catch (err) {
+        console.error('Failed to toggle track:', err);
+        showToast('Something went wrong');
+      }
+    }
+
+    function updateTrackButtons() {
+      document.querySelectorAll('.track-btn[data-job-id]').forEach(btn => {
+        const id = btn.dataset.jobId;
+        const type = btn.dataset.jobType || 'pilot';
+        const key = `${type}_${id}`;
+        if (trackedJobIds.has(key)) {
+          btn.classList.add('tracked');
+          btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span>Tracked</span>`;
+        } else {
+          btn.classList.remove('tracked');
+          btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span>Track</span>`;
+        }
+      });
+    }
+    // ── End Tracked Jobs Functions ────────────────────────────────────
+
     // Intercept mailto: apply links - show popup instead of opening mail
     document.addEventListener('click', function(e) {
       const link = e.target.closest('a.apply-btn');
@@ -6516,6 +6659,10 @@
 
           <div class="apply-container">
             <a href="${job.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
+            <button class="track-btn${trackedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? ' tracked' : ''}" data-job-id="${job.id}" data-job-type="${job.jobType || 'pilot'}" onclick="toggleTrackJob(${job.id}, '${job.jobType || 'pilot'}', event)" title="Track application">
+              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              <span>${trackedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? 'Tracked' : 'Track'}</span>
+            </button>
           </div>
 
           <div class="attributes">
@@ -6949,6 +7096,10 @@
 
           <div class="apply-container">
             <a href="${j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
+            <button class="track-btn${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' tracked' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleTrackJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Track application">
+              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              <span>${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? 'Tracked' : 'Track'}</span>
+            </button>
           </div>
 
           <div class="attributes">

@@ -427,7 +427,19 @@
       const dd=document.getElementById('dd-'+id);const wrap=badge.closest('.sb-wrap');
       if(activeDD&&activeDD!==dd)closeDD();
       if(dd.classList.contains('open')){closeDD()}
-      else{dd.classList.add('open');wrap.classList.add('dd-active');activeDD=dd}
+      else{
+        // Check if dropdown would overflow viewport bottom
+        const rect=badge.getBoundingClientRect();
+        const spaceBelow=window.innerHeight-rect.bottom;
+        if(spaceBelow<220){
+          dd.style.top='auto';
+          dd.style.bottom='calc(100% + 6px)';
+        }else{
+          dd.style.top='calc(100% + 6px)';
+          dd.style.bottom='auto';
+        }
+        dd.classList.add('open');wrap.classList.add('dd-active');activeDD=dd;
+      }
     }
 
     async function updStatus(id,status){

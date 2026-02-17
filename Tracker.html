@@ -132,7 +132,7 @@
     .btn-primary{background:linear-gradient(135deg,#fff,#dbe8ff);color:#0b2a6f;border:none;border-radius:999px;padding:12px 28px;font-weight:800;cursor:pointer;box-shadow:0 10px 18px rgba(0,0,0,.18);text-decoration:none;font-size:14px;display:inline-block}
     .loading-state{text-align:center;padding:60px;color:var(--muted);font-size:14px}
 
-    .mobile-toggle{display:none;margin-top:8px;width:100%;gap:8px;justify-content:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:10px 16px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;align-items:center}
+    .mobile-toggle{display:none}
 
     @media(max-width:1050px){
       .j-name{font-size:14px}
@@ -141,9 +141,7 @@
 
     @media(max-width:980px){
       .layout{grid-template-columns:1fr}
-      .sidebar-panel{display:none}
-      .sidebar-panel.show{display:block;position:fixed;inset:0;z-index:1000;border-radius:0;overflow-y:auto;background:white;max-width:100vw}
-      .mobile-toggle{display:flex!important}
+      .sidebar-panel{display:none!important}
     }
 
     @media(max-width:768px){
@@ -158,10 +156,10 @@
       .layout{display:block!important}
       .content{padding:8px}
       .col-head{display:none!important}
-      .panel{border-radius:12px;overflow:hidden}
+      .panel{border-radius:12px;overflow:visible}
       .panel::before{display:none}
 
-      .jcard{border-bottom:1px solid #eef1f6;border-radius:0!important;overflow:hidden}
+      .jcard{border-bottom:1px solid #eef1f6;border-radius:0!important;overflow:visible}
       .jcard:first-child{border-radius:12px 12px 0 0!important}
       .jcard:last-child{border-radius:0 0 12px 12px!important;border-bottom:none}
 
@@ -189,12 +187,9 @@
       .exp-btns{flex-wrap:wrap;gap:8px}
       .btn-s,.btn-d{padding:8px 14px;font-size:11px}
 
-      .sidebar-panel.show{padding-top:0}
-      .sidebar-close{display:block!important;width:100%;padding:16px;background:var(--nav);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;text-align:left;font-family:inherit}
     }
     @media(min-width:769px){
       .j-mobile-meta{display:none!important}
-      .sidebar-close{display:none!important}
     }
   </style>
 </head>
@@ -215,9 +210,6 @@
               </a>
             </nav>
           </div>
-          <button class="mobile-toggle" id="toggleSidebar" type="button">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="8" y1="18" x2="16" y2="18"/></svg>Overview
-          </button>
         </header>
 
         <div id="loadingState" class="loading-state" style="margin-top:40px;">Loading...</div>
@@ -236,7 +228,6 @@
 
           <aside class="panel sidebar-panel" id="sidebarPanel">
             <div class="sidebar">
-              <button class="sidebar-close" onclick="document.getElementById('sidebarPanel').classList.remove('show');document.body.style.overflow=''">&#8592; Back to Tracker</button>
               <div class="stat-total">
                 <span class="stat-total-label">Total tracked</span>
                 <span class="stat-total-val" id="totalCount">0</span>
@@ -293,12 +284,6 @@
     const BG=['#c0392b','#2980b9','#27ae60','#8e44ad','#d35400','#16a085','#2c3e50','#e74c3c','#f39c12','#1abc9c'];
 
     let tracked=[],details={},filter='all',expanded=null,user=null,nT={},activeDD=null;
-
-    document.getElementById('toggleSidebar').addEventListener('click',()=>{
-      const p=document.getElementById('sidebarPanel');
-      p.classList.toggle('show');
-      document.body.style.overflow=p.classList.contains('show')?'hidden':'';
-    });
 
     document.addEventListener('click',e=>{if(!e.target.closest('.sb-wrap'))closeDD()});
 
@@ -431,8 +416,6 @@
 
     function setFilter(s){
       filter=s;
-      const p=document.getElementById('sidebarPanel');
-      if(p.classList.contains('show')){p.classList.remove('show');document.body.style.overflow=''}
       render();
     }
 

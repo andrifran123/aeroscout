@@ -12,13 +12,13 @@
       --shadow:0 18px 46px rgba(13,36,90,.14);--softShadow:0 10px 26px rgba(13,36,90,.10);
       --radius:22px;--maxw:1900px;--borderSoft:rgba(255,255,255,.22);--innerStroke:rgba(12,28,64,.05);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text);background:#07183d}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{height:100%}
+    body{min-height:100%;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text);background:#07183d}
 
     .site-logo{text-decoration:none;color:white;font-size:1.4rem;font-weight:800;letter-spacing:.5px;white-space:nowrap}
 
-    .stage{min-height:100%;position:relative;background:#07183d}
+    .stage{min-height:100vh;position:relative;background:#07183d}
     .stage::before{content:"";position:fixed;inset:-24px;z-index:0;background-image:url("/images/jobs-bg.webp");background-size:cover;background-position:78% center;filter:blur(2.5px) saturate(1.15) contrast(1.05);transform:scale(1.03)}
     .stage::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(1100px 700px at 70% 15%,rgba(255,255,255,.22),transparent 62%),radial-gradient(900px 600px at 20% 25%,rgba(27,102,255,.14),transparent 62%),radial-gradient(900px 600px at 85% 35%,rgba(0,183,168,.10),transparent 62%),linear-gradient(180deg,rgba(7,24,61,.55),rgba(255,255,255,.10) 55%,rgba(255,255,255,.20))}
     .shell{max-width:var(--maxw);margin:0 auto;padding:22px 18px 0;position:relative;z-index:2;min-height:100vh}
@@ -31,90 +31,93 @@
     .topbar-link:hover{background:rgba(255,255,255,.20)}
     .topbar-link.active{background:rgba(255,255,255,.18)}
 
-    .grid{display:grid;grid-template-columns:240px 1fr;gap:16px;margin-top:14px;align-items:start}
+    /* Layout */
+    .layout{display:grid;grid-template-columns:220px 1fr;gap:16px;margin-top:14px;align-items:start}
 
-    .panel{background:rgba(255,255,255,.86);border:1px solid var(--borderSoft);border-radius:var(--radius);box-shadow:var(--softShadow);overflow:hidden;position:relative}
+    /* Panels */
+    .panel{background:rgba(255,255,255,.86);border:1px solid var(--borderSoft);border-radius:var(--radius);box-shadow:var(--softShadow);overflow:visible;position:relative}
     .panel::before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--innerStroke);pointer-events:none}
-    .sidebar{padding:20px;position:sticky;top:80px}
 
-    /* Sidebar */
-    .summary-card{background:#0a192f;color:white;padding:16px;border-radius:12px;margin-bottom:20px}
-    .summary-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0}
-    .summary-label{font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:.5px}
-    .summary-val{font-size:18px;font-weight:800}
-    .section-title{font-size:13px;font-weight:800;color:#0a192f;margin-bottom:12px}
+    /* ── Sidebar ── */
+    .sidebar{padding:18px;position:sticky;top:80px}
+    .sidebar-title{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
 
-    .tile-group{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-    .filter-tile{background:#f8fafc;border:1px solid #e2e8f0;padding:12px;border-radius:8px;text-align:center;cursor:pointer;transition:all .2s;font-size:13px;font-weight:600;color:#334155}
-    .filter-tile:hover{border-color:#3b82f6;color:#3b82f6}
-    .filter-tile.active{background:#3b82f6;color:white;border-color:#3b82f6;box-shadow:0 4px 10px rgba(59,130,246,.3)}
-    .tile-count{display:block;font-size:20px;font-weight:800;margin-bottom:2px}
-    .filter-tile.active .tile-count{color:white}
-    .tile-all{grid-column:1/-1}
-    .sdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
-    .sdot-saved{background:#94a3b8}.sdot-applied{background:#3b82f6}.sdot-interview{background:#f59e0b}.sdot-offer{background:#10b981}.sdot-rejected{background:#ef4444}
+    .stat-total{background:#0a192f;color:white;padding:14px 16px;border-radius:10px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center}
+    .stat-total-label{font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:.5px}
+    .stat-total-val{font-size:22px;font-weight:800}
 
-    .import-bar{background:linear-gradient(135deg,#1b66ff,#00b7a8);color:white;padding:14px;border-radius:10px;text-align:center;font-weight:700;cursor:pointer;font-size:14px;border:none;width:100%;box-shadow:0 4px 14px rgba(27,102,255,.25);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+    /* Clean filter buttons - no colored backgrounds */
+    .filter-list{display:flex;flex-direction:column;gap:4px;margin-bottom:18px}
+    .filter-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:#475569;border:1px solid transparent;transition:all .15s;background:transparent}
+    .filter-item:hover{background:#f1f5f9}
+    .filter-item.active{background:#f1f5f9;font-weight:700;color:var(--text);border-color:#e2e8f0}
+    .filter-item .fi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .filter-item .fi-label{flex:1;margin-left:10px}
+    .filter-item .fi-count{font-size:12px;font-weight:700;color:#94a3b8;min-width:20px;text-align:right}
+    .filter-item.active .fi-count{color:var(--text)}
+
+    .import-bar{background:linear-gradient(135deg,#1b66ff,#00b7a8);color:white;padding:12px;border-radius:10px;text-align:center;font-weight:700;cursor:pointer;font-size:13px;border:none;width:100%;box-shadow:0 4px 14px rgba(27,102,255,.25);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
     .import-bar:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(27,102,255,.35)}
 
-    /* Right content */
-    .content-area{padding:20px}
+    /* ── Content area ── */
+    .content{padding:20px 20px 40px}
 
     /* Column headers */
-    .col-headers{display:grid;grid-template-columns:2fr 1fr 1.2fr 1fr 80px 120px 28px;gap:12px;padding:0 16px 10px 58px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid #e8ecf2}
+    .col-head{display:grid;grid-template-columns:2.2fr 1fr 1.4fr 1fr 70px 120px;gap:16px;padding:0 20px 12px 60px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e8ecf2}
 
-    /* Job rows */
-    .job-row{display:grid;grid-template-columns:2fr 1fr 1.2fr 1fr 80px 120px 28px;gap:12px;align-items:center;padding:14px 16px 14px 16px;border-bottom:1px solid #f0f3f7;transition:background .1s;cursor:pointer}
-    .job-row:hover{background:#f8fafc}
-    .job-row:last-child{border-bottom:none}
+    /* ── Job rows ── */
+    .jrow{border-bottom:1px solid #f0f3f7;position:relative}
+    .jrow:last-child{border-bottom:none}
+    .jrow-main{display:grid;grid-template-columns:2.2fr 1fr 1.4fr 1fr 70px 120px;gap:16px;align-items:center;padding:16px 20px 16px 20px;cursor:pointer;transition:background .1s}
+    .jrow-main:hover{background:#fafbfd}
 
-    .row-airline{display:flex;align-items:center;gap:12px}
-    .row-logo{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff;flex-shrink:0;letter-spacing:.3px}
-    .row-logo img{width:38px;height:38px;border-radius:50%;object-fit:contain;background:#f0f3f7}
-    .row-airline-info{min-width:0}
-    .row-airline-name{font-size:14px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .row-airline-rank{font-size:11px;color:#94a3b8;margin-top:1px}
+    .j-airline{display:flex;align-items:center;gap:14px}
+    .j-logo{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0;letter-spacing:.3px;overflow:hidden}
+    .j-logo img{width:40px;height:40px;border-radius:50%;object-fit:contain;background:#f0f3f7}
+    .j-info{min-width:0}
+    .j-name{font-size:14px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .j-title{font-size:12px;color:#94a3b8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-    .row-aircraft{font-size:13px;font-weight:600;color:#334155}
-    .row-aircraft-label{font-size:10px;color:#cbd5e1;margin-top:1px}
+    .j-aircraft{font-size:14px;font-weight:600;color:#334155}
+    .j-aircraft-sub{font-size:10px;color:#cbd5e1;margin-top:2px}
 
-    .row-location{display:flex;align-items:center;gap:4px;font-size:13px;color:#475569}
-    .loc-dot{width:6px;height:6px;border-radius:50%;background:#ef4444;flex-shrink:0}
+    .j-location{display:flex;align-items:center;gap:6px;font-size:13px;color:#475569}
+    .ldot{width:6px;height:6px;border-radius:50%;background:#ef4444;flex-shrink:0}
 
-    .row-salary{font-size:13px;font-weight:600;color:#334155}
-    .row-salary-label{font-size:10px;color:#cbd5e1;margin-top:1px}
+    .j-salary{font-size:14px;font-weight:600;color:#334155}
+    .j-salary-sub{font-size:10px;color:#cbd5e1;margin-top:2px}
 
-    .row-date{font-size:12px;color:#94a3b8}
+    .j-date{font-size:12px;color:#94a3b8}
 
-    /* Status badges */
-    .status-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:20px;padding:5px 12px;cursor:pointer;border:1px solid;white-space:nowrap;transition:filter .15s;position:relative}
-    .status-badge:hover{filter:brightness(.95)}
-    .status-badge[data-s="saved"]{color:#64748b;background:#f1f5f9;border-color:#e2e8f0}
-    .status-badge[data-s="applied"]{color:#1d4ed8;background:#eff6ff;border-color:#bfdbfe}
-    .status-badge[data-s="interview"]{color:#b45309;background:#fffbeb;border-color:#fde68a}
-    .status-badge[data-s="offer"]{color:#059669;background:#ecfdf5;border-color:#a7f3d0}
-    .status-badge[data-s="rejected"]{color:#dc2626;background:#fef2f2;border-color:#fecaca}
+    /* Status badge - works independently of row expand */
+    .sbadge-wrap{position:relative;z-index:5}
+    .sbadge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:20px;padding:6px 14px;cursor:pointer;border:1px solid;white-space:nowrap;transition:filter .15s;user-select:none}
+    .sbadge:hover{filter:brightness(.93)}
+    .sbadge[data-s="saved"]{color:#64748b;background:#f1f5f9;border-color:#e2e8f0}
+    .sbadge[data-s="applied"]{color:#1d4ed8;background:#eff6ff;border-color:#bfdbfe}
+    .sbadge[data-s="interview"]{color:#b45309;background:#fffbeb;border-color:#fde68a}
+    .sbadge[data-s="offer"]{color:#059669;background:#ecfdf5;border-color:#a7f3d0}
+    .sbadge[data-s="rejected"]{color:#dc2626;background:#fef2f2;border-color:#fecaca}
 
-    .badge-icon{font-size:10px}
+    .sdd{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border-radius:10px;padding:6px;box-shadow:0 10px 40px rgba(0,0,0,.18);border:1px solid #e2e8f0;z-index:200;min-width:150px;display:none}
+    .sdd.open{display:block}
+    .sdd-opt{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:none;border-radius:6px;background:transparent;color:#475569;font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:background .1s}
+    .sdd-opt:hover{background:#f8fafc}
+    .sdd-opt.cur{font-weight:700;color:var(--accent)}
+    .sdd-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
-    /* Dropdown */
-    .status-dd{position:absolute;right:0;top:calc(100% + 4px);background:#fff;border-radius:8px;padding:4px;box-shadow:0 8px 30px rgba(0,0,0,.15);border:1px solid #e2e8f0;z-index:100;min-width:140px;display:none}
-    .status-dd.open{display:block}
-    .dd-option{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:none;border-radius:6px;background:transparent;color:#475569;font-size:13px;font-weight:500;cursor:pointer;text-align:left}
-    .dd-option:hover{background:#f8fafc}
-    .dd-option.current{font-weight:700;color:var(--accent)}
-
-    .row-arrow{color:#cbd5e1;font-size:12px;text-align:center;transition:transform .2s}
-    .row-arrow.open{transform:rotate(180deg)}
+    /* Expand chevron */
+    .j-chevron{color:#cbd5e1;font-size:11px;transition:transform .2s;text-align:right;padding-right:4px;cursor:pointer}
+    .jrow.open .j-chevron{transform:rotate(180deg)}
 
     /* Expanded panel */
-    .row-expanded{display:none;padding:0 16px 16px 58px;border-bottom:1px solid #f0f3f7}
-    .row-expanded.open{display:block}
-    .notes-label{font-size:12px;font-weight:600;color:#475569;margin:10px 0 6px}
-    .notes-area{width:100%;max-width:600px;min-height:56px;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;font-size:13px;color:#334155;resize:vertical;font-family:inherit;outline:none;background:#fff;line-height:1.5}
-    .notes-area:focus{border-color:var(--accent)}
-    .notes-ind{font-size:11px;color:var(--accent2);margin-top:4px;opacity:0;transition:opacity .3s}
-    .notes-ind.on{opacity:1}
+    .jrow-exp{display:none;padding:0 20px 18px 74px}
+    .jrow.open .jrow-exp{display:block}
+    .exp-label{font-size:12px;font-weight:600;color:#475569;margin:8px 0 6px}
+    .exp-notes{width:100%;max-width:560px;min-height:60px;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;font-size:13px;color:#334155;resize:vertical;font-family:inherit;outline:none;background:#fff;line-height:1.5}
+    .exp-notes:focus{border-color:var(--accent)}
+    .exp-saved{font-size:11px;color:var(--accent2);margin-top:4px;opacity:0;transition:opacity .3s}
+    .exp-saved.on{opacity:1}
     .exp-btns{display:flex;gap:8px;margin-top:10px}
     .btn-s{background:none;border:1px solid #e2e8f0;color:#475569;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .15s}
     .btn-s:hover{border-color:var(--accent);color:var(--accent)}
@@ -122,9 +125,9 @@
     .btn-d:hover{background:#fef2f2}
 
     /* States */
-    .empty{text-align:center;padding:60px 20px;color:var(--muted)}
-    .empty h3{font-size:17px;color:var(--text);margin:0 0 6px}
-    .empty p{font-size:13px;margin:0}
+    .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+    .empty-state h3{font-size:17px;color:var(--text);margin:0 0 6px}
+    .empty-state p{font-size:13px;margin:0}
     .auth-prompt{text-align:center;padding:80px 20px}
     .auth-prompt h2{font-size:20px;color:var(--text);margin:0 0 8px}
     .auth-prompt p{font-size:14px;color:var(--muted);margin:0 0 24px}
@@ -133,29 +136,47 @@
 
     .mobile-toggle{display:none;margin-top:8px;width:100%;gap:8px;justify-content:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:10px 16px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;align-items:center}
 
+    /* ── Tablet ── */
     @media(max-width:1100px){
-      .col-headers,.job-row{grid-template-columns:2fr 1fr 1.2fr 1fr 70px 110px 24px}
+      .col-head,.jrow-main{grid-template-columns:2fr 1fr 1.2fr 1fr 60px 110px}
     }
+
+    /* ── Mobile sidebar collapse ── */
     @media(max-width:980px){
-      .grid{grid-template-columns:1fr}
+      .layout{grid-template-columns:1fr}
       .sidebar-panel{display:none}
       .sidebar-panel.show{display:block;position:fixed;inset:0;z-index:1000;border-radius:0;overflow-y:auto;background:white}
       .mobile-toggle{display:flex!important}
-      .col-headers{display:none}
-      .job-row{grid-template-columns:1fr auto auto;padding:12px 14px;gap:8px}
-      .row-aircraft,.row-location,.row-salary,.row-date{display:none}
-      .row-arrow{display:none}
     }
+
+    /* ── Mobile ── */
     @media(max-width:768px){
-      html,body{overflow-x:hidden;height:auto}
+      html,body{overflow-x:hidden}
       .stage::before,.stage::after{display:none}
       .shell{padding:0;background:#f8fafc}
       .frame{padding:0;border-radius:0;min-height:auto;background:#f8fafc;border:none;box-shadow:none}
       .topbar{padding:12px 16px;border-radius:0;position:sticky;top:0}
       .topbar-row{flex-wrap:wrap}
       .topbar-nav{width:100%;justify-content:flex-end;margin-top:4px}
-      .content-area{padding:12px}
-      .row-expanded{padding-left:14px}
+      .content{padding:10px}
+      .col-head{display:none}
+
+      .jrow-main{display:flex;flex-wrap:wrap;gap:10px;padding:14px;align-items:flex-start}
+      .j-airline{flex:1 1 auto;min-width:0}
+      .j-aircraft,.j-salary-col,.j-date{display:none}
+      .j-location{flex:1 1 100%;order:3;font-size:12px;padding-left:54px;margin-top:-4px}
+      .sbadge-wrap{order:2;flex-shrink:0}
+      .j-chevron{display:none}
+
+      .jrow-exp{padding:0 14px 14px 14px}
+      .exp-notes{max-width:100%}
+
+      /* Show salary + aircraft below on mobile */
+      .j-mobile-meta{display:flex;gap:12px;flex:1 1 100%;order:4;padding-left:54px;font-size:12px;color:#64748b;margin-top:2px}
+      .j-mobile-meta b{color:#334155;font-weight:600}
+    }
+    @media(min-width:769px){
+      .j-mobile-meta{display:none}
     }
   </style>
 </head>
@@ -193,44 +214,67 @@
           </div>
         </div>
 
-        <main class="grid" id="mainGrid" style="display:none;">
+        <main class="layout" id="mainGrid" style="display:none;">
 
           <aside class="panel sidebar-panel" id="sidebarPanel">
             <div class="sidebar">
-              <div class="summary-card">
-                <div class="summary-row">
-                  <span class="summary-label">Total tracked</span>
-                  <span class="summary-val" id="totalCount">0</span>
+              <div class="stat-total">
+                <span class="stat-total-label">Total tracked</span>
+                <span class="stat-total-val" id="totalCount">0</span>
+              </div>
+
+              <div class="sidebar-title">Status</div>
+              <div class="filter-list" id="filterList">
+                <div class="filter-item active" data-status="all" onclick="setFilter('all')">
+                  <span class="fi-dot" style="background:#475569"></span>
+                  <span class="fi-label">All</span>
+                  <span class="fi-count" id="cAll">0</span>
+                </div>
+                <div class="filter-item" data-status="saved" onclick="setFilter('saved')">
+                  <span class="fi-dot" style="background:#94a3b8"></span>
+                  <span class="fi-label">Saved</span>
+                  <span class="fi-count" id="cSaved">0</span>
+                </div>
+                <div class="filter-item" data-status="applied" onclick="setFilter('applied')">
+                  <span class="fi-dot" style="background:#3b82f6"></span>
+                  <span class="fi-label">Applied</span>
+                  <span class="fi-count" id="cApplied">0</span>
+                </div>
+                <div class="filter-item" data-status="interview" onclick="setFilter('interview')">
+                  <span class="fi-dot" style="background:#f59e0b"></span>
+                  <span class="fi-label">Interview</span>
+                  <span class="fi-count" id="cInterview">0</span>
+                </div>
+                <div class="filter-item" data-status="offer" onclick="setFilter('offer')">
+                  <span class="fi-dot" style="background:#10b981"></span>
+                  <span class="fi-label">Offer</span>
+                  <span class="fi-count" id="cOffer">0</span>
+                </div>
+                <div class="filter-item" data-status="rejected" onclick="setFilter('rejected')">
+                  <span class="fi-dot" style="background:#ef4444"></span>
+                  <span class="fi-label">Rejected</span>
+                  <span class="fi-count" id="cRejected">0</span>
                 </div>
               </div>
-              <div class="section-title">Filter by Status</div>
-              <div class="tile-group">
-                <div class="filter-tile tile-all active" data-status="all" onclick="setFilter('all')"><span class="tile-count" id="cAll">0</span>All</div>
-                <div class="filter-tile" data-status="saved" onclick="setFilter('saved')"><span class="tile-count" id="cSaved">0</span><span class="sdot sdot-saved"></span>Saved</div>
-                <div class="filter-tile" data-status="applied" onclick="setFilter('applied')"><span class="tile-count" id="cApplied">0</span><span class="sdot sdot-applied"></span>Applied</div>
-                <div class="filter-tile" data-status="interview" onclick="setFilter('interview')"><span class="tile-count" id="cInterview">0</span><span class="sdot sdot-interview"></span>Interview</div>
-                <div class="filter-tile" data-status="offer" onclick="setFilter('offer')"><span class="tile-count" id="cOffer">0</span><span class="sdot sdot-offer"></span>Offer</div>
-                <div class="filter-tile" data-status="rejected" onclick="setFilter('rejected')"><span class="tile-count" id="cRejected">0</span><span class="sdot sdot-rejected"></span>Rejected</div>
-              </div>
+
               <button class="import-bar" onclick="importSavedJobs()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Import Saved Jobs
               </button>
             </div>
           </aside>
 
-          <section class="panel">
-            <div class="content-area">
-              <div class="col-headers">
+          <section class="panel" style="overflow:visible">
+            <div class="content">
+              <div class="col-head">
                 <div>Airline</div>
                 <div>Aircraft</div>
                 <div>Location</div>
                 <div>Salary</div>
                 <div>Saved</div>
-                <div>Status</div>
-                <div></div>
+                <div style="text-align:center">Status</div>
               </div>
               <div id="rowsList"></div>
-              <div id="emptyState" class="empty" style="display:none;">
+              <div id="emptyState" class="empty-state" style="display:none;">
                 <h3>No applications tracked yet</h3>
                 <p>Save jobs from the job board, then import them here to track your progress.</p>
               </div>
@@ -245,18 +289,17 @@
   <script>
     if(new URLSearchParams(location.search).get('beta')!=='true') location.href='Jobs.html';
 
-    const SB_URL='https://ziboktbmbyjbhifsdypa.supabase.co';
-    const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY';
-    const{createClient}=supabase;
-    const sb=createClient(SB_URL,SB_KEY);
+    const SB='https://ziboktbmbyjbhifsdypa.supabase.co';
+    const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY';
+    const{createClient}=supabase;const sb=createClient(SB,SK);
 
     const STS=['saved','applied','interview','offer','rejected'];
-    const STS_LABEL={saved:'Saved',applied:'Applied',interview:'Interview',offer:'Offer',rejected:'Rejected'};
-    const STS_ICON={saved:'&#9733;',applied:'&#9998;',interview:'&#9899;',offer:'&#10132;',rejected:'&#10005;'};
-    // Logo background colors per airline code
-    const LOGO_COLORS=['#c0392b','#2980b9','#27ae60','#8e44ad','#d35400','#16a085','#2c3e50','#e74c3c','#3498db','#1abc9c'];
+    const LBL={saved:'Saved',applied:'Applied',interview:'Interview',offer:'Offer',rejected:'Rejected'};
+    const ICO={saved:'\u2605',applied:'\u270E',interview:'\u25CF',offer:'\u2794',rejected:'\u2715'};
+    const DOT={saved:'#94a3b8',applied:'#3b82f6',interview:'#f59e0b',offer:'#10b981',rejected:'#ef4444'};
+    const BG=['#c0392b','#2980b9','#27ae60','#8e44ad','#d35400','#16a085','#2c3e50','#e74c3c','#3498db','#1abc9c'];
 
-    let tracked=[],details={},filter='all',expanded=null,user=null,noteTimers={};
+    let tracked=[],details={},filter='all',expanded=null,user=null,nTimers={};
 
     document.getElementById('toggleSidebar').addEventListener('click',()=>{
       const p=document.getElementById('sidebarPanel');
@@ -264,10 +307,9 @@
       document.body.style.overflow=p.classList.contains('show')?'hidden':'';
     });
 
-    // Close status dropdowns on outside click
     document.addEventListener('click',e=>{
-      if(!e.target.closest('.status-badge'))
-        document.querySelectorAll('.status-dd.open').forEach(d=>d.classList.remove('open'));
+      if(!e.target.closest('.sbadge-wrap'))
+        document.querySelectorAll('.sdd.open').forEach(d=>d.classList.remove('open'));
     });
 
     async function init(){
@@ -281,8 +323,7 @@
 
     async function load(){
       const{data}=await sb.from('tracked_jobs').select('*').eq('user_id',user.id).order('updated_at',{ascending:false});
-      tracked=data||[];
-      details={};
+      tracked=data||[];details={};
 
       const pIds=tracked.filter(t=>t.job_type==='pilot').map(t=>t.job_id);
       const cIds=tracked.filter(t=>t.job_type==='cabin_crew').map(t=>t.job_id);
@@ -290,10 +331,10 @@
       if(pIds.length){
         const{data:p}=await sb.from('verified_jobs').select('id,title,airline,aircraft,aircraft_family,location,salary_usd,rank,rank_bucket,url,logo_url,company_id').in('id',pIds);
         if(p){
-          const coids=[...new Set(p.filter(x=>x.company_id).map(x=>x.company_id))];
-          let logos={};
-          if(coids.length){const{data:co}=await sb.from('final_companies').select('id,logo_url').in('id',coids);if(co)co.forEach(c=>{logos[c.id]=c.logo_url})}
-          p.forEach(j=>{j.logo=j.logo_url||logos[j.company_id]||null;details['p_'+j.id]=j});
+          const co=[...new Set(p.filter(x=>x.company_id).map(x=>x.company_id))];
+          let lg={};
+          if(co.length){const{data:c}=await sb.from('final_companies').select('id,logo_url').in('id',co);if(c)c.forEach(x=>{lg[x.id]=x.logo_url})}
+          p.forEach(j=>{j.logo=j.logo_url||lg[j.company_id]||null;details['p_'+j.id]=j});
         }
       }
       if(cIds.length){
@@ -305,95 +346,98 @@
 
     function render(){updateCounts();renderRows()}
 
+    function hc(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return Math.abs(h)}
+
     function updateCounts(){
       const c={all:tracked.length};STS.forEach(s=>{c[s]=0});
       tracked.forEach(t=>{c[t.status]=(c[t.status]||0)+1});
       document.getElementById('totalCount').textContent=tracked.length;
       document.getElementById('cAll').textContent=c.all;
       STS.forEach(s=>{const el=document.getElementById('c'+s.charAt(0).toUpperCase()+s.slice(1));if(el)el.textContent=c[s]});
-      document.querySelectorAll('.filter-tile').forEach(el=>{el.classList.toggle('active',el.dataset.status===filter)});
+      document.querySelectorAll('.filter-item').forEach(el=>{el.classList.toggle('active',el.dataset.status===filter)});
     }
-
-    function hashCode(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return Math.abs(h)}
 
     function renderRows(){
       const list=filter==='all'?tracked:tracked.filter(t=>t.status===filter);
-      const container=document.getElementById('rowsList');
+      const el=document.getElementById('rowsList');
       const empty=document.getElementById('emptyState');
 
       if(!list.length){
-        container.innerHTML='';empty.style.display='';
-        if(tracked.length&&filter!=='all'){
-          empty.querySelector('h3').textContent='No '+STS_LABEL[filter].toLowerCase()+' applications';
-          empty.querySelector('p').textContent='Change the status of a tracked job to see it here.';
-        }else{
-          empty.querySelector('h3').textContent='No applications tracked yet';
-          empty.querySelector('p').textContent='Save jobs from the job board, then import them here to track your progress.';
-        }
+        el.innerHTML='';empty.style.display='';
+        empty.querySelector('h3').textContent=tracked.length&&filter!=='all'
+          ?'No '+LBL[filter].toLowerCase()+' applications'
+          :'No applications tracked yet';
+        empty.querySelector('p').textContent=tracked.length&&filter!=='all'
+          ?'Change the status of a tracked job to see it here.'
+          :'Save jobs from the job board, then import them here to track your progress.';
         return;
       }
       empty.style.display='none';
 
-      container.innerHTML=list.map(t=>{
+      el.innerHTML=list.map(t=>{
         const key=(t.job_type==='pilot'?'p_':'c_')+t.job_id;
         const job=details[key];
         const isOpen=expanded===t.id;
         const date=new Date(t.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
 
-        if(!job) return `<div class="job-row"><div class="row-airline"><div class="row-logo" style="background:#94a3b8">?</div><div class="row-airline-info"><div class="row-airline-name">Job unavailable</div><div class="row-airline-rank">May have been removed</div></div></div><div></div><div><button class="btn-d" onclick="remove('${t.id}')">Remove</button></div></div>`;
+        if(!job) return `<div class="jrow"><div class="jrow-main" style="grid-template-columns:1fr auto"><div class="j-airline"><div class="j-logo" style="background:#94a3b8">?</div><div class="j-info"><div class="j-name">Job unavailable</div><div class="j-title">May have been removed</div></div></div><button class="btn-d" onclick="event.stopPropagation();remove('${t.id}')">Remove</button></div></div>`;
 
         const airline=job.airline||'Unknown';
         const code=airline.substring(0,2).toUpperCase();
-        const bgColor=LOGO_COLORS[hashCode(airline)%LOGO_COLORS.length];
+        const bg=BG[hc(airline)%BG.length];
         const aircraft=job.aircraft||job.aircraft_family||'\u2014';
         const loc=job.location||'\u2014';
         const salary=job.salary_usd||'\u2014';
-        const rank=job.rank||job.rank_bucket||job.position||'';
+        const title=job.title||'';
 
         const logoHtml=job.logo
-          ?`<div class="row-logo"><img src="${job.logo}" alt="${code}" onerror="this.parentElement.style.background='${bgColor}';this.parentElement.innerHTML='${code}'"></div>`
-          :`<div class="row-logo" style="background:${bgColor}">${code}</div>`;
+          ?`<div class="j-logo"><img src="${job.logo}" alt="${code}" onerror="this.parentElement.style.background='${bg}';this.parentElement.innerHTML='${code}'"></div>`
+          :`<div class="j-logo" style="background:${bg}">${code}</div>`;
 
-        const ddOptions=STS.map(s=>
-          `<button class="dd-option${s===t.status?' current':''}" onclick="event.stopPropagation();updateStatus('${t.id}','${s}')"><span class="sdot sdot-${s}"></span>${STS_LABEL[s]}</button>`
+        const ddOpts=STS.map(s=>
+          `<button class="sdd-opt${s===t.status?' cur':''}" onclick="event.stopPropagation();updStatus('${t.id}','${s}')"><span class="sdd-dot" style="background:${DOT[s]}"></span>${LBL[s]}</button>`
         ).join('');
 
-        return `
-          <div class="job-row" onclick="toggleExpand('${t.id}')">
-            <div class="row-airline">
+        return `<div class="jrow${isOpen?' open':''}">
+          <div class="jrow-main" onclick="toggleExp('${t.id}')">
+            <div class="j-airline">
               ${logoHtml}
-              <div class="row-airline-info">
-                <div class="row-airline-name">${airline}</div>
-                <div class="row-airline-rank">${rank}</div>
+              <div class="j-info">
+                <div class="j-name">${airline}</div>
+                <div class="j-title">${title}</div>
               </div>
             </div>
             <div>
-              <div class="row-aircraft">${aircraft}</div>
-              <div class="row-aircraft-label">Aircraft</div>
+              <div class="j-aircraft">${aircraft}</div>
+              <div class="j-aircraft-sub">Aircraft</div>
             </div>
-            <div class="row-location"><span class="loc-dot"></span>${loc}</div>
-            <div>
-              <div class="row-salary">${salary}</div>
-              <div class="row-salary-label">Salary</div>
+            <div class="j-location"><span class="ldot"></span>${loc}</div>
+            <div class="j-salary-col">
+              <div class="j-salary">${salary}</div>
+              <div class="j-salary-sub">Salary</div>
             </div>
-            <div class="row-date">${date}</div>
-            <div style="position:relative" onclick="event.stopPropagation()">
-              <div class="status-badge" data-s="${t.status}" onclick="toggleDD('${t.id}')">
-                <span class="badge-icon">${STS_ICON[t.status]}</span> ${STS_LABEL[t.status]}
+            <div class="j-date">${date}</div>
+            <div class="sbadge-wrap" onclick="event.stopPropagation()">
+              <div class="sbadge" data-s="${t.status}" onclick="toggleDD('${t.id}')">
+                <span>${ICO[t.status]}</span> ${LBL[t.status]}
               </div>
-              <div class="status-dd" id="dd-${t.id}">${ddOptions}</div>
+              <div class="sdd" id="dd-${t.id}">${ddOpts}</div>
             </div>
-            <div class="row-arrow${isOpen?' open':''}">&#9662;</div>
+            <div class="j-mobile-meta">
+              ${aircraft!=='\u2014'?'<span><b>'+aircraft+'</b></span>':''}
+              ${salary!=='\u2014'?'<span>'+salary+'</span>':''}
+            </div>
           </div>
-          <div class="row-expanded${isOpen?' open':''}" id="exp-${t.id}">
-            <div class="notes-label">Notes</div>
-            <textarea class="notes-area" id="notes-${t.id}" placeholder="Interview date, contact info, prep notes..." oninput="onNote('${t.id}')" onclick="event.stopPropagation()">${t.notes||''}</textarea>
-            <div class="notes-ind" id="si-${t.id}">Saved</div>
+          <div class="jrow-exp">
+            <div class="exp-label">Notes</div>
+            <textarea class="exp-notes" id="n-${t.id}" placeholder="Interview date, contact info, prep notes..." oninput="onN('${t.id}')" onclick="event.stopPropagation()">${t.notes||''}</textarea>
+            <div class="exp-saved" id="si-${t.id}">Saved</div>
             <div class="exp-btns">
               <a class="btn-s" href="${job.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">View Original Posting</a>
               <button class="btn-d" onclick="event.stopPropagation();remove('${t.id}')">Remove</button>
             </div>
-          </div>`;
+          </div>
+        </div>`;
       }).join('');
     }
 
@@ -404,25 +448,26 @@
       render();
     }
 
-    function toggleExpand(id){expanded=expanded===id?null:id;renderRows()}
+    function toggleExp(id){expanded=expanded===id?null:id;renderRows()}
 
     function toggleDD(id){
-      document.querySelectorAll('.status-dd.open').forEach(d=>{if(d.id!=='dd-'+id)d.classList.remove('open')});
-      document.getElementById('dd-'+id).classList.toggle('open');
+      const el=document.getElementById('dd-'+id);
+      document.querySelectorAll('.sdd.open').forEach(d=>{if(d!==el)d.classList.remove('open')});
+      el.classList.toggle('open');
     }
 
-    async function updateStatus(id,status){
-      document.querySelectorAll('.status-dd.open').forEach(d=>d.classList.remove('open'));
+    async function updStatus(id,status){
+      document.querySelectorAll('.sdd.open').forEach(d=>d.classList.remove('open'));
       const{error}=await sb.from('tracked_jobs').update({status}).eq('id',id).eq('user_id',user.id);
-      if(error){console.error(error);return}
+      if(error)return;
       const t=tracked.find(j=>j.id===id);if(t)t.status=status;
       render();
     }
 
-    function onNote(id){if(noteTimers[id])clearTimeout(noteTimers[id]);noteTimers[id]=setTimeout(()=>saveNote(id),800)}
+    function onN(id){if(nTimers[id])clearTimeout(nTimers[id]);nTimers[id]=setTimeout(()=>saveN(id),800)}
 
-    async function saveNote(id){
-      const el=document.getElementById('notes-'+id);if(!el)return;
+    async function saveN(id){
+      const el=document.getElementById('n-'+id);if(!el)return;
       const{error}=await sb.from('tracked_jobs').update({notes:el.value}).eq('id',id).eq('user_id',user.id);
       if(error)return;
       const t=tracked.find(j=>j.id===id);if(t)t.notes=el.value;
@@ -442,13 +487,13 @@
       const{data:saved,error}=await sb.from('saved_jobs').select('*').eq('user_id',user.id);
       if(error||!saved){alert('Could not load saved jobs.');return}
       if(!saved.length){alert('No saved jobs found. Save some from the job board first.');return}
-      const existing=new Set(tracked.map(j=>j.job_type+'_'+j.job_id));
-      const toImport=saved.filter(s=>!existing.has(s.job_type+'_'+s.job_id));
-      if(!toImport.length){alert('All saved jobs are already tracked.');return}
-      const rows=toImport.map(s=>({user_id:user.id,job_id:s.job_id,job_type:s.job_type,status:'saved',notes:''}));
+      const ex=new Set(tracked.map(j=>j.job_type+'_'+j.job_id));
+      const imp=saved.filter(s=>!ex.has(s.job_type+'_'+s.job_id));
+      if(!imp.length){alert('All saved jobs are already tracked.');return}
+      const rows=imp.map(s=>({user_id:user.id,job_id:s.job_id,job_type:s.job_type,status:'saved',notes:''}));
       const{error:e2}=await sb.from('tracked_jobs').insert(rows);
       if(e2){alert('Error importing.');return}
-      alert('Imported '+toImport.length+' job'+(toImport.length>1?'s':'')+'.');
+      alert('Imported '+imp.length+' job'+(imp.length>1?'s':'')+'.');
       await load();
     }
 

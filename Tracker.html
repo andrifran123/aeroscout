@@ -204,10 +204,10 @@
           <div class="topbar-row">
             <a href="index.html" class="site-logo">AEROSCOUT</a>
             <nav class="topbar-nav">
-              <a href="Jobs.html?beta=true" class="topbar-link">
+              <a href="Jobs.html" class="topbar-link">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M21 21l-4.2-4.2m1.7-5.3a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>Jobs
               </a>
-              <a href="Tracker.html?beta=true" class="topbar-link active">
+              <a href="Tracker.html" class="topbar-link active">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Tracker
               </a>
             </nav>
@@ -222,6 +222,17 @@
               <h2>Application Tracker</h2>
               <p>Sign in to track your job applications across airlines.</p>
               <a href="login.html" class="btn-primary">Log In</a>
+            </div>
+          </div>
+        </div>
+
+        <div id="premiumGate" style="display:none;">
+          <div class="panel" style="margin-top:14px;">
+            <div class="auth-prompt">
+              <h2>Application Tracker</h2>
+              <p>Track your applications, interviews, and offers across airlines — all in one place.</p>
+              <p style="margin-top:8px;font-size:13px;color:#64748b;">This feature is available with AeroScout Pro.</p>
+              <a href="pricing.html" class="btn-primary" style="margin-top:16px;">Upgrade to Pro</a>
             </div>
           </div>
         </div>
@@ -273,7 +284,7 @@
   </div>
 
   <script>
-    if(new URLSearchParams(location.search).get('beta')!=='true') location.href='Jobs.html';
+    const isBeta=new URLSearchParams(location.search).get('beta')==='true';
 
     const SB='https://ziboktbmbyjbhifsdypa.supabase.co';
     const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY';
@@ -297,7 +308,16 @@
       const{data:{session}}=await sb.auth.getSession();
       document.getElementById('loadingState').style.display='none';
       if(!session){document.getElementById('authPrompt').style.display='';return}
-      user=session.user;document.getElementById('mainGrid').style.display='';await load();
+      user=session.user;
+
+      // Beta: check premium subscription
+      if(isBeta){
+        const{data:prof}=await sb.from('profiles').select('is_premium').eq('id',user.id).single();
+        if(!prof||!prof.is_premium){document.getElementById('premiumGate').style.display='';return}
+      }
+
+      document.getElementById('mainGrid').style.display='';
+      await load();
     }
 
     async function load(){

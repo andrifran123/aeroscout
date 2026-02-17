@@ -431,7 +431,7 @@
         // Check if dropdown would overflow viewport bottom
         const rect=badge.getBoundingClientRect();
         const spaceBelow=window.innerHeight-rect.bottom;
-        if(spaceBelow<220){
+        if(spaceBelow<300){
           dd.style.top='auto';
           dd.style.bottom='calc(100% + 6px)';
         }else{

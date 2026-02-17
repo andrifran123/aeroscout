@@ -4470,6 +4470,13 @@
       window.location.href = gumroadUrl;
     });
 
+    // Auto-show upgrade modal if coming from pricing page
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('upgrade') === 'true') {
+      showUpgradeModal();
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
     // Show upgrade modal when non-premium user tries to access premium feature
     function redirectToUpgrade() {
       showUpgradeModal();

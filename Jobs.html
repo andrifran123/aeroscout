@@ -2069,9 +2069,9 @@
       stroke: #0b4ecf;
     }
 
-    /* Track Button (Option A - below Apply Now, beta only) */
+    /* Track Button (Option A - below Apply Now) */
     .track-btn {
-      display: none;
+      display: inline-flex;
       align-items: center;
       gap: 5px;
       background: #fff;
@@ -2104,10 +2104,6 @@
     .track-btn.tracked:hover {
       background: #d1fae5;
     }
-    .beta-active .track-btn {
-      display: inline-flex;
-    }
-
     .share-btn {
       display: flex;
       align-items: center;
@@ -3774,14 +3770,8 @@
     let savedJobIds = new Set();
     let showingSavedOnly = false;
 
-    // Tracked jobs state (beta feature)
+    // Tracked jobs state
     let trackedJobIds = new Set();
-
-    // Beta mode detection
-    const isBetaMode = new URLSearchParams(window.location.search).get('beta') === 'true';
-    if (isBetaMode) {
-      document.body.classList.add('beta-active');
-    }
 
     // Delta filter state - when false, eligibility badges and filtering are disabled
     let deltaFilterEnabled = true;

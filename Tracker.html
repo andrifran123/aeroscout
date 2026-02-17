@@ -31,97 +31,98 @@
     .topbar-link:hover{background:rgba(255,255,255,.20)}
     .topbar-link.active{background:rgba(255,255,255,.18)}
 
-    /* Layout */
     .layout{display:grid;grid-template-columns:220px 1fr;gap:16px;margin-top:14px;align-items:start}
 
-    /* Panels */
     .panel{background:rgba(255,255,255,.86);border:1px solid var(--borderSoft);border-radius:var(--radius);box-shadow:var(--softShadow);overflow:visible;position:relative}
-    .panel::before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--innerStroke);pointer-events:none}
+    .panel::before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--innerStroke);pointer-events:none;z-index:0}
 
     /* ── Sidebar ── */
     .sidebar{padding:18px;position:sticky;top:80px}
-    .sidebar-title{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+    .sidebar-label{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
 
     .stat-total{background:#0a192f;color:white;padding:14px 16px;border-radius:10px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center}
     .stat-total-label{font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:.5px}
     .stat-total-val{font-size:22px;font-weight:800}
 
-    /* Clean filter buttons - no colored backgrounds */
-    .filter-list{display:flex;flex-direction:column;gap:4px;margin-bottom:18px}
-    .filter-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:#475569;border:1px solid transparent;transition:all .15s;background:transparent}
-    .filter-item:hover{background:#f1f5f9}
-    .filter-item.active{background:#f1f5f9;font-weight:700;color:var(--text);border-color:#e2e8f0}
-    .filter-item .fi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-    .filter-item .fi-label{flex:1;margin-left:10px}
-    .filter-item .fi-count{font-size:12px;font-weight:700;color:#94a3b8;min-width:20px;text-align:right}
-    .filter-item.active .fi-count{color:var(--text)}
+    .filter-list{display:flex;flex-direction:column;gap:3px;margin-bottom:18px}
+    .fi{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:#475569;border:1px solid transparent;transition:all .15s;background:transparent}
+    .fi:hover{background:#f1f5f9}
+    .fi.active{background:#f1f5f9;font-weight:700;color:var(--text);border-color:#e2e8f0}
+    .fi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .fi-name{flex:1}
+    .fi-ct{font-size:12px;font-weight:700;color:#94a3b8;min-width:16px;text-align:right}
+    .fi.active .fi-ct{color:var(--text)}
 
     .import-bar{background:linear-gradient(135deg,#1b66ff,#00b7a8);color:white;padding:12px;border-radius:10px;text-align:center;font-weight:700;cursor:pointer;font-size:13px;border:none;width:100%;box-shadow:0 4px 14px rgba(27,102,255,.25);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
     .import-bar:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(27,102,255,.35)}
 
-    /* ── Content area ── */
-    .content{padding:20px 20px 40px}
+    /* ── Content ── */
+    .content{padding:16px}
 
-    /* Column headers */
-    .col-head{display:grid;grid-template-columns:2.2fr 1fr 1.4fr 1fr 70px 120px;gap:16px;padding:0 20px 12px 60px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #e8ecf2}
+    .col-head{display:grid;grid-template-columns:2.4fr 1fr 1.4fr 1fr 70px 130px;gap:16px;padding:0 24px 12px 68px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.7px}
 
-    /* ── Job rows ── */
-    .jrow{border-bottom:1px solid #f0f3f7;position:relative}
-    .jrow:last-child{border-bottom:none}
-    .jrow-main{display:grid;grid-template-columns:2.2fr 1fr 1.4fr 1fr 70px 120px;gap:16px;align-items:center;padding:16px 20px 16px 20px;cursor:pointer;transition:background .1s}
-    .jrow-main:hover{background:#fafbfd}
+    /* ── Job cards ── */
+    .job-cards{display:flex;flex-direction:column;gap:10px}
+
+    .jcard{background:#fff;border:1px solid #e8ecf2;border-radius:14px;overflow:visible;position:relative;transition:box-shadow .2s}
+    .jcard:hover{box-shadow:0 6px 20px rgba(13,36,90,.08)}
+    .jcard-border{position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 3px 3px 0}
+
+    .jcard-main{display:grid;grid-template-columns:2.4fr 1fr 1.4fr 1fr 70px 130px;gap:16px;align-items:center;padding:20px 24px 20px 24px;cursor:pointer}
 
     .j-airline{display:flex;align-items:center;gap:14px}
-    .j-logo{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0;letter-spacing:.3px;overflow:hidden}
-    .j-logo img{width:40px;height:40px;border-radius:50%;object-fit:contain;background:#f0f3f7}
+    .j-logo{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0;letter-spacing:.3px;overflow:hidden}
+    .j-logo img{width:44px;height:44px;border-radius:50%;object-fit:contain;background:#f0f3f7}
     .j-info{min-width:0}
-    .j-name{font-size:14px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .j-title{font-size:12px;color:#94a3b8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .j-name{font-size:15px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .j-sub{font-size:12px;color:#94a3b8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
     .j-aircraft{font-size:14px;font-weight:600;color:#334155}
-    .j-aircraft-sub{font-size:10px;color:#cbd5e1;margin-top:2px}
+    .j-aircraft-label{font-size:10px;color:#cbd5e1;margin-top:2px}
 
-    .j-location{display:flex;align-items:center;gap:6px;font-size:13px;color:#475569}
-    .ldot{width:6px;height:6px;border-radius:50%;background:#ef4444;flex-shrink:0}
+    .j-location{font-size:13px;color:#475569}
 
     .j-salary{font-size:14px;font-weight:600;color:#334155}
-    .j-salary-sub{font-size:10px;color:#cbd5e1;margin-top:2px}
+    .j-salary-label{font-size:10px;color:#cbd5e1;margin-top:2px}
 
     .j-date{font-size:12px;color:#94a3b8}
 
-    /* Status badge - works independently of row expand */
-    .sbadge-wrap{position:relative;z-index:5}
-    .sbadge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:20px;padding:6px 14px;cursor:pointer;border:1px solid;white-space:nowrap;transition:filter .15s;user-select:none}
-    .sbadge:hover{filter:brightness(.93)}
-    .sbadge[data-s="saved"]{color:#64748b;background:#f1f5f9;border-color:#e2e8f0}
-    .sbadge[data-s="applied"]{color:#1d4ed8;background:#eff6ff;border-color:#bfdbfe}
-    .sbadge[data-s="interview"]{color:#b45309;background:#fffbeb;border-color:#fde68a}
-    .sbadge[data-s="offer"]{color:#059669;background:#ecfdf5;border-color:#a7f3d0}
-    .sbadge[data-s="rejected"]{color:#dc2626;background:#fef2f2;border-color:#fecaca}
+    /* Status badge */
+    .sb-wrap{position:relative;z-index:1}
+    .jcard:hover .sb-wrap{z-index:50}
+    .sb-wrap.dd-active{z-index:200}
 
-    .sdd{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border-radius:10px;padding:6px;box-shadow:0 10px 40px rgba(0,0,0,.18);border:1px solid #e2e8f0;z-index:200;min-width:150px;display:none}
+    .sb{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:20px;padding:6px 14px;cursor:pointer;border:1px solid;white-space:nowrap;transition:filter .15s;user-select:none}
+    .sb:hover{filter:brightness(.93)}
+    .sb[data-s="saved"]{color:#64748b;background:#f1f5f9;border-color:#e2e8f0}
+    .sb[data-s="applied"]{color:#1d4ed8;background:#eff6ff;border-color:#bfdbfe}
+    .sb[data-s="interview"]{color:#b45309;background:#fffbeb;border-color:#fde68a}
+    .sb[data-s="offer"]{color:#059669;background:#ecfdf5;border-color:#a7f3d0}
+    .sb[data-s="rejected"]{color:#dc2626;background:#fef2f2;border-color:#fecaca}
+
+    .sdd{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border-radius:10px;padding:6px;box-shadow:0 10px 40px rgba(0,0,0,.18);border:1px solid #e2e8f0;min-width:160px;display:none}
     .sdd.open{display:block}
-    .sdd-opt{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:none;border-radius:6px;background:transparent;color:#475569;font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:background .1s}
+    .sdd-opt{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border:none;border-radius:6px;background:transparent;color:#475569;font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:background .1s}
     .sdd-opt:hover{background:#f8fafc}
     .sdd-opt.cur{font-weight:700;color:var(--accent)}
     .sdd-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
     /* Expand chevron */
-    .j-chevron{color:#cbd5e1;font-size:11px;transition:transform .2s;text-align:right;padding-right:4px;cursor:pointer}
-    .jrow.open .j-chevron{transform:rotate(180deg)}
+    .j-chev{font-size:14px;color:#cbd5e1;transition:transform .2s;padding-left:8px}
+    .jcard.open .j-chev{transform:rotate(180deg);color:#94a3b8}
 
-    /* Expanded panel */
-    .jrow-exp{display:none;padding:0 20px 18px 74px}
-    .jrow.open .jrow-exp{display:block}
-    .exp-label{font-size:12px;font-weight:600;color:#475569;margin:8px 0 6px}
-    .exp-notes{width:100%;max-width:560px;min-height:60px;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;font-size:13px;color:#334155;resize:vertical;font-family:inherit;outline:none;background:#fff;line-height:1.5}
+    /* Expanded */
+    .jcard-exp{display:none;padding:0 24px 20px 82px;border-top:1px solid #f0f3f7}
+    .jcard.open .jcard-exp{display:block}
+    .exp-label{font-size:12px;font-weight:600;color:#475569;margin:14px 0 6px}
+    .exp-notes{width:100%;max-width:560px;min-height:64px;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;font-size:13px;color:#334155;resize:vertical;font-family:inherit;outline:none;background:#fff;line-height:1.5}
     .exp-notes:focus{border-color:var(--accent)}
-    .exp-saved{font-size:11px;color:var(--accent2);margin-top:4px;opacity:0;transition:opacity .3s}
-    .exp-saved.on{opacity:1}
-    .exp-btns{display:flex;gap:8px;margin-top:10px}
-    .btn-s{background:none;border:1px solid #e2e8f0;color:#475569;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .15s}
+    .exp-ind{font-size:11px;color:var(--accent2);margin-top:4px;opacity:0;transition:opacity .3s}
+    .exp-ind.on{opacity:1}
+    .exp-btns{display:flex;gap:8px;margin-top:12px}
+    .btn-s{background:none;border:1px solid #e2e8f0;color:#475569;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .15s}
     .btn-s:hover{border-color:var(--accent);color:var(--accent)}
-    .btn-d{background:none;border:1px solid #fecaca;color:#dc2626;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+    .btn-d{background:none;border:1px solid #fecaca;color:#dc2626;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
     .btn-d:hover{background:#fef2f2}
 
     /* States */
@@ -136,12 +137,10 @@
 
     .mobile-toggle{display:none;margin-top:8px;width:100%;gap:8px;justify-content:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:10px 16px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;align-items:center}
 
-    /* ── Tablet ── */
     @media(max-width:1100px){
-      .col-head,.jrow-main{grid-template-columns:2fr 1fr 1.2fr 1fr 60px 110px}
+      .col-head,.jcard-main{grid-template-columns:2fr 1fr 1.2fr 1fr 60px 120px}
     }
 
-    /* ── Mobile sidebar collapse ── */
     @media(max-width:980px){
       .layout{grid-template-columns:1fr}
       .sidebar-panel{display:none}
@@ -149,7 +148,6 @@
       .mobile-toggle{display:flex!important}
     }
 
-    /* ── Mobile ── */
     @media(max-width:768px){
       html,body{overflow-x:hidden}
       .stage::before,.stage::after{display:none}
@@ -160,20 +158,20 @@
       .topbar-nav{width:100%;justify-content:flex-end;margin-top:4px}
       .content{padding:10px}
       .col-head{display:none}
+      .job-cards{gap:8px}
 
-      .jrow-main{display:flex;flex-wrap:wrap;gap:10px;padding:14px;align-items:flex-start}
+      .jcard-main{display:flex;flex-wrap:wrap;gap:8px;padding:16px 14px;align-items:center}
       .j-airline{flex:1 1 auto;min-width:0}
-      .j-aircraft,.j-salary-col,.j-date{display:none}
-      .j-location{flex:1 1 100%;order:3;font-size:12px;padding-left:54px;margin-top:-4px}
-      .sbadge-wrap{order:2;flex-shrink:0}
-      .j-chevron{display:none}
+      .j-col-aircraft,.j-col-location,.j-col-salary,.j-col-date{display:none}
+      .sb-wrap{flex-shrink:0}
+      .j-chev{display:none}
+      .jcard-border{top:8px;bottom:8px}
 
-      .jrow-exp{padding:0 14px 14px 14px}
-      .exp-notes{max-width:100%}
-
-      /* Show salary + aircraft below on mobile */
-      .j-mobile-meta{display:flex;gap:12px;flex:1 1 100%;order:4;padding-left:54px;font-size:12px;color:#64748b;margin-top:2px}
+      .j-mobile-meta{display:flex;gap:12px;flex:1 1 100%;padding-left:58px;font-size:12px;color:#64748b;margin-top:-2px}
       .j-mobile-meta b{color:#334155;font-weight:600}
+
+      .jcard-exp{padding:0 14px 16px 14px;border-top:1px solid #f0f3f7}
+      .exp-notes{max-width:100%}
     }
     @media(min-width:769px){
       .j-mobile-meta{display:none}
@@ -222,41 +220,15 @@
                 <span class="stat-total-label">Total tracked</span>
                 <span class="stat-total-val" id="totalCount">0</span>
               </div>
-
-              <div class="sidebar-title">Status</div>
+              <div class="sidebar-label">Status</div>
               <div class="filter-list" id="filterList">
-                <div class="filter-item active" data-status="all" onclick="setFilter('all')">
-                  <span class="fi-dot" style="background:#475569"></span>
-                  <span class="fi-label">All</span>
-                  <span class="fi-count" id="cAll">0</span>
-                </div>
-                <div class="filter-item" data-status="saved" onclick="setFilter('saved')">
-                  <span class="fi-dot" style="background:#94a3b8"></span>
-                  <span class="fi-label">Saved</span>
-                  <span class="fi-count" id="cSaved">0</span>
-                </div>
-                <div class="filter-item" data-status="applied" onclick="setFilter('applied')">
-                  <span class="fi-dot" style="background:#3b82f6"></span>
-                  <span class="fi-label">Applied</span>
-                  <span class="fi-count" id="cApplied">0</span>
-                </div>
-                <div class="filter-item" data-status="interview" onclick="setFilter('interview')">
-                  <span class="fi-dot" style="background:#f59e0b"></span>
-                  <span class="fi-label">Interview</span>
-                  <span class="fi-count" id="cInterview">0</span>
-                </div>
-                <div class="filter-item" data-status="offer" onclick="setFilter('offer')">
-                  <span class="fi-dot" style="background:#10b981"></span>
-                  <span class="fi-label">Offer</span>
-                  <span class="fi-count" id="cOffer">0</span>
-                </div>
-                <div class="filter-item" data-status="rejected" onclick="setFilter('rejected')">
-                  <span class="fi-dot" style="background:#ef4444"></span>
-                  <span class="fi-label">Rejected</span>
-                  <span class="fi-count" id="cRejected">0</span>
-                </div>
+                <div class="fi active" data-status="all" onclick="setFilter('all')"><span class="fi-dot" style="background:#475569"></span><span class="fi-name">All</span><span class="fi-ct" id="cAll">0</span></div>
+                <div class="fi" data-status="saved" onclick="setFilter('saved')"><span class="fi-dot" style="background:#94a3b8"></span><span class="fi-name">Saved</span><span class="fi-ct" id="cSaved">0</span></div>
+                <div class="fi" data-status="applied" onclick="setFilter('applied')"><span class="fi-dot" style="background:#3b82f6"></span><span class="fi-name">Applied</span><span class="fi-ct" id="cApplied">0</span></div>
+                <div class="fi" data-status="interview" onclick="setFilter('interview')"><span class="fi-dot" style="background:#f59e0b"></span><span class="fi-name">Interview</span><span class="fi-ct" id="cInterview">0</span></div>
+                <div class="fi" data-status="offer" onclick="setFilter('offer')"><span class="fi-dot" style="background:#10b981"></span><span class="fi-name">Offer</span><span class="fi-ct" id="cOffer">0</span></div>
+                <div class="fi" data-status="rejected" onclick="setFilter('rejected')"><span class="fi-dot" style="background:#ef4444"></span><span class="fi-name">Rejected</span><span class="fi-ct" id="cRejected">0</span></div>
               </div>
-
               <button class="import-bar" onclick="importSavedJobs()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Import Saved Jobs
               </button>
@@ -273,7 +245,7 @@
                 <div>Saved</div>
                 <div style="text-align:center">Status</div>
               </div>
-              <div id="rowsList"></div>
+              <div class="job-cards" id="cardsList"></div>
               <div id="emptyState" class="empty-state" style="display:none;">
                 <h3>No applications tracked yet</h3>
                 <p>Save jobs from the job board, then import them here to track your progress.</p>
@@ -297,9 +269,9 @@
     const LBL={saved:'Saved',applied:'Applied',interview:'Interview',offer:'Offer',rejected:'Rejected'};
     const ICO={saved:'\u2605',applied:'\u270E',interview:'\u25CF',offer:'\u2794',rejected:'\u2715'};
     const DOT={saved:'#94a3b8',applied:'#3b82f6',interview:'#f59e0b',offer:'#10b981',rejected:'#ef4444'};
-    const BG=['#c0392b','#2980b9','#27ae60','#8e44ad','#d35400','#16a085','#2c3e50','#e74c3c','#3498db','#1abc9c'];
+    const BG=['#c0392b','#2980b9','#27ae60','#8e44ad','#d35400','#16a085','#2c3e50','#e74c3c','#f39c12','#1abc9c'];
 
-    let tracked=[],details={},filter='all',expanded=null,user=null,nTimers={};
+    let tracked=[],details={},filter='all',expanded=null,user=null,nT={},activeDD=null;
 
     document.getElementById('toggleSidebar').addEventListener('click',()=>{
       const p=document.getElementById('sidebarPanel');
@@ -308,9 +280,16 @@
     });
 
     document.addEventListener('click',e=>{
-      if(!e.target.closest('.sbadge-wrap'))
-        document.querySelectorAll('.sdd.open').forEach(d=>d.classList.remove('open'));
+      if(!e.target.closest('.sb-wrap')) closeDD();
     });
+
+    function closeDD(){
+      if(activeDD){
+        activeDD.classList.remove('open');
+        activeDD.closest('.sb-wrap').classList.remove('dd-active');
+        activeDD=null;
+      }
+    }
 
     async function init(){
       const{data:{session}}=await sb.auth.getSession();
@@ -344,7 +323,7 @@
       render();
     }
 
-    function render(){updateCounts();renderRows()}
+    function render(){updateCounts();renderCards()}
 
     function hc(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return Math.abs(h)}
 
@@ -354,22 +333,18 @@
       document.getElementById('totalCount').textContent=tracked.length;
       document.getElementById('cAll').textContent=c.all;
       STS.forEach(s=>{const el=document.getElementById('c'+s.charAt(0).toUpperCase()+s.slice(1));if(el)el.textContent=c[s]});
-      document.querySelectorAll('.filter-item').forEach(el=>{el.classList.toggle('active',el.dataset.status===filter)});
+      document.querySelectorAll('.fi').forEach(el=>{el.classList.toggle('active',el.dataset.status===filter)});
     }
 
-    function renderRows(){
+    function renderCards(){
       const list=filter==='all'?tracked:tracked.filter(t=>t.status===filter);
-      const el=document.getElementById('rowsList');
+      const el=document.getElementById('cardsList');
       const empty=document.getElementById('emptyState');
 
       if(!list.length){
         el.innerHTML='';empty.style.display='';
-        empty.querySelector('h3').textContent=tracked.length&&filter!=='all'
-          ?'No '+LBL[filter].toLowerCase()+' applications'
-          :'No applications tracked yet';
-        empty.querySelector('p').textContent=tracked.length&&filter!=='all'
-          ?'Change the status of a tracked job to see it here.'
-          :'Save jobs from the job board, then import them here to track your progress.';
+        empty.querySelector('h3').textContent=tracked.length&&filter!=='all'?'No '+LBL[filter].toLowerCase()+' applications':'No applications tracked yet';
+        empty.querySelector('p').textContent=tracked.length&&filter!=='all'?'Change the status of a tracked job to see it here.':'Save jobs from the job board, then import them here to track your progress.';
         return;
       }
       empty.style.display='none';
@@ -380,7 +355,7 @@
         const isOpen=expanded===t.id;
         const date=new Date(t.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
 
-        if(!job) return `<div class="jrow"><div class="jrow-main" style="grid-template-columns:1fr auto"><div class="j-airline"><div class="j-logo" style="background:#94a3b8">?</div><div class="j-info"><div class="j-name">Job unavailable</div><div class="j-title">May have been removed</div></div></div><button class="btn-d" onclick="event.stopPropagation();remove('${t.id}')">Remove</button></div></div>`;
+        if(!job) return `<div class="jcard"><div class="jcard-main" style="grid-template-columns:1fr auto"><div class="j-airline"><div class="j-logo" style="background:#94a3b8">?</div><div class="j-info"><div class="j-name">Job unavailable</div><div class="j-sub">May have been removed</div></div></div><button class="btn-d" onclick="event.stopPropagation();remove('${t.id}')">Remove</button></div></div>`;
 
         const airline=job.airline||'Unknown';
         const code=airline.substring(0,2).toUpperCase();
@@ -389,6 +364,7 @@
         const loc=job.location||'\u2014';
         const salary=job.salary_usd||'\u2014';
         const title=job.title||'';
+        const borderColor=bg;
 
         const logoHtml=job.logo
           ?`<div class="j-logo"><img src="${job.logo}" alt="${code}" onerror="this.parentElement.style.background='${bg}';this.parentElement.innerHTML='${code}'"></div>`
@@ -398,40 +374,46 @@
           `<button class="sdd-opt${s===t.status?' cur':''}" onclick="event.stopPropagation();updStatus('${t.id}','${s}')"><span class="sdd-dot" style="background:${DOT[s]}"></span>${LBL[s]}</button>`
         ).join('');
 
-        return `<div class="jrow${isOpen?' open':''}">
-          <div class="jrow-main" onclick="toggleExp('${t.id}')">
+        return `<div class="jcard${isOpen?' open':''}">
+          <div class="jcard-border" style="background:${borderColor}"></div>
+          <div class="jcard-main" onclick="toggleExp('${t.id}')">
             <div class="j-airline">
               ${logoHtml}
               <div class="j-info">
                 <div class="j-name">${airline}</div>
-                <div class="j-title">${title}</div>
+                <div class="j-sub">${title}</div>
               </div>
             </div>
-            <div>
+            <div class="j-col-aircraft">
               <div class="j-aircraft">${aircraft}</div>
-              <div class="j-aircraft-sub">Aircraft</div>
+              <div class="j-aircraft-label">Aircraft</div>
             </div>
-            <div class="j-location"><span class="ldot"></span>${loc}</div>
-            <div class="j-salary-col">
+            <div class="j-col-location">
+              <div class="j-location">${loc}</div>
+            </div>
+            <div class="j-col-salary">
               <div class="j-salary">${salary}</div>
-              <div class="j-salary-sub">Salary</div>
+              <div class="j-salary-label">Salary</div>
             </div>
-            <div class="j-date">${date}</div>
-            <div class="sbadge-wrap" onclick="event.stopPropagation()">
-              <div class="sbadge" data-s="${t.status}" onclick="toggleDD('${t.id}')">
+            <div class="j-col-date">
+              <div class="j-date">${date}</div>
+            </div>
+            <div class="sb-wrap" onclick="event.stopPropagation()">
+              <div class="sb" data-s="${t.status}" onclick="toggleDD(this,'${t.id}')">
                 <span>${ICO[t.status]}</span> ${LBL[t.status]}
               </div>
               <div class="sdd" id="dd-${t.id}">${ddOpts}</div>
             </div>
             <div class="j-mobile-meta">
               ${aircraft!=='\u2014'?'<span><b>'+aircraft+'</b></span>':''}
+              ${loc!=='\u2014'?'<span>'+loc+'</span>':''}
               ${salary!=='\u2014'?'<span>'+salary+'</span>':''}
             </div>
           </div>
-          <div class="jrow-exp">
+          <div class="jcard-exp">
             <div class="exp-label">Notes</div>
             <textarea class="exp-notes" id="n-${t.id}" placeholder="Interview date, contact info, prep notes..." oninput="onN('${t.id}')" onclick="event.stopPropagation()">${t.notes||''}</textarea>
-            <div class="exp-saved" id="si-${t.id}">Saved</div>
+            <div class="exp-ind" id="si-${t.id}">Saved</div>
             <div class="exp-btns">
               <a class="btn-s" href="${job.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">View Original Posting</a>
               <button class="btn-d" onclick="event.stopPropagation();remove('${t.id}')">Remove</button>
@@ -448,23 +430,30 @@
       render();
     }
 
-    function toggleExp(id){expanded=expanded===id?null:id;renderRows()}
+    function toggleExp(id){expanded=expanded===id?null:id;renderCards()}
 
-    function toggleDD(id){
-      const el=document.getElementById('dd-'+id);
-      document.querySelectorAll('.sdd.open').forEach(d=>{if(d!==el)d.classList.remove('open')});
-      el.classList.toggle('open');
+    function toggleDD(badge,id){
+      const dd=document.getElementById('dd-'+id);
+      const wrap=badge.closest('.sb-wrap');
+      if(activeDD&&activeDD!==dd) closeDD();
+      if(dd.classList.contains('open')){
+        closeDD();
+      }else{
+        dd.classList.add('open');
+        wrap.classList.add('dd-active');
+        activeDD=dd;
+      }
     }
 
     async function updStatus(id,status){
-      document.querySelectorAll('.sdd.open').forEach(d=>d.classList.remove('open'));
+      closeDD();
       const{error}=await sb.from('tracked_jobs').update({status}).eq('id',id).eq('user_id',user.id);
       if(error)return;
       const t=tracked.find(j=>j.id===id);if(t)t.status=status;
       render();
     }
 
-    function onN(id){if(nTimers[id])clearTimeout(nTimers[id]);nTimers[id]=setTimeout(()=>saveN(id),800)}
+    function onN(id){if(nT[id])clearTimeout(nT[id]);nT[id]=setTimeout(()=>saveN(id),800)}
 
     async function saveN(id){
       const el=document.getElementById('n-'+id);if(!el)return;

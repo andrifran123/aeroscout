@@ -4475,6 +4475,14 @@
       showUpgradeModal();
     }
 
+    // Auto-show upgrade modal if coming from pricing page
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('upgrade') === 'true') {
+      showUpgradeModal();
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
     // Premium unlock button - Gumroad integration
     const premiumLock = el("premiumLock");
     el("unlockBtn").addEventListener("click", showUpgradeModal);

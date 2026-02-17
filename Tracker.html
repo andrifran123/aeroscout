@@ -53,46 +53,47 @@
     .fi-ct{font-size:12px;font-weight:700;color:#94a3b8;min-width:16px;text-align:right}
     .fi.active .fi-ct{color:var(--text)}
 
-    .import-bar{background:linear-gradient(135deg,#1b66ff,#00b7a8);color:white;padding:12px;border-radius:10px;text-align:center;font-weight:700;cursor:pointer;font-size:13px;border:none;width:100%;box-shadow:0 4px 14px rgba(27,102,255,.25);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
-    .import-bar:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(27,102,255,.35)}
+    .import-bar{background:#fff;color:#475569;padding:12px;border-radius:10px;text-align:center;font-weight:600;cursor:pointer;font-size:13px;border:1px solid #e2e8f0;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s}
+    .import-bar:hover{border-color:#94a3b8;color:var(--text);background:#f8fafc}
 
     /* ── Content ── */
     .content{padding:16px}
 
-    .col-head{display:grid;grid-template-columns:2.4fr 1fr 1.4fr 1fr 70px 130px;gap:16px;padding:0 24px 12px 68px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.7px}
+    .col-head{display:grid;grid-template-columns:260px 160px 180px 160px 70px 130px;gap:0;padding:0 24px 12px 68px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.7px}
 
-    /* ── Job cards ── */
-    .job-cards{display:flex;flex-direction:column;gap:10px}
+    .job-cards{display:flex;flex-direction:column;gap:0}
 
-    .jcard{background:#fff;border:1px solid #e8ecf2;border-radius:14px;overflow:visible;position:relative;transition:box-shadow .2s}
-    .jcard:hover{box-shadow:0 6px 20px rgba(13,36,90,.08)}
-    .jcard-border{position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 3px 3px 0}
+    /* ── Job card ── */
+    .jcard{background:#fff;border-bottom:1px solid #eef1f6;overflow:visible;position:relative;transition:background .15s}
+    .jcard:first-child{border-radius:12px 12px 0 0}
+    .jcard:last-child{border-radius:0 0 12px 12px;border-bottom:none}
+    .jcard:only-child{border-radius:12px}
+    .jcard:hover{background:#fafbfd}
 
-    .jcard-main{display:grid;grid-template-columns:2.4fr 1fr 1.4fr 1fr 70px 130px;gap:16px;align-items:center;padding:20px 24px 20px 24px;cursor:pointer}
+    .jcard-main{display:grid;grid-template-columns:260px 160px 180px 160px 70px 130px;gap:0;align-items:center;padding:24px 24px 24px 24px;cursor:pointer}
 
     .j-airline{display:flex;align-items:center;gap:14px}
-    .j-logo{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0;letter-spacing:.3px;overflow:hidden}
-    .j-logo img{width:44px;height:44px;border-radius:50%;object-fit:contain;background:#f0f3f7}
+    .j-logo{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;flex-shrink:0;letter-spacing:.3px;overflow:hidden}
+    .j-logo img{width:48px;height:48px;border-radius:50%;object-fit:contain;background:#f0f3f7}
     .j-info{min-width:0}
-    .j-name{font-size:15px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .j-sub{font-size:12px;color:#94a3b8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .j-name{font-size:16px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .j-sub{font-size:12px;color:#94a3b8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
 
-    .j-aircraft{font-size:14px;font-weight:600;color:#334155}
+    .j-aircraft{font-size:14px;font-weight:600;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .j-aircraft-label{font-size:10px;color:#cbd5e1;margin-top:2px}
 
-    .j-location{font-size:13px;color:#475569}
+    .j-location{font-size:13px;color:#475569;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-    .j-salary{font-size:14px;font-weight:600;color:#334155}
+    .j-salary{font-size:14px;font-weight:600;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .j-salary-label{font-size:10px;color:#cbd5e1;margin-top:2px}
 
     .j-date{font-size:12px;color:#94a3b8}
 
     /* Status badge */
-    .sb-wrap{position:relative;z-index:1}
-    .jcard:hover .sb-wrap{z-index:50}
+    .sb-wrap{position:relative;z-index:1;text-align:center}
     .sb-wrap.dd-active{z-index:200}
 
-    .sb{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:20px;padding:6px 14px;cursor:pointer;border:1px solid;white-space:nowrap;transition:filter .15s;user-select:none}
+    .sb{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:20px;padding:7px 16px;cursor:pointer;border:1px solid;white-space:nowrap;transition:filter .15s;user-select:none}
     .sb:hover{filter:brightness(.93)}
     .sb[data-s="saved"]{color:#64748b;background:#f1f5f9;border-color:#e2e8f0}
     .sb[data-s="applied"]{color:#1d4ed8;background:#eff6ff;border-color:#bfdbfe}
@@ -107,22 +108,18 @@
     .sdd-opt.cur{font-weight:700;color:var(--accent)}
     .sdd-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
-    /* Expand chevron */
-    .j-chev{font-size:14px;color:#cbd5e1;transition:transform .2s;padding-left:8px}
-    .jcard.open .j-chev{transform:rotate(180deg);color:#94a3b8}
-
     /* Expanded */
-    .jcard-exp{display:none;padding:0 24px 20px 82px;border-top:1px solid #f0f3f7}
+    .jcard-exp{display:none;padding:0 24px 24px 86px;border-top:1px solid #f0f3f7}
     .jcard.open .jcard-exp{display:block}
-    .exp-label{font-size:12px;font-weight:600;color:#475569;margin:14px 0 6px}
-    .exp-notes{width:100%;max-width:560px;min-height:64px;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;font-size:13px;color:#334155;resize:vertical;font-family:inherit;outline:none;background:#fff;line-height:1.5}
+    .exp-label{font-size:12px;font-weight:600;color:#475569;margin:16px 0 8px}
+    .exp-notes{width:100%;max-width:560px;min-height:72px;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;font-size:13px;color:#334155;resize:vertical;font-family:inherit;outline:none;background:#fff;line-height:1.5}
     .exp-notes:focus{border-color:var(--accent)}
     .exp-ind{font-size:11px;color:var(--accent2);margin-top:4px;opacity:0;transition:opacity .3s}
     .exp-ind.on{opacity:1}
-    .exp-btns{display:flex;gap:8px;margin-top:12px}
-    .btn-s{background:none;border:1px solid #e2e8f0;color:#475569;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .15s}
+    .exp-btns{display:flex;gap:10px;margin-top:14px}
+    .btn-s{background:none;border:1px solid #e2e8f0;color:#475569;padding:8px 18px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .15s}
     .btn-s:hover{border-color:var(--accent);color:var(--accent)}
-    .btn-d{background:none;border:1px solid #fecaca;color:#dc2626;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+    .btn-d{background:none;border:1px solid #fecaca;color:#dc2626;padding:8px 18px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
     .btn-d:hover{background:#fef2f2}
 
     /* States */
@@ -137,8 +134,14 @@
 
     .mobile-toggle{display:none;margin-top:8px;width:100%;gap:8px;justify-content:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:10px 16px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;align-items:center}
 
-    @media(max-width:1100px){
-      .col-head,.jcard-main{grid-template-columns:2fr 1fr 1.2fr 1fr 60px 120px}
+    @media(max-width:1200px){
+      .col-head,.jcard-main{grid-template-columns:220px 140px 160px 140px 60px 120px}
+      .j-sub{max-width:150px}
+    }
+    @media(max-width:1050px){
+      .col-head,.jcard-main{grid-template-columns:200px 120px 150px 120px 55px 110px}
+      .j-name{font-size:14px}
+      .j-sub{max-width:130px}
     }
 
     @media(max-width:980px){
@@ -158,19 +161,25 @@
       .topbar-nav{width:100%;justify-content:flex-end;margin-top:4px}
       .content{padding:10px}
       .col-head{display:none}
-      .job-cards{gap:8px}
+
+      .jcard{border-bottom:1px solid #eef1f6;border-radius:0!important}
+      .jcard:first-child{border-radius:10px 10px 0 0!important}
+      .jcard:last-child{border-radius:0 0 10px 10px!important;border-bottom:none}
 
       .jcard-main{display:flex;flex-wrap:wrap;gap:8px;padding:16px 14px;align-items:center}
       .j-airline{flex:1 1 auto;min-width:0}
+      .j-logo{width:42px;height:42px}
+      .j-logo img{width:42px;height:42px}
+      .j-name{font-size:15px}
+      .j-sub{max-width:none;font-size:11px}
       .j-col-aircraft,.j-col-location,.j-col-salary,.j-col-date{display:none}
       .sb-wrap{flex-shrink:0}
-      .j-chev{display:none}
-      .jcard-border{top:8px;bottom:8px}
 
-      .j-mobile-meta{display:flex;gap:12px;flex:1 1 100%;padding-left:58px;font-size:12px;color:#64748b;margin-top:-2px}
+      .j-mobile-meta{display:flex;gap:10px;flex:1 1 100%;padding-left:56px;font-size:12px;color:#64748b;margin-top:-2px;flex-wrap:wrap}
+      .j-mobile-meta span{white-space:nowrap}
       .j-mobile-meta b{color:#334155;font-weight:600}
 
-      .jcard-exp{padding:0 14px 16px 14px;border-top:1px solid #f0f3f7}
+      .jcard-exp{padding:0 14px 16px 14px}
       .exp-notes{max-width:100%}
     }
     @media(min-width:769px){
@@ -221,7 +230,7 @@
                 <span class="stat-total-val" id="totalCount">0</span>
               </div>
               <div class="sidebar-label">Status</div>
-              <div class="filter-list" id="filterList">
+              <div class="filter-list">
                 <div class="fi active" data-status="all" onclick="setFilter('all')"><span class="fi-dot" style="background:#475569"></span><span class="fi-name">All</span><span class="fi-ct" id="cAll">0</span></div>
                 <div class="fi" data-status="saved" onclick="setFilter('saved')"><span class="fi-dot" style="background:#94a3b8"></span><span class="fi-name">Saved</span><span class="fi-ct" id="cSaved">0</span></div>
                 <div class="fi" data-status="applied" onclick="setFilter('applied')"><span class="fi-dot" style="background:#3b82f6"></span><span class="fi-name">Applied</span><span class="fi-ct" id="cApplied">0</span></div>
@@ -279,39 +288,28 @@
       document.body.style.overflow=p.classList.contains('show')?'hidden':'';
     });
 
-    document.addEventListener('click',e=>{
-      if(!e.target.closest('.sb-wrap')) closeDD();
-    });
+    document.addEventListener('click',e=>{if(!e.target.closest('.sb-wrap'))closeDD()});
 
     function closeDD(){
-      if(activeDD){
-        activeDD.classList.remove('open');
-        activeDD.closest('.sb-wrap').classList.remove('dd-active');
-        activeDD=null;
-      }
+      if(activeDD){activeDD.classList.remove('open');activeDD.closest('.sb-wrap').classList.remove('dd-active');activeDD=null}
     }
 
     async function init(){
       const{data:{session}}=await sb.auth.getSession();
       document.getElementById('loadingState').style.display='none';
       if(!session){document.getElementById('authPrompt').style.display='';return}
-      user=session.user;
-      document.getElementById('mainGrid').style.display='';
-      await load();
+      user=session.user;document.getElementById('mainGrid').style.display='';await load();
     }
 
     async function load(){
       const{data}=await sb.from('tracked_jobs').select('*').eq('user_id',user.id).order('updated_at',{ascending:false});
       tracked=data||[];details={};
-
       const pIds=tracked.filter(t=>t.job_type==='pilot').map(t=>t.job_id);
       const cIds=tracked.filter(t=>t.job_type==='cabin_crew').map(t=>t.job_id);
-
       if(pIds.length){
         const{data:p}=await sb.from('verified_jobs').select('id,title,airline,aircraft,aircraft_family,location,salary_usd,rank,rank_bucket,url,logo_url,company_id').in('id',pIds);
         if(p){
-          const co=[...new Set(p.filter(x=>x.company_id).map(x=>x.company_id))];
-          let lg={};
+          const co=[...new Set(p.filter(x=>x.company_id).map(x=>x.company_id))];let lg={};
           if(co.length){const{data:c}=await sb.from('final_companies').select('id,logo_url').in('id',co);if(c)c.forEach(x=>{lg[x.id]=x.logo_url})}
           p.forEach(j=>{j.logo=j.logo_url||lg[j.company_id]||null;details['p_'+j.id]=j});
         }
@@ -324,7 +322,6 @@
     }
 
     function render(){updateCounts();renderCards()}
-
     function hc(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return Math.abs(h)}
 
     function updateCounts(){
@@ -340,7 +337,6 @@
       const list=filter==='all'?tracked:tracked.filter(t=>t.status===filter);
       const el=document.getElementById('cardsList');
       const empty=document.getElementById('emptyState');
-
       if(!list.length){
         el.innerHTML='';empty.style.display='';
         empty.querySelector('h3').textContent=tracked.length&&filter!=='all'?'No '+LBL[filter].toLowerCase()+' applications':'No applications tracked yet';
@@ -355,7 +351,7 @@
         const isOpen=expanded===t.id;
         const date=new Date(t.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
 
-        if(!job) return `<div class="jcard"><div class="jcard-main" style="grid-template-columns:1fr auto"><div class="j-airline"><div class="j-logo" style="background:#94a3b8">?</div><div class="j-info"><div class="j-name">Job unavailable</div><div class="j-sub">May have been removed</div></div></div><button class="btn-d" onclick="event.stopPropagation();remove('${t.id}')">Remove</button></div></div>`;
+        if(!job) return `<div class="jcard"><div class="jcard-main" style="display:flex;justify-content:space-between;align-items:center"><div class="j-airline"><div class="j-logo" style="background:#94a3b8">?</div><div class="j-info"><div class="j-name">Job unavailable</div><div class="j-sub">May have been removed</div></div></div><button class="btn-d" onclick="event.stopPropagation();remove('${t.id}')">Remove</button></div></div>`;
 
         const airline=job.airline||'Unknown';
         const code=airline.substring(0,2).toUpperCase();
@@ -364,7 +360,6 @@
         const loc=job.location||'\u2014';
         const salary=job.salary_usd||'\u2014';
         const title=job.title||'';
-        const borderColor=bg;
 
         const logoHtml=job.logo
           ?`<div class="j-logo"><img src="${job.logo}" alt="${code}" onerror="this.parentElement.style.background='${bg}';this.parentElement.innerHTML='${code}'"></div>`
@@ -375,13 +370,12 @@
         ).join('');
 
         return `<div class="jcard${isOpen?' open':''}">
-          <div class="jcard-border" style="background:${borderColor}"></div>
           <div class="jcard-main" onclick="toggleExp('${t.id}')">
             <div class="j-airline">
               ${logoHtml}
               <div class="j-info">
                 <div class="j-name">${airline}</div>
-                <div class="j-sub">${title}</div>
+                <div class="j-sub" title="${title}">${title}</div>
               </div>
             </div>
             <div class="j-col-aircraft">
@@ -389,7 +383,7 @@
               <div class="j-aircraft-label">Aircraft</div>
             </div>
             <div class="j-col-location">
-              <div class="j-location">${loc}</div>
+              <div class="j-location" title="${loc}">${loc}</div>
             </div>
             <div class="j-col-salary">
               <div class="j-salary">${salary}</div>
@@ -433,24 +427,17 @@
     function toggleExp(id){expanded=expanded===id?null:id;renderCards()}
 
     function toggleDD(badge,id){
-      const dd=document.getElementById('dd-'+id);
-      const wrap=badge.closest('.sb-wrap');
-      if(activeDD&&activeDD!==dd) closeDD();
-      if(dd.classList.contains('open')){
-        closeDD();
-      }else{
-        dd.classList.add('open');
-        wrap.classList.add('dd-active');
-        activeDD=dd;
-      }
+      const dd=document.getElementById('dd-'+id);const wrap=badge.closest('.sb-wrap');
+      if(activeDD&&activeDD!==dd)closeDD();
+      if(dd.classList.contains('open')){closeDD()}
+      else{dd.classList.add('open');wrap.classList.add('dd-active');activeDD=dd}
     }
 
     async function updStatus(id,status){
       closeDD();
       const{error}=await sb.from('tracked_jobs').update({status}).eq('id',id).eq('user_id',user.id);
       if(error)return;
-      const t=tracked.find(j=>j.id===id);if(t)t.status=status;
-      render();
+      const t=tracked.find(j=>j.id===id);if(t)t.status=status;render();
     }
 
     function onN(id){if(nT[id])clearTimeout(nT[id]);nT[id]=setTimeout(()=>saveN(id),800)}
@@ -467,23 +454,20 @@
     async function remove(id){
       if(!confirm('Remove this application from your tracker?'))return;
       await sb.from('tracked_jobs').delete().eq('id',id).eq('user_id',user.id);
-      tracked=tracked.filter(j=>j.id!==id);
-      if(expanded===id)expanded=null;
-      render();
+      tracked=tracked.filter(j=>j.id!==id);if(expanded===id)expanded=null;render();
     }
 
     async function importSavedJobs(){
       const{data:saved,error}=await sb.from('saved_jobs').select('*').eq('user_id',user.id);
       if(error||!saved){alert('Could not load saved jobs.');return}
-      if(!saved.length){alert('No saved jobs found. Save some from the job board first.');return}
+      if(!saved.length){alert('No saved jobs found.');return}
       const ex=new Set(tracked.map(j=>j.job_type+'_'+j.job_id));
       const imp=saved.filter(s=>!ex.has(s.job_type+'_'+s.job_id));
       if(!imp.length){alert('All saved jobs are already tracked.');return}
       const rows=imp.map(s=>({user_id:user.id,job_id:s.job_id,job_type:s.job_type,status:'saved',notes:''}));
       const{error:e2}=await sb.from('tracked_jobs').insert(rows);
       if(e2){alert('Error importing.');return}
-      alert('Imported '+imp.length+' job'+(imp.length>1?'s':'')+'.');
-      await load();
+      alert('Imported '+imp.length+' job'+(imp.length>1?'s':'')+'.');await load();
     }
 
     init();

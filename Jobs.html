@@ -2542,10 +2542,16 @@
         content: none;
       }
 
-      /* Apply button - top right corner */
+      /* Save button - ensure tap target on mobile */
+      .save-btn {
+        z-index: 2;
+        padding: 10px 12px;
+      }
+
+      /* Apply button - below save button */
       .apply-container {
         position: absolute;
-        top: 14px;
+        top: 40px;
         right: 10px;
         text-align: right;
         margin: 0;
@@ -2669,7 +2675,7 @@
       }
       .apply-container {
         right: 8px;
-        top: 12px;
+        top: 38px;
       }
       .apply-btn {
         padding: 5px 8px;
@@ -2709,7 +2715,7 @@
 
       .apply-container {
         right: 6px;
-        top: 10px;
+        top: 36px;
       }
 
       .apply-btn {

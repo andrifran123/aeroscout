@@ -1552,6 +1552,75 @@
       margin-bottom: 20px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.12);
     }
+    .upgrade-carousel {
+      position: relative;
+      width: 100%;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    .upgrade-carousel-track {
+      display: flex;
+      transition: transform 0.3s ease;
+    }
+    .upgrade-carousel-track img {
+      width: 100%;
+      flex-shrink: 0;
+      display: block;
+      border-radius: 0;
+    }
+    .upgrade-carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: all 0.15s;
+    }
+    .upgrade-carousel-arrow:hover {
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .upgrade-carousel-arrow.left { left: 8px; }
+    .upgrade-carousel-arrow.right { right: 8px; }
+    .upgrade-carousel-arrow svg {
+      width: 16px;
+      height: 16px;
+      stroke: #334155;
+      fill: none;
+      stroke-width: 2.5;
+    }
+    .upgrade-carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 10px;
+      margin-bottom: 16px;
+    }
+    .upgrade-carousel-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .upgrade-carousel-dot.active {
+      background: #1b66ff;
+      transform: scale(1.2);
+    }
     .upgrade-buy-btn {
       width: 100%;
       padding: 14px 24px;
@@ -2737,7 +2806,8 @@
       display: none;
     }
     .map-search-btn .premium-tag,
-    .alert-btn .premium-tag {
+    .alert-btn .premium-tag,
+    .saved-jobs-btn .premium-tag {
       background: rgba(255,255,255,0.2);
       padding: 2px 8px;
       border-radius: 10px;
@@ -3056,11 +3126,12 @@
               </span>
             </button>
 
-            <a href="Tracker.html" class="saved-jobs-btn" style="text-decoration:none;">
+            <a href="Tracker.html" class="saved-jobs-btn" id="trackerNavBtn" style="text-decoration:none;" onclick="if(!isPremium){event.preventDefault();redirectToUpgrade();}">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
               </svg>
               <span>Tracker</span>
+              <span class="premium-tag tracker-pro-tag">Pro</span>
             </a>
 
             <div class="meta" style="grid-column: 1 / -1;">
@@ -3676,8 +3747,29 @@
           </svg>
           Sort jobs by salary
         </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Application tracker
+        </li>
       </ul>
-      <img src="images/upgrade-preview.png" alt="Premium features preview" class="upgrade-preview-img" onerror="this.style.display='none'">
+      <div class="upgrade-carousel" id="upgradeCarousel">
+        <div class="upgrade-carousel-track" id="carouselTrack">
+          <img src="images/upgrade-preview.png" alt="Premium features preview" onerror="this.style.display='none'">
+          <img src="images/tracker-preview.png" alt="Application Tracker preview" onerror="this.style.display='none'">
+        </div>
+        <button class="upgrade-carousel-arrow left" id="carouselPrev" type="button">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="upgrade-carousel-arrow right" id="carouselNext" type="button">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
+        </button>
+      </div>
+      <div class="upgrade-carousel-dots" id="carouselDots">
+        <button class="upgrade-carousel-dot active" type="button"></button>
+        <button class="upgrade-carousel-dot" type="button"></button>
+      </div>
       <button class="upgrade-buy-btn" id="upgradeBuyBtn" type="button">
         Buy Now <span class="price">$12</span>
       </button>
@@ -4505,6 +4597,24 @@
       if (e.target === upgradeModal) closeUpgradeModal();
     });
 
+    // Upgrade modal carousel
+    (function() {
+      const track = el("carouselTrack");
+      const dots = document.querySelectorAll(".upgrade-carousel-dot");
+      let currentSlide = 0;
+      const totalSlides = track.children.length;
+
+      function goToSlide(n) {
+        currentSlide = (n + totalSlides) % totalSlides;
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        dots.forEach((d, i) => d.classList.toggle("active", i === currentSlide));
+      }
+
+      el("carouselPrev").addEventListener("click", () => goToSlide(currentSlide - 1));
+      el("carouselNext").addEventListener("click", () => goToSlide(currentSlide + 1));
+      dots.forEach((dot, i) => dot.addEventListener("click", () => goToSlide(i)));
+    })();
+
     // Buy button - redirect to Gumroad
     el("upgradeBuyBtn").addEventListener("click", async () => {
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -4600,6 +4710,7 @@
 
     function updatePremiumUI() {
       const sortSalaryBtn = el("sortSalaryBtn");
+      const trackerProTag = document.querySelector('.tracker-pro-tag');
 
       if (isPremium) {
         premiumLock.classList.add("hidden");
@@ -4607,12 +4718,16 @@
         sortSalaryBtn.classList.remove("locked");
         sortSalaryBtn.classList.add("unlocked");
         sortSalaryBtn.innerHTML = '<span>Sort by Salary</span><span class="premium-tag">Pro</span>';
+        // Hide Pro tag on Tracker nav button
+        if (trackerProTag) trackerProTag.style.display = 'none';
       } else {
         premiumLock.classList.remove("hidden");
         // Keep sort salary button locked
         sortSalaryBtn.classList.add("locked");
         sortSalaryBtn.classList.remove("unlocked");
         sortSalaryBtn.innerHTML = '<span>Sort by Salary</span><span class="premium-tag">Pro</span>';
+        // Show Pro tag on Tracker nav button
+        if (trackerProTag) trackerProTag.style.display = '';
       }
     }
 
@@ -6523,6 +6638,10 @@
       if (!isLoggedIn) {
         showToast('Log in to track jobs');
         setTimeout(() => { window.location.href = 'login.html'; }, 800);
+        return;
+      }
+      if (!isPremium) {
+        redirectToUpgrade();
         return;
       }
       const key = `${jobType}_${jobId}`;

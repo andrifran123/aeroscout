@@ -31,11 +31,11 @@
   <meta name="description" content="Browse 1000+ pilot jobs and cabin crew positions worldwide. Find openings at Emirates, Qatar Airways, Ryanair, easyJet and more. Updated daily with new aviation jobs." />
   <meta name="robots" content="index, follow" />
   <title>AeroScout | Browse Pilot & Cabin Crew Jobs</title>
-  <link rel="canonical" href="https://www.aeroscout.net/jobs" />
+  <link rel="canonical" href="https://www.aeroscout.net/Jobs.html" />
   <meta property="og:title" content="AeroScout | Browse Pilot & Cabin Crew Jobs" />
   <meta property="og:description" content="Browse 1000+ pilot jobs and cabin crew positions worldwide. Find openings at Emirates, Qatar Airways, Ryanair, easyJet and more." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.aeroscout.net/jobs" />
+  <meta property="og:url" content="https://www.aeroscout.net/Jobs.html" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="AeroScout | Browse Pilot & Cabin Crew Jobs" />
   <meta name="twitter:description" content="Browse 1000+ pilot jobs and cabin crew positions worldwide." />
@@ -3134,7 +3134,7 @@
               </span>
             </button>
 
-            <a href="/tracker" class="saved-jobs-btn" id="trackerNavBtn" style="text-decoration:none;" onclick="if(!isPremium){event.preventDefault();redirectToUpgrade();}">
+            <a href="Tracker.html" class="saved-jobs-btn" id="trackerNavBtn" style="text-decoration:none;" onclick="if(!isPremium){event.preventDefault();redirectToUpgrade();}">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
               </svg>
@@ -4386,7 +4386,7 @@
           '@type': 'JobPosting',
           'title': j.title,
           'description': j.description || j.title,
-          'url': j.applyUrl && j.applyUrl !== '#' ? j.applyUrl : `https://www.aeroscout.net/jobs?job=${j.id}`,
+          'url': j.applyUrl && j.applyUrl !== '#' ? j.applyUrl : `https://www.aeroscout.net/Jobs.html?job=${j.id}`,
           'hiringOrganization': {
             '@type': 'Organization',
             'name': j.org

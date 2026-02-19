@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/jobs",
+      "source": "/Jobs.html",
       "has": [
         {
           "type": "header",
@@ -21,16 +21,6 @@
     }
   ],
   "redirects": [
-    {
-      "source": "/Jobs.html",
-      "destination": "/jobs",
-      "permanent": true
-    },
-    {
-      "source": "/Tracker.html",
-      "destination": "/tracker",
-      "permanent": true
-    },
     {
       "source": "/:path*",
       "has": [

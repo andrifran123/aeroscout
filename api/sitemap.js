@@ -8,7 +8,7 @@ const supabase = createClient(
 // Static pages
 const STATIC_PAGES = [
   { loc: '/', changefreq: 'daily', priority: '1.0' },
-  { loc: '/jobs', changefreq: 'daily', priority: '0.9' },
+  { loc: '/Jobs.html', changefreq: 'daily', priority: '0.9' },
   { loc: '/about.html', changefreq: 'monthly', priority: '0.7' },
   { loc: '/pricing.html', changefreq: 'monthly', priority: '0.7' },
   { loc: '/signup.html', changefreq: 'monthly', priority: '0.6' },

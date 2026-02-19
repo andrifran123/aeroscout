@@ -3191,11 +3191,11 @@
                 <span class="profile-val" id="profileDisplay">1,200h Total · CPL · A320</span>
                 <div class="eligible-toggle">
                   <input type="checkbox" id="eligibleOnly">
-                  <label for="eligibleOnly">Show eligible only</label>
+                  <label for="eligibleOnly">Show eligible only <span class="premium-tag" id="eligibleProTag" style="background:#3b82f6;color:#fff;padding:1px 5px;border-radius:6px;font-size:8px;margin-left:2px;vertical-align:middle;">Pro</span></label>
                 </div>
                 <div class="eligible-toggle" style="margin-top:6px;">
                   <input type="checkbox" id="myTypeOnly">
-                  <label for="myTypeOnly">Show only my type jobs</label>
+                  <label for="myTypeOnly">Show only my type jobs <span class="premium-tag" id="myTypeProTag" style="background:#3b82f6;color:#fff;padding:1px 5px;border-radius:6px;font-size:8px;margin-left:2px;vertical-align:middle;">Pro</span></label>
                 </div>
                 <button class="edit-profile-btn" id="editProfileBtn">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -4558,8 +4558,15 @@
       updateMatchCount();
     });
 
-    // Eligible only checkbox
+    // Eligible only checkbox (Premium gated)
     const eligibleOnlyCheckbox = el("eligibleOnly");
+    eligibleOnlyCheckbox.addEventListener("click", (e) => {
+      if (!isPremium) {
+        e.preventDefault();
+        showUpgradeModal();
+        return;
+      }
+    });
     eligibleOnlyCheckbox.addEventListener("change", () => {
       if (eligibleOnlyCheckbox.checked) {
         deltaSlider.value = 0;
@@ -4572,8 +4579,15 @@
       updateMatchCount();
     });
 
-    // "Show only my type jobs" checkbox
+    // "Show only my type jobs" checkbox (Premium gated)
     const myTypeOnlyCheckbox = el("myTypeOnly");
+    myTypeOnlyCheckbox.addEventListener("click", (e) => {
+      if (!isPremium) {
+        e.preventDefault();
+        showUpgradeModal();
+        return;
+      }
+    });
     myTypeOnlyCheckbox.addEventListener("change", () => {
       updateMatchCount();
     });
@@ -4753,6 +4767,9 @@
       const sortSalaryBtn = el("sortSalaryBtn");
       const trackerProTag = document.querySelector('.tracker-pro-tag');
 
+      const eligibleProTag = el("eligibleProTag");
+      const myTypeProTag = el("myTypeProTag");
+
       if (isPremium) {
         premiumLock.classList.add("hidden");
         // Update sort salary button to unlocked state
@@ -4761,6 +4778,9 @@
         sortSalaryBtn.innerHTML = '<span>Sort by Salary</span><span class="premium-tag">Pro</span>';
         // Hide Pro tag on Tracker nav button
         if (trackerProTag) trackerProTag.style.display = 'none';
+        // Hide Pro tags on filter checkboxes
+        if (eligibleProTag) eligibleProTag.style.display = 'none';
+        if (myTypeProTag) myTypeProTag.style.display = 'none';
       } else {
         premiumLock.classList.remove("hidden");
         // Keep sort salary button locked
@@ -4769,6 +4789,9 @@
         sortSalaryBtn.innerHTML = '<span>Sort by Salary</span><span class="premium-tag">Pro</span>';
         // Show Pro tag on Tracker nav button
         if (trackerProTag) trackerProTag.style.display = '';
+        // Show Pro tags on filter checkboxes
+        if (eligibleProTag) eligibleProTag.style.display = '';
+        if (myTypeProTag) myTypeProTag.style.display = '';
       }
     }
 
@@ -6314,7 +6337,9 @@
       const myTypeLabel = document.querySelector('label[for="myTypeOnly"]');
       const myTypeToggle = el("myTypeOnly").parentElement;
       if (hasTypes) {
-        myTypeLabel.textContent = `Show only ${PILOT_PROFILE.typeRatings.join('/')} jobs`;
+        const proTag = el("myTypeProTag");
+        const proTagHTML = proTag ? proTag.outerHTML : '';
+        myTypeLabel.innerHTML = `Show only ${PILOT_PROFILE.typeRatings.join('/')} jobs ${proTagHTML}`;
         myTypeToggle.style.display = '';
       } else {
         myTypeToggle.style.display = 'none';

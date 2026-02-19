@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/Jobs",
+      "source": "/jobs",
       "has": [
         {
           "type": "header",

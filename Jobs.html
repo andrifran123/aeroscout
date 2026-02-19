@@ -4564,6 +4564,10 @@
       if (eligibleOnlyCheckbox.checked) {
         deltaSlider.value = 0;
         syncDelta();
+      } else {
+        // Reset delta slider back to max so it doesn't keep filtering
+        deltaSlider.value = 3000;
+        syncDelta();
       }
       updateMatchCount();
     });

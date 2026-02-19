@@ -326,7 +326,7 @@
       const pIds=tracked.filter(t=>t.job_type==='pilot').map(t=>t.job_id);
       const cIds=tracked.filter(t=>t.job_type==='cabin_crew').map(t=>t.job_id);
       if(pIds.length){
-        const{data:p}=await sb.from('verified_jobs').select('id,title,airline,aircraft,aircraft_family,location,salary_usd,rank,rank_bucket,url,logo_url,company_id').in('id',pIds);
+        const{data:p}=await sb.from('public_verified_jobs').select('id,title,airline,aircraft,aircraft_family,location,salary_usd,rank,rank_bucket,url,logo_url,company_id').in('id',pIds);
         if(p){
           const co=[...new Set(p.filter(x=>x.company_id).map(x=>x.company_id))];let lg={};
           if(co.length){const{data:c}=await sb.from('final_companies').select('id,logo_url').in('id',co);if(c)c.forEach(x=>{lg[x.id]=x.logo_url})}
@@ -334,7 +334,7 @@
         }
       }
       if(cIds.length){
-        const{data:c}=await sb.from('verified_cabin_crew_jobs').select('id,title,airline,location,salary_usd,position,url,logo_url').in('id',cIds);
+        const{data:c}=await sb.from('public_verified_cabin_crew_jobs').select('id,title,airline,location,salary_usd,position,url,logo_url').in('id',cIds);
         if(c)c.forEach(j=>{j.logo=j.logo_url||null;details['c_'+j.id]=j});
       }
       render();

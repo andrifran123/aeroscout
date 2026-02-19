@@ -65,8 +65,8 @@ module.exports = async (req, res) => {
 
     // Fetch all job IDs from both tables
     const [pilotJobs, cabinJobs] = await Promise.all([
-      fetchJobs('verified_jobs'),
-      fetchJobs('verified_cabin_crew_jobs'),
+      fetchJobs('public_verified_jobs'),
+      fetchJobs('public_verified_cabin_crew_jobs'),
     ]);
 
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';

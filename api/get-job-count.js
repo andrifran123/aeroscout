@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
   try {
     // Get job type from query parameter (default to 'pilot')
     const jobType = req.query.type || 'pilot';
-    const tableName = jobType === 'cabin_crew' ? 'verified_cabin_crew_jobs' : 'verified_jobs';
+    const tableName = jobType === 'cabin_crew' ? 'public_verified_cabin_crew_jobs' : 'public_verified_jobs';
 
     // Get count of all jobs in the appropriate table
     const { count, error } = await supabase

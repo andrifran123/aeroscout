@@ -214,8 +214,8 @@ module.exports = async (req, res) => {
 
   try {
     const [pilotJobs, cabinCrewJobs] = await Promise.all([
-      fetchAllJobs('verified_jobs', 'id, title, airline, location, aircraft, rank, verified_at, logo_url, salary_usd'),
-      fetchAllJobs('verified_cabin_crew_jobs', 'id, title, airline, location, position, verified_at, logo_url, salary_usd'),
+      fetchAllJobs('public_verified_jobs', 'id, title, airline, location, aircraft, rank, verified_at, logo_url, salary_usd'),
+      fetchAllJobs('public_verified_cabin_crew_jobs', 'id, title, airline, location, position, verified_at, logo_url, salary_usd'),
     ]);
 
     const html = buildPage(pilotJobs, cabinCrewJobs);

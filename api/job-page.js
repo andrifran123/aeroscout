@@ -828,8 +828,8 @@ module.exports = async (req, res) => {
 
   try {
     // Try primary table first
-    const primaryTable = isCabinCrew ? 'verified_cabin_crew_jobs' : 'verified_jobs';
-    const fallbackTable = isCabinCrew ? 'verified_jobs' : 'verified_cabin_crew_jobs';
+    const primaryTable = isCabinCrew ? 'public_verified_cabin_crew_jobs' : 'public_verified_jobs';
+    const fallbackTable = isCabinCrew ? 'public_verified_jobs' : 'public_verified_cabin_crew_jobs';
 
     let { data, error } = await supabase
       .from(primaryTable)

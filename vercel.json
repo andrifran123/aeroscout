@@ -23,14 +23,6 @@
       "destination": "/api/jobs-listing"
     },
     {
-      "source": "/jobs",
-      "destination": "/Jobs.html"
-    },
-    {
-      "source": "/tracker",
-      "destination": "/Tracker.html"
-    },
-    {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
     },
@@ -40,6 +32,16 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/jobs",
+      "destination": "/Jobs.html",
+      "permanent": false
+    },
+    {
+      "source": "/tracker",
+      "destination": "/Tracker.html",
+      "permanent": false
+    },
     {
       "source": "/:path*",
       "has": [

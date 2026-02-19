@@ -3193,6 +3193,10 @@
                   <input type="checkbox" id="eligibleOnly">
                   <label for="eligibleOnly">Show eligible only</label>
                 </div>
+                <div class="eligible-toggle" style="margin-top:6px;">
+                  <input type="checkbox" id="myTypeOnly">
+                  <label for="myTypeOnly">Show only my type jobs</label>
+                </div>
                 <button class="edit-profile-btn" id="editProfileBtn">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -3669,17 +3673,23 @@
         <!-- Type Ratings Section -->
         <div class="profile-form-section">
           <h3>Type Ratings</h3>
-          <div class="type-ratings-container" id="typeRatingsContainer">
-            <!-- Type rating chips will be added here dynamically -->
-          </div>
-          <div class="add-type-rating" style="position: relative;">
-            <input type="text" id="newTypeRating" placeholder="Search type ratings..." autocomplete="off">
-            <div class="type-rating-dropdown" id="typeRatingDropdown"></div>
-          </div>
-          <div class="profile-form-row" style="margin-top: 12px;">
-            <div class="profile-form-group full-width">
-              <label for="profileTypeTime">Hours on Primary Type</label>
-              <input type="number" id="profileTypeTime" placeholder="e.g. 500" min="0">
+          <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:12px;color:#64748b;cursor:pointer;">
+            <input type="checkbox" id="noTypeRating" style="width:16px;height:16px;">
+            I don't have a type rating
+          </label>
+          <div id="typeRatingFields">
+            <div class="type-ratings-container" id="typeRatingsContainer">
+              <!-- Type rating chips will be added here dynamically -->
+            </div>
+            <div class="add-type-rating" style="position: relative;">
+              <input type="text" id="newTypeRating" placeholder="Search type ratings..." autocomplete="off">
+              <div class="type-rating-dropdown" id="typeRatingDropdown"></div>
+            </div>
+            <div class="profile-form-row" style="margin-top: 12px;">
+              <div class="profile-form-group full-width">
+                <label for="profileTypeTime">Hours on Primary Type</label>
+                <input type="number" id="profileTypeTime" placeholder="e.g. 500" min="0">
+              </div>
             </div>
           </div>
         </div>
@@ -4558,6 +4568,25 @@
       updateMatchCount();
     });
 
+    // "Show only my type jobs" checkbox
+    const myTypeOnlyCheckbox = el("myTypeOnly");
+    myTypeOnlyCheckbox.addEventListener("change", () => {
+      updateMatchCount();
+    });
+
+    // "I don't have a type rating" checkbox (in profile modal)
+    const noTypeRatingCheckbox = el("noTypeRating");
+    const typeRatingFields = el("typeRatingFields");
+    noTypeRatingCheckbox.addEventListener("change", () => {
+      if (noTypeRatingCheckbox.checked) {
+        typeRatingFields.style.opacity = '0.3';
+        typeRatingFields.style.pointerEvents = 'none';
+      } else {
+        typeRatingFields.style.opacity = '';
+        typeRatingFields.style.pointerEvents = '';
+      }
+    });
+
     // Include blockers checkbox (premium feature)
     const includeBlockersCheckbox = el("includeBlockers");
     includeBlockersCheckbox.addEventListener("change", () => {
@@ -4740,8 +4769,13 @@
     }
 
     function updateMatchCount() {
-      const filtered = getFilteredJobs();
-      el("matchCount").textContent = `${filtered.length} Jobs`;
+      currentPage = 1;
+      currentFilteredJobs = getFilteredJobs();
+      el("matchCount").textContent = `${currentFilteredJobs.length} Jobs`;
+      const firstBatch = currentFilteredJobs.slice(0, JOBS_PER_PAGE);
+      render(firstBatch);
+      updateDisplay();
+      updateUrlWithFilters();
     }
 
     function badgeHTML(chips){
@@ -5405,8 +5439,10 @@
       const maxDelta = deltaEnabled ? Number(deltaSlider.value) : 3000; // If disabled, treat as max (no filtering)
       const eligibleOnly = eligibleOnlyCheckbox.checked;
       const includeBlockers = includeBlockersCheckbox.checked;
+      const myTypeOnly = el("myTypeOnly").checked;
+      const noTypeRating = PILOT_PROFILE.typeRatings.length === 0;
 
-      return { q, loc, perks, license, type, operatorType, minFT, maxFT, maxDelta, deltaEnabled, eligibleOnly, includeBlockers };
+      return { q, loc, perks, license, type, operatorType, minFT, maxFT, maxDelta, deltaEnabled, eligibleOnly, includeBlockers, myTypeOnly, noTypeRating };
     }
 
     function matchesAny(map){
@@ -5506,6 +5542,17 @@
           if (!delta.isEligible) return false;
         }
 
+        // "Show only my type jobs" - only show jobs matching pilot's type ratings
+        if (f.myTypeOnly && PILOT_PROFILE.typeRatings.length > 0) {
+          const jobAircraft = j.aircraft || j.requiredType || '';
+          if (!jobAircraft || !pilotHasTypeForJob(PILOT_PROFILE.typeRatings, jobAircraft)) return false;
+        }
+
+        // "I don't have a type rating" - only show NTR jobs
+        if (f.noTypeRating) {
+          if (j.typeRated === true) return false;
+        }
+
         // Delta/Eligibility filter - premium features (golden box)
         if (isPremium && f.deltaEnabled) {
           const delta = calculateDelta(j);
@@ -5601,21 +5648,14 @@
     }
 
     function apply(){
-      currentPage = 1;
-      currentFilteredJobs = getFilteredJobs();
-      const firstBatch = currentFilteredJobs.slice(0, JOBS_PER_PAGE);
-      render(firstBatch);
-      updateDisplay();
       updateMatchCount();
-
-      // Update URL with current filters (for shareable links)
-      updateUrlWithFilters();
     }
 
     function clearAll(){
       el("q").value = "";
       el("loc").value = "";
       el("eligibleOnly").checked = false;
+      el("myTypeOnly").checked = false;
 
       // Reset saved filter
       showingSavedOnly = false;
@@ -6157,6 +6197,12 @@
       editingTypeRatings = [...PILOT_PROFILE.typeRatings];
       renderTypeRatings();
 
+      // "No type rating" checkbox state
+      const hasNoType = PILOT_PROFILE.typeRatings.length === 0;
+      el("noTypeRating").checked = hasNoType;
+      typeRatingFields.style.opacity = hasNoType ? '0.3' : '';
+      typeRatingFields.style.pointerEvents = hasNoType ? 'none' : '';
+
       // Work rights checkboxes
       document.querySelectorAll('.work-right-cb').forEach(cb => {
         cb.checked = PILOT_PROFILE.workRights.includes(cb.value);
@@ -6256,8 +6302,20 @@
     function updateProfileDisplay() {
       const totalHrs = PILOT_PROFILE.totalHours.toLocaleString();
       const license = PILOT_PROFILE.license;
-      const types = PILOT_PROFILE.typeRatings.length > 0 ? PILOT_PROFILE.typeRatings.join(', ') : 'No type';
+      const hasTypes = PILOT_PROFILE.typeRatings.length > 0;
+      const types = hasTypes ? PILOT_PROFILE.typeRatings.join(', ') : 'No type';
       el("profileDisplay").textContent = `${totalHrs}h Total · ${license} · ${types}`;
+
+      // Update "Show only my type jobs" label and visibility
+      const myTypeLabel = document.querySelector('label[for="myTypeOnly"]');
+      const myTypeToggle = el("myTypeOnly").parentElement;
+      if (hasTypes) {
+        myTypeLabel.textContent = `Show only ${PILOT_PROFILE.typeRatings.join('/')} jobs`;
+        myTypeToggle.style.display = '';
+      } else {
+        myTypeToggle.style.display = 'none';
+        el("myTypeOnly").checked = false;
+      }
     }
 
     // Save profile to Supabase
@@ -6273,6 +6331,7 @@
         const multiEngineTime = parseInt(el("profileMultiEngine").value) || 0;
         const license = el("profileLicense").value;
         const typeTime = parseInt(el("profileTypeTime").value) || 0;
+        const hasNoTypeRating = el("noTypeRating").checked;
 
         // Get work rights
         const workRights = [];
@@ -6280,9 +6339,12 @@
           workRights.push(cb.value);
         });
 
+        // If "no type rating" is checked, clear type ratings
+        const finalTypeRatings = hasNoTypeRating ? [] : editingTypeRatings;
+
         // Build type time object
         const typeTimeObj = {};
-        editingTypeRatings.forEach((type, idx) => {
+        finalTypeRatings.forEach((type, idx) => {
           // First type gets the specified hours, others get 0
           typeTimeObj[type] = idx === 0 ? typeTime : 0;
         });
@@ -6293,7 +6355,7 @@
           picHours,
           jetTime,
           multiEngineTime,
-          typeRatings: editingTypeRatings,
+          typeRatings: finalTypeRatings,
           typeTime: typeTimeObj,
           license,
           workRights
@@ -6313,7 +6375,7 @@
               jet_time: jetTime,
               multi_engine_time: multiEngineTime,
               license: license,
-              type_ratings: editingTypeRatings,
+              type_ratings: finalTypeRatings,
               type_time: typeTimeObj,
               work_rights: workRights,
               updated_at: new Date().toISOString()

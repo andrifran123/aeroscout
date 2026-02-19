@@ -5540,7 +5540,6 @@
       const lic = matchesAny(f.license);
       const typ = matchesAny(f.type);
       const opType = matchesAny(f.operatorType);
-      const perk = matchesAny(f.perks);
 
       // Pre-compute search scores for all jobs
       const searchScores = new Map();
@@ -5599,13 +5598,9 @@
           }
         }
 
-        // Perks - if any selected, job must match at least one
-        if (perk.any){
-          const matches =
-            (f.perks.visa && j.visaSponsor === true) ||
-            (f.perks.direct && j.direct);
-          if (!matches) return false;
-        }
+        // Perks - if selected, job must match ALL selected perks (AND logic)
+        if (f.perks.visa && j.visaSponsor !== true) return false;
+        if (f.perks.direct && !j.direct) return false;
 
         // License - if any selected, job must match at least one
         if (lic.any){

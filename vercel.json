@@ -1,6 +1,17 @@
 {
   "rewrites": [
     {
+      "source": "/jobs",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i)(googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebot|ia_archiver|chatgpt-user|gptbot|claudebot|anthropic-ai|perplexitybot|bytespider|applebot|twitterbot|linkedinbot|semrushbot|ahrefsbot|oai-searchbot|cohere-ai|meta-externalagent)"
+        }
+      ],
+      "destination": "/api/jobs-listing"
+    },
+    {
       "source": "/Jobs.html",
       "has": [
         {
@@ -10,6 +21,14 @@
         }
       ],
       "destination": "/api/jobs-listing"
+    },
+    {
+      "source": "/jobs",
+      "destination": "/Jobs.html"
+    },
+    {
+      "source": "/tracker",
+      "destination": "/Tracker.html"
     },
     {
       "source": "/sitemap.xml",

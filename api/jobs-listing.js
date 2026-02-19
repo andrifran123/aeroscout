@@ -145,11 +145,11 @@ function buildPage(pilotJobs, cabinCrewJobs) {
 <title>AeroScout | ${totalCount} Pilot &amp; Cabin Crew Jobs Worldwide</title>
 <meta name="description" content="Browse ${pilotCount} pilot jobs and ${cabinCount} cabin crew positions worldwide. Find openings at Emirates, Qatar Airways, Ryanair, easyJet and more. Updated daily." />
 <meta name="robots" content="index, follow" />
-<link rel="canonical" href="https://www.aeroscout.net/Jobs.html" />
+<link rel="canonical" href="https://www.aeroscout.net/jobs" />
 <meta property="og:title" content="AeroScout | ${totalCount} Pilot &amp; Cabin Crew Jobs" />
 <meta property="og:description" content="Browse ${pilotCount} pilot jobs and ${cabinCount} cabin crew positions worldwide. Updated daily with new aviation jobs." />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://www.aeroscout.net/Jobs.html" />
+<meta property="og:url" content="https://www.aeroscout.net/jobs" />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="AeroScout | ${totalCount} Aviation Jobs" />
 <meta name="twitter:description" content="Browse ${pilotCount} pilot jobs and ${cabinCount} cabin crew positions worldwide." />
@@ -175,7 +175,7 @@ nav a { margin-right: 16px; }
 <h1>AeroScout - Aviation Job Board</h1>
 <nav>
 <a href="/">Home</a>
-<a href="/Jobs.html">Jobs</a>
+<a href="/jobs">Jobs</a>
 <a href="/about.html">About</a>
 <a href="/pricing.html">Pricing</a>
 </nav>
@@ -227,6 +227,6 @@ module.exports = async (req, res) => {
   } catch (err) {
     console.error('jobs-listing error:', err);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.status(500).send('<!doctype html><html><head><title>AeroScout Jobs</title></head><body><h1>AeroScout Jobs</h1><p>Unable to load jobs. Please visit <a href="https://www.aeroscout.net/Jobs.html">www.aeroscout.net</a></p></body></html>');
+    return res.status(500).send('<!doctype html><html><head><title>AeroScout Jobs</title></head><body><h1>AeroScout Jobs</h1><p>Unable to load jobs. Please visit <a href="https://www.aeroscout.net/jobs">www.aeroscout.net</a></p></body></html>');
   }
 };

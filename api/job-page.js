@@ -729,7 +729,7 @@ ${schemaJson}
   <nav class="nav">
     <a href="/" class="nav-logo">AEROSCOUT</a>
     <div class="nav-links">
-      <a href="/Jobs.html">Browse Jobs</a>
+      <a href="/jobs">Browse Jobs</a>
       <a href="/about.html">About</a>
       <a href="/pricing.html">Pricing</a>
       <a href="/login.html">Login</a>
@@ -737,7 +737,7 @@ ${schemaJson}
   </nav>
 
   <main class="container">
-    <a href="/Jobs.html" class="back-link">&larr; Back to all jobs</a>
+    <a href="/jobs" class="back-link">&larr; Back to all jobs</a>
 
     <article class="card${visaClass}">
       <div class="company-logo">${logoHtml}</div>
@@ -765,7 +765,7 @@ ${schemaJson}
     <div class="cta-banner">
       <h2>Explore ${isCabinCrew ? 'Cabin Crew' : 'Pilot'} Jobs Worldwide</h2>
       <p>Search, filter, and get alerts for the latest aviation positions from 850+ airlines &amp; operators.</p>
-      <a href="/Jobs.html${isCabinCrew ? '?type=cabin_crew' : ''}" class="cta-btn">Browse All Jobs</a>
+      <a href="/jobs${isCabinCrew ? '?type=cabin_crew' : ''}" class="cta-btn">Browse All Jobs</a>
     </div>
   </main>
 
@@ -798,7 +798,7 @@ function build404() {
 <body>
   <h1>Job Not Found</h1>
   <p>This position may have been filled or removed.</p>
-  <a href="/Jobs.html">Browse All Jobs</a>
+  <a href="/jobs">Browse All Jobs</a>
 </body>
 </html>`;
 }

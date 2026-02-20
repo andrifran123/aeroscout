@@ -1076,6 +1076,102 @@
       background: #e5e7eb;
     }
 
+    /* Alert Tier Toggle */
+    .alert-tier-toggle {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 3px;
+      margin-bottom: 20px;
+    }
+    .alert-tier-tab {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: #6b7280;
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .alert-tier-tab.active {
+      background: white;
+      color: #111827;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .alert-tier-tab .pro-badge {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .alert-tier-content { display: none; }
+    .alert-tier-content.active { display: block; }
+
+    /* Airline Search Picker */
+    .airline-search-wrapper { position: relative; margin-bottom: 16px; }
+    .airline-search-input {
+      width: 100%; padding: 12px 14px 12px 38px;
+      border: 1px solid #e5e7eb; border-radius: 8px;
+      font-size: 14px; background: #fff; transition: border-color 0.15s;
+    }
+    .airline-search-input:focus { outline: none; border-color: #3b82f6; }
+    .airline-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+    .airline-search-results {
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: white; border: 1px solid #e5e7eb; border-radius: 8px;
+      max-height: 200px; overflow-y: auto; z-index: 10;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none;
+    }
+    .airline-search-results.visible { display: block; }
+    .airline-search-item {
+      padding: 10px 14px; cursor: pointer; font-size: 13px;
+      transition: background 0.1s; display: flex; align-items: center; justify-content: space-between;
+    }
+    .airline-search-item:hover { background: #f3f4f6; }
+    .airline-search-item.disabled { opacity: 0.4; cursor: not-allowed; }
+    .airline-search-no-results { padding: 12px 14px; font-size: 13px; color: #9ca3af; text-align: center; }
+    .airline-selected-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .airline-tag {
+      display: flex; align-items: center; gap: 6px;
+      background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8;
+      padding: 6px 10px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    }
+    .airline-tag-remove { cursor: pointer; color: #93c5fd; display: flex; align-items: center; transition: color 0.1s; }
+    .airline-tag-remove:hover { color: #ef4444; }
+    .airline-counter { font-size: 12px; color: #6b7280; margin-bottom: 12px; }
+    .airline-counter strong { color: #111827; }
+
+    /* Pro see-through locked state */
+    .alert-pro-locked { position: relative; }
+    .alert-pro-locked-content { filter: blur(1.5px); opacity: 0.85; pointer-events: none; user-select: none; }
+    .alert-pro-locked-overlay {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      z-index: 2; background: rgba(255,255,255,0.05);
+    }
+    .alert-pro-locked-card {
+      background: white; border-radius: 14px; padding: 28px 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12); text-align: center; max-width: 320px; width: 90%;
+    }
+    .alert-pro-locked-card svg { width: 40px; height: 40px; color: #3b82f6; margin-bottom: 10px; }
+    .alert-pro-locked-card h3 { margin: 0 0 6px; font-size: 16px; color: #111827; }
+    .alert-pro-locked-card p { color: #6b7280; margin: 0 0 16px; font-size: 13px; line-height: 1.5; }
+    .alert-pro-upgrade-btn {
+      display: inline-block; background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white; border: none; padding: 12px 28px; border-radius: 8px;
+      font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.15s;
+    }
+    .alert-pro-upgrade-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,130,246,0.35); }
+
     /* Multi-select dropdown for Aircraft */
     .multi-select {
       position: relative;
@@ -3175,14 +3271,13 @@
                 <span class="premium-tag">Pro</span>
               </button>
 
-              <!-- Job Alert Button (Premium) -->
+              <!-- Job Alert Button -->
               <button class="alert-btn" id="alertBtn" type="button">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                   <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                 </svg>
                 Get Job Alerts
-                <span class="premium-tag">Pro</span>
               </button>
 
               <!-- Profile Summary Card -->
@@ -3322,6 +3417,44 @@
         <button class="alert-close-btn" id="closeAlertModal">&times;</button>
       </div>
       <div class="alert-modal-body" id="alertModalBody">
+        <!-- Tier Toggle -->
+        <div class="alert-tier-toggle" id="alertTierToggle">
+          <button class="alert-tier-tab active" id="alertTabFree" data-tier="free">Free</button>
+          <button class="alert-tier-tab" id="alertTabPro" data-tier="pro">Advanced <span class="pro-badge">Pro</span></button>
+        </div>
+
+        <!-- FREE TIER CONTENT -->
+        <div class="alert-tier-content active" id="alertFreeContent">
+          <div class="alert-profile-note">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span>Get instant email alerts when your selected airlines post new jobs</span>
+          </div>
+          <div class="alert-section">
+            <div class="alert-section-title">Select Airlines (up to 3)<span class="required">*</span></div>
+            <div class="airline-selected-tags" id="freeAirlineTags"></div>
+            <div class="airline-counter" id="freeAirlineCounter"><strong>0</strong> / 3 airlines selected</div>
+            <div class="airline-search-wrapper">
+              <svg class="airline-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" class="airline-search-input" id="freeAirlineSearch" placeholder="Search airlines..." autocomplete="off">
+              <div class="airline-search-results" id="freeAirlineResults"></div>
+            </div>
+          </div>
+          <div class="alert-section" style="margin-bottom:0;">
+            <div class="alert-input-group" style="margin-bottom:0;">
+              <label for="freeAlertEmail">Email Address<span class="required">*</span></label>
+              <input type="email" id="freeAlertEmail" placeholder="you@example.com" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRO TIER CONTENT (existing modal, untouched) -->
+        <div class="alert-tier-content" id="alertProContent">
         <!-- Profile Note -->
         <div class="alert-profile-note">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -3613,6 +3746,7 @@
             <input type="email" id="alertEmail" placeholder="you@example.com" required>
           </div>
         </div>
+        </div><!-- /alertProContent -->
       </div>
       <div class="alert-modal-footer">
         <button class="alert-submit-btn" id="alertSubmitBtn">Subscribe to Alerts</button>
@@ -5866,6 +6000,24 @@
     }
 
     function resetAlertModal() {
+      // Reset free tier
+      freeSelectedAirlines = [];
+      renderFreeAirlineTags();
+      if (freeAirlineSearch) freeAirlineSearch.value = '';
+      const freeEmail = el('freeAlertEmail');
+      if (freeEmail) freeEmail.value = '';
+
+      // Restore pro content DOM if it was blurred
+      const proContent = el('alertProContent');
+      const overlay = proContent.querySelector('.alert-pro-locked-overlay');
+      if (overlay) overlay.remove();
+      const wrapped = proContent.querySelector('.alert-pro-locked-content');
+      if (wrapped) {
+        while (wrapped.firstChild) proContent.appendChild(wrapped.firstChild);
+        wrapped.remove();
+      }
+      proContent.classList.remove('alert-pro-locked', 'active');
+
       // Reset chips
       document.querySelectorAll('.alert-chip').forEach(chip => {
         chip.classList.remove('selected');
@@ -5900,11 +6052,8 @@
     }
 
     function openAlertModal() {
-      if (!isPremium) {
-        redirectToUpgrade();
-        return;
-      }
       resetAlertModal();
+      switchAlertTier('free');
       alertModal.classList.add('active');
     }
 
@@ -5918,7 +6067,181 @@
       if (e.target === alertModal) closeAlertModalFn();
     });
 
+    // --- TIER TOGGLE ---
+    let currentAlertTier = 'free';
+    let freeSelectedAirlines = [];
+    let allAirlineNames = [];
+
+    function switchAlertTier(tier) {
+      currentAlertTier = tier;
+      el('alertTabFree').classList.toggle('active', tier === 'free');
+      el('alertTabPro').classList.toggle('active', tier === 'pro');
+      el('alertFreeContent').classList.toggle('active', tier === 'free');
+
+      const proContent = el('alertProContent');
+      const footer = document.querySelector('.alert-modal-footer');
+
+      if (tier === 'pro') {
+        if (isPremium) {
+          // Show existing pro content as-is
+          proContent.classList.add('active');
+          proContent.classList.remove('alert-pro-locked');
+          if (proContent.querySelector('.alert-pro-locked-overlay')) {
+            proContent.querySelector('.alert-pro-locked-overlay').remove();
+          }
+          // Unwrap locked-content wrapper if present
+          const wrapped = proContent.querySelector('.alert-pro-locked-content');
+          if (wrapped) {
+            wrapped.classList.remove('alert-pro-locked-content');
+          }
+          footer.style.display = '';
+        } else {
+          // Show blurred see-through
+          proContent.classList.add('active', 'alert-pro-locked');
+          // Add blur wrapper to inner content if not already there
+          const firstChild = proContent.children[0];
+          if (firstChild && !firstChild.classList.contains('alert-pro-locked-overlay') && !proContent.querySelector('.alert-pro-locked-overlay')) {
+            // Wrap all children in a blurred container
+            const wrapper = document.createElement('div');
+            wrapper.className = 'alert-pro-locked-content';
+            while (proContent.firstChild) {
+              wrapper.appendChild(proContent.firstChild);
+            }
+            proContent.appendChild(wrapper);
+            // Add overlay card
+            const overlay = document.createElement('div');
+            overlay.className = 'alert-pro-locked-overlay';
+            overlay.innerHTML = `
+              <div class="alert-pro-locked-card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <h3>Upgrade to Pro Alerts</h3>
+                <p>Filter by aircraft, region, rank, operator type, and more.</p>
+                <button class="alert-pro-upgrade-btn" onclick="closeAlertModalFn();showUpgradeModal();">Upgrade to Pro</button>
+              </div>`;
+            proContent.insertBefore(overlay, proContent.firstChild);
+          }
+          footer.style.display = 'none';
+        }
+      } else {
+        proContent.classList.remove('active');
+        footer.style.display = '';
+      }
+    }
+
+    el('alertTabFree').addEventListener('click', () => switchAlertTier('free'));
+    el('alertTabPro').addEventListener('click', () => switchAlertTier('pro'));
+
+    // --- FREE TIER: Airline Search ---
+    const freeAirlineSearch = el('freeAirlineSearch');
+    const freeAirlineResults = el('freeAirlineResults');
+
+    async function loadAirlineNames() {
+      try {
+        const { data: pilots } = await supabaseClient
+          .from('verified_jobs').select('airline')
+          .eq('is_active', true).not('airline', 'is', null).not('airline', 'eq', '');
+        const { data: cc } = await supabaseClient
+          .from('verified_cabin_crew_jobs').select('airline')
+          .eq('is_active', true).not('airline', 'is', null).not('airline', 'eq', '');
+        const combined = [...(pilots || []), ...(cc || [])];
+        allAirlineNames = [...new Set(combined.map(r => r.airline).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+      } catch (err) { console.error('Failed to load airlines:', err); }
+    }
+    loadAirlineNames();
+
+    function renderFreeAirlineTags() {
+      el('freeAirlineTags').innerHTML = freeSelectedAirlines.map(name => `
+        <span class="airline-tag">${name}
+          <span class="airline-tag-remove" data-airline="${name}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </span>
+        </span>`).join('');
+      el('freeAirlineCounter').innerHTML = `<strong>${freeSelectedAirlines.length}</strong> / 3 airlines selected`;
+      el('freeAirlineTags').querySelectorAll('.airline-tag-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          freeSelectedAirlines = freeSelectedAirlines.filter(a => a !== btn.dataset.airline);
+          renderFreeAirlineTags();
+        });
+      });
+    }
+
+    function showAirlineResults() {
+      const q = freeAirlineSearch.value.trim().toLowerCase();
+      if (!q) { freeAirlineResults.classList.remove('visible'); return; }
+      const matches = allAirlineNames.filter(n => n.toLowerCase().includes(q)).slice(0, 15);
+      if (!matches.length) {
+        freeAirlineResults.innerHTML = '<div class="airline-search-no-results">No airlines found</div>';
+      } else {
+        freeAirlineResults.innerHTML = matches.map(name => {
+          const sel = freeSelectedAirlines.includes(name);
+          const dis = !sel && freeSelectedAirlines.length >= 3;
+          return `<div class="airline-search-item${dis ? ' disabled' : ''}" data-airline="${name}">
+            <span>${name}</span>${sel ? '<span style="color:#10b981;font-size:12px;">✓</span>' : ''}
+          </div>`;
+        }).join('');
+      }
+      freeAirlineResults.classList.add('visible');
+      freeAirlineResults.querySelectorAll('.airline-search-item:not(.disabled)').forEach(item => {
+        item.addEventListener('click', () => {
+          const a = item.dataset.airline;
+          if (freeSelectedAirlines.includes(a)) freeSelectedAirlines = freeSelectedAirlines.filter(x => x !== a);
+          else if (freeSelectedAirlines.length < 3) freeSelectedAirlines.push(a);
+          renderFreeAirlineTags();
+          freeAirlineSearch.value = '';
+          freeAirlineResults.classList.remove('visible');
+        });
+      });
+    }
+    freeAirlineSearch.addEventListener('input', showAirlineResults);
+    freeAirlineSearch.addEventListener('focus', showAirlineResults);
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.airline-search-wrapper')) freeAirlineResults.classList.remove('visible');
+    });
+
+    // --- SUBMIT HANDLER (handles both tiers) ---
     alertSubmitBtn.addEventListener('click', async () => {
+      if (currentAlertTier === 'free') {
+        // Free tier submit
+        if (freeSelectedAirlines.length === 0) { alert('Please select at least one airline'); return; }
+        const email = el('freeAlertEmail').value.trim();
+        if (!email || !email.includes('@')) { alert('Please enter a valid email address'); return; }
+
+        alertSubmitBtn.disabled = true;
+        alertSubmitBtn.textContent = 'Subscribing...';
+        try {
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          const { data, error } = await supabaseClient.from('job_alert_subscriptions').insert({
+            email, filters: { airlines: freeSelectedAirlines, frequency: 'instant' },
+            tier: 'free', verified: false, verification_token: crypto.randomUUID(),
+            unsubscribe_token: crypto.randomUUID(), active: true,
+            user_id: session?.user?.id || null
+          });
+          if (error) throw error;
+          alertModalBody.innerHTML = `
+            <div class="alert-success">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <h3>You're Subscribed!</h3>
+              <p>We'll email you at <strong>${email}</strong> when ${freeSelectedAirlines.join(', ')} post${freeSelectedAirlines.length === 1 ? 's' : ''} new jobs.</p>
+            </div>`;
+          document.querySelector('.alert-modal-footer').style.display = 'none';
+        } catch (err) {
+          console.error('Subscription error:', err);
+          alert('Failed to subscribe. Please try again.');
+          alertSubmitBtn.disabled = false;
+          alertSubmitBtn.textContent = 'Subscribe to Alerts';
+        }
+        return;
+      }
+
+      // --- PRO TIER SUBMIT (existing code, unchanged) ---
       // Clear previous validation errors
       el('rankSection').classList.remove('error');
       el('regionSection').classList.remove('error');
@@ -5984,7 +6307,8 @@
             verification_token: crypto.randomUUID(),
             unsubscribe_token: crypto.randomUUID(),
             active: true,
-            user_id: userId  // Links to user_profiles for hour-based matching
+            user_id: userId,  // Links to user_profiles for hour-based matching
+            tier: 'pro'
           });
 
         if (error) throw error;

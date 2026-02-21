@@ -2207,15 +2207,17 @@
       right: 0;
       display: flex;
       flex-direction: column;
+      align-items: flex-end;
       z-index: 2;
-      border-radius: 0 14px 0 10px;
-      overflow: hidden;
-      border-bottom: 1px solid #e8ecf1;
-      border-left: 1px solid #e8ecf1;
+      gap: 4px;
     }
     .card-top-buttons {
       display: flex;
       align-items: stretch;
+      border-radius: 0 14px 0 10px;
+      overflow: hidden;
+      border-bottom: 1px solid #e8ecf1;
+      border-left: 1px solid #e8ecf1;
     }
 
     /* Mobile apply inside card-top-actions - hidden on desktop */
@@ -2421,9 +2423,11 @@
         padding: 7px 12px;
         font-size: 11px;
         white-space: nowrap;
-        border-top: 1px solid #e8ecf1;
+        border-radius: 6px;
+        border: 1px solid #e8ecf1;
       }
       .attributes {
+        grid-column: 2;
         font-size: 11px;
         gap: 6px;
       }
@@ -2695,16 +2699,8 @@
       }
 
       .apply-btn-mobile {
-        display: block;
-        background: #0b2a6f;
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        font-weight: 600;
         padding: 6px 12px;
         font-size: 11px;
-        white-space: nowrap;
-        border-top: 1px solid #e8ecf1;
       }
 
       .attributes {
@@ -2751,7 +2747,7 @@
         top: 2px;
       }
 
-      .card-top-actions {
+      .card-top-buttons {
         border-radius: 0 10px 0 8px;
       }
       .save-btn {

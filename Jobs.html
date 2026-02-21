@@ -6138,11 +6138,11 @@
     async function loadAirlineNames() {
       try {
         const { data: pilots } = await supabaseClient
-          .from('verified_jobs').select('airline')
-          .eq('is_active', true).not('airline', 'is', null).not('airline', 'eq', '');
+          .from('public_verified_jobs').select('airline')
+          .not('airline', 'is', null).not('airline', 'eq', '');
         const { data: cc } = await supabaseClient
-          .from('verified_cabin_crew_jobs').select('airline')
-          .eq('is_active', true).not('airline', 'is', null).not('airline', 'eq', '');
+          .from('public_verified_cabin_crew_jobs').select('airline')
+          .not('airline', 'is', null).not('airline', 'eq', '');
         const combined = [...(pilots || []), ...(cc || [])];
         allAirlineNames = [...new Set(combined.map(r => r.airline).filter(Boolean))].sort((a, b) => a.localeCompare(b));
       } catch (err) { console.error('Failed to load airlines:', err); }

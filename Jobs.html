@@ -70,8 +70,9 @@
     }
 
     *{box-sizing:border-box}
-    html,body{height:100%}
+    html{height:100%; overflow-x:hidden}
     body{
+      height:100%;
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--text);
@@ -103,6 +104,7 @@
       min-height:100%;
       position:relative;
       background:#07183d; /* fallback */
+      overflow-x: hidden;
     }
 
     /* Photo layer (blurred slightly so UI is readable but still clearly a photo) */
@@ -317,7 +319,7 @@
 
     .grid{
       display:grid;
-      grid-template-columns: 300px 1fr;
+      grid-template-columns: 300px minmax(0, 1fr);
       gap:16px;
       margin-top:14px;
       align-items:start;
@@ -330,6 +332,7 @@
       box-shadow: var(--softShadow);
       overflow:hidden;
       position:relative;
+      min-width: 0;
     }
     .panel::before{
       content:"";
@@ -1921,7 +1924,7 @@
     .banner h2{ margin:8px 0 0; font-size:18px; line-height:1.2; }
     .banner p{ margin:6px 0 0; opacity:.9; font-size:13px; max-width: 74ch; }
 
-    .cards{ padding:10px; display:grid; gap:8px; }
+    .cards{ padding:10px; display:grid; gap:8px; min-width:0; }
 
     /* Load More Section */
     .load-more-container {
@@ -1972,7 +1975,7 @@
       border: 1px solid #e2e8f0;
       padding: 16px 20px;
       display: grid;
-      grid-template-columns: 100px 1fr 150px;
+      grid-template-columns: 100px minmax(0, 1fr) 150px;
       grid-template-rows: auto auto auto;
       gap: 6px 14px;
       transition: all 0.2s ease;
@@ -2058,7 +2061,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 6px;
+      padding-top: 24px;
     }
     .apply-btn {
       background: #0b2a6f;
@@ -2197,76 +2200,98 @@
       margin-bottom: 4px;
     }
 
-    .save-btn {
+    .card-top-actions {
       position: absolute;
       top: 0;
       right: 0;
-      background: #f5f5f5;
+      display: flex;
+      align-items: stretch;
+      z-index: 2;
+      border-radius: 0 14px 0 10px;
+      overflow: hidden;
+      border-bottom: 1px solid #e8ecf1;
+      border-left: 1px solid #e8ecf1;
+    }
+
+    /* Save Button */
+    .save-btn {
+      background: #f8fafc;
       border: none;
       cursor: pointer;
       padding: 8px 10px;
-      border-radius: 0 16px 0 12px;
+      border-radius: 0;
       transition: background 0.15s ease;
+      display: flex;
+      align-items: center;
     }
     .save-btn:hover {
-      background: #e0e0e0;
+      background: #eef1f5;
     }
     .save-btn svg {
-      width: 18px;
-      height: 18px;
+      width: 17px;
+      height: 17px;
       fill: none;
-      stroke: #666;
+      stroke: #3b82f6;
       stroke-width: 2;
+      transition: all 0.15s ease;
     }
     .save-btn:hover svg {
-      stroke: #333;
+      stroke: #3b82f6;
     }
     .save-btn.saved {
-      background: #e8f0fe;
+      background: #eff6ff;
     }
     .save-btn.saved svg {
-      fill: #1b66ff;
-      stroke: #1b66ff;
+      fill: #3b82f6;
+      stroke: #3b82f6;
     }
     .save-btn.saved:hover {
-      background: #d2e3fc;
+      background: #dbeafe;
     }
     .save-btn.saved:hover svg {
-      fill: #0b4ecf;
-      stroke: #0b4ecf;
+      fill: #2563eb;
+      stroke: #2563eb;
     }
 
-    /* Track Button (Option A - below Apply Now) */
+    /* Track Button */
     .track-btn {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      background: #fff;
-      border: 1.5px solid #e2e8f0;
-      color: #475569;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
+      background: #f8fafc;
+      border: none;
+      border-right: 1px solid #e8ecf1;
+      color: #1e293b;
+      padding: 8px 12px;
+      border-radius: 0;
+      font-size: 11px;
+      font-weight: 500;
       cursor: pointer;
       font-family: inherit;
-      transition: all 0.15s;
+      letter-spacing: 0.02em;
+      transition: all 0.15s ease;
     }
     .track-btn:hover {
-      border-color: #059669;
+      background: #eef1f5;
       color: #059669;
     }
+    .track-btn:hover svg {
+      stroke: #059669;
+    }
     .track-btn svg {
-      width: 14px;
-      height: 14px;
-      stroke: currentColor;
+      width: 13px;
+      height: 13px;
+      stroke: #94a3b8;
       fill: none;
       stroke-width: 2;
+      transition: all 0.15s ease;
     }
     .track-btn.tracked {
       background: #ecfdf5;
-      border-color: #a7f3d0;
-      color: #059669;
+      color: #16a34a;
+    }
+    .track-btn.tracked svg {
+      stroke: #16a34a;
     }
     .track-btn.tracked:hover {
       background: #d1fae5;
@@ -2303,7 +2328,7 @@
     /* Large Desktop - 1441px+ */
     @media (min-width: 1441px) {
       .card {
-        grid-template-columns: 110px 1fr 160px;
+        grid-template-columns: 110px minmax(0, 1fr) 160px;
         padding: 18px 22px;
       }
       .company-logo {
@@ -2329,7 +2354,7 @@
     /* Tablet & Laptop - 769px to 1024px */
     @media (max-width: 1024px) {
       .card {
-        grid-template-columns: 90px 1fr 140px;
+        grid-template-columns: 90px minmax(0, 1fr) 140px;
         padding: 14px 16px;
         gap: 5px 12px;
       }
@@ -2361,7 +2386,7 @@
       .grid{ grid-template-columns: 1fr; }
       .mobile-toggle{ display: block; }
       .card{
-        grid-template-columns: 80px 1fr 120px;
+        grid-template-columns: 80px minmax(0, 1fr) 120px;
         padding: 14px 16px;
         gap: 5px 10px;
       }
@@ -2620,7 +2645,7 @@
         font-size: 14px;
         line-height: 1.3;
         margin-bottom: 2px;
-        padding-right: 70px;
+        padding-right: 120px;
       }
 
       .airline-name {
@@ -2638,24 +2663,25 @@
         content: none;
       }
 
-      /* Save button - ensure tap target on mobile */
-      .save-btn {
+      /* Top actions row - save + track */
+      .card-top-actions {
         z-index: 2;
-        padding: 10px 12px;
       }
 
-      /* Apply button - below save button */
+      /* Apply button - below track/save actions */
       .apply-container {
         position: absolute;
-        top: 40px;
-        right: 10px;
-        text-align: right;
+        top: 0;
+        right: 0;
         margin: 0;
+        padding-top: 30px;
+        padding-right: 10px;
+        text-align: right;
       }
 
       .apply-btn {
-        padding: 6px 10px;
-        font-size: 10px;
+        padding: 6px 12px;
+        font-size: 11px;
         border-radius: 5px;
         display: inline-block;
         white-space: nowrap;
@@ -2705,18 +2731,24 @@
         top: 2px;
       }
 
+      .card-top-actions {
+        border-radius: 0 10px 0 8px;
+      }
       .save-btn {
         padding: 6px 8px;
-        border-radius: 0 12px 0 8px;
       }
       .save-btn svg {
-        width: 16px;
-        height: 16px;
+        width: 15px;
+        height: 15px;
       }
 
       .track-btn {
-        padding: 5px 10px;
+        padding: 5px 9px;
         font-size: 10px;
+      }
+      .track-btn svg {
+        width: 12px;
+        height: 12px;
       }
 
       /* Load more section */
@@ -2767,15 +2799,15 @@
       }
       .job-title {
         font-size: 13px;
-        padding-right: 65px;
+        padding-right: 110px;
       }
       .apply-container {
-        right: 8px;
-        top: 38px;
+        padding-top: 28px;
+        padding-right: 8px;
       }
       .apply-btn {
-        padding: 5px 8px;
-        font-size: 9px;
+        padding: 5px 10px;
+        font-size: 10px;
       }
       .attr-pill {
         font-size: 9px;
@@ -2806,16 +2838,15 @@
 
       .job-title {
         font-size: 12px;
-        padding-right: 60px;
+        padding-right: 100px;
       }
 
       .apply-container {
-        right: 6px;
-        top: 36px;
+        padding-top: 26px;
+        padding-right: 6px;
       }
-
       .apply-btn {
-        padding: 4px 7px;
+        padding: 5px 8px;
         font-size: 9px;
       }
 
@@ -2829,11 +2860,6 @@
         padding: 0;
       }
       .airline-name::before { content: none; }
-
-      .apply-btn {
-        padding: 6px 10px;
-        font-size: 10px;
-      }
 
       .attr-pill {
         font-size: 9px;
@@ -2862,11 +2888,14 @@
       }
       .job-title {
         font-size: 11px;
-        padding-right: 75px;
+        padding-right: 95px;
+      }
+      .apply-container {
+        padding-top: 24px;
       }
       .apply-btn {
-        padding: 5px 8px;
-        font-size: 9px;
+        padding: 4px 7px;
+        font-size: 8px;
       }
     }
 
@@ -3169,7 +3198,7 @@
       margin: 0;
       padding: 8px 0;
     }
-    .map-job-preview .save-btn {
+    .map-job-preview .card-top-actions {
       display: none;
     }
   </style>
@@ -5454,9 +5483,15 @@
       const cards = el("cards");
       const jobsHTML = list.map(j => `
         <article class="card${j.visa ? ' visa-sponsor' : ''}" style="position:relative;">
-          <button class="save-btn${savedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' saved' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleSaveJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Save job">
-            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-          </button>
+          <div class="card-top-actions">
+            <button class="track-btn${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' tracked' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleTrackJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Track application">
+              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              <span>${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? 'Tracked' : 'Track'}</span>
+            </button>
+            <button class="save-btn${savedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' saved' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleSaveJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Save job">
+              <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+          </div>
 
           <div class="company-logo">
             <img src="${j.logo}" alt="${j.org}" onerror="this.parentElement.textContent='${iconLetter(j.org)}'">
@@ -5466,10 +5501,6 @@
 
           <div class="apply-container">
             <a href="${j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
-            <button class="track-btn${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' tracked' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleTrackJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Track application">
-              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-              <span>${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? 'Tracked' : 'Track'}</span>
-            </button>
           </div>
 
           <div class="attributes">
@@ -7251,9 +7282,15 @@
       // Render the single job card
       const jobHTML = `
         <article class="card${job.visa ? ' visa-sponsor' : ''}" style="position:relative;">
-          <button class="save-btn${savedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? ' saved' : ''}" data-job-id="${job.id}" data-job-type="${job.jobType || 'pilot'}" onclick="toggleSaveJob(${job.id}, '${job.jobType || 'pilot'}', event)" title="Save job">
-            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-          </button>
+          <div class="card-top-actions">
+            <button class="track-btn${trackedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? ' tracked' : ''}" data-job-id="${job.id}" data-job-type="${job.jobType || 'pilot'}" onclick="toggleTrackJob(${job.id}, '${job.jobType || 'pilot'}', event)" title="Track application">
+              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              <span>${trackedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? 'Tracked' : 'Track'}</span>
+            </button>
+            <button class="save-btn${savedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? ' saved' : ''}" data-job-id="${job.id}" data-job-type="${job.jobType || 'pilot'}" onclick="toggleSaveJob(${job.id}, '${job.jobType || 'pilot'}', event)" title="Save job">
+              <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+          </div>
 
           <div class="company-logo">
             <img src="${job.logo}" alt="${job.org}" onerror="this.parentElement.textContent='${iconLetter(job.org)}'">
@@ -7263,10 +7300,6 @@
 
           <div class="apply-container">
             <a href="${job.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
-            <button class="track-btn${trackedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? ' tracked' : ''}" data-job-id="${job.id}" data-job-type="${job.jobType || 'pilot'}" onclick="toggleTrackJob(${job.id}, '${job.jobType || 'pilot'}', event)" title="Track application">
-              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-              <span>${trackedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? 'Tracked' : 'Track'}</span>
-            </button>
           </div>
 
           <div class="attributes">
@@ -7692,6 +7725,16 @@
       // Render the full job card HTML (same as main page)
       const cardHTML = `
         <article class="card${j.visa ? ' visa-sponsor' : ''}" style="position:relative;">
+          <div class="card-top-actions">
+            <button class="track-btn${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' tracked' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleTrackJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Track application">
+              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              <span>${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? 'Tracked' : 'Track'}</span>
+            </button>
+            <button class="save-btn${savedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' saved' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleSaveJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Save job">
+              <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+          </div>
+
           <div class="company-logo">
             <img src="${j.logo || ''}" alt="${j.org}" onerror="this.parentElement.textContent='${iconLetter(j.org)}'">
           </div>
@@ -7700,10 +7743,6 @@
 
           <div class="apply-container">
             <a href="${j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
-            <button class="track-btn${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' tracked' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleTrackJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Track application">
-              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-              <span>${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? 'Tracked' : 'Track'}</span>
-            </button>
           </div>
 
           <div class="attributes">

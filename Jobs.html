@@ -3446,10 +3446,7 @@
             </div>
           </div>
           <div class="alert-section" style="margin-bottom:0;">
-            <div class="alert-input-group" style="margin-bottom:0;">
-              <label for="freeAlertEmail">Email Address<span class="required">*</span></label>
-              <input type="email" id="freeAlertEmail" placeholder="you@example.com" required>
-            </div>
+            <p style="margin:0; font-size:13px; color:#6b7280;">Alerts will be sent to your account email address.</p>
           </div>
         </div>
 
@@ -6206,20 +6203,25 @@
     // --- SUBMIT HANDLER (handles both tiers) ---
     alertSubmitBtn.addEventListener('click', async () => {
       if (currentAlertTier === 'free') {
-        // Free tier submit
+        // Free tier requires login
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) {
+          alert('Please log in to set up job alerts');
+          window.location.href = 'login.html';
+          return;
+        }
+
         if (freeSelectedAirlines.length === 0) { alert('Please select at least one airline'); return; }
-        const email = el('freeAlertEmail').value.trim();
-        if (!email || !email.includes('@')) { alert('Please enter a valid email address'); return; }
+        const email = session.user.email;
 
         alertSubmitBtn.disabled = true;
         alertSubmitBtn.textContent = 'Subscribing...';
         try {
-          const { data: { session } } = await supabaseClient.auth.getSession();
           const { data, error } = await supabaseClient.from('job_alert_subscriptions').insert({
             email, filters: { airlines: freeSelectedAirlines, frequency: 'instant' },
-            tier: 'free', verified: false, verification_token: crypto.randomUUID(),
+            tier: 'free', verified: true, verification_token: crypto.randomUUID(),
             unsubscribe_token: crypto.randomUUID(), active: true,
-            user_id: session?.user?.id || null
+            user_id: session.user.id
           });
           if (error) throw error;
           alertModalBody.innerHTML = `

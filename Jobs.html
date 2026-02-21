@@ -2079,6 +2079,26 @@
       background: #081a45;
     }
 
+    .time-ago-mobile {
+      position: absolute;
+      bottom: 12px;
+      left: 16px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+      z-index: 3;
+    }
+    .time-ago-mobile.recent {
+      color: #2e7d32;
+      background: #e8f5e9;
+    }
+    .time-ago-mobile.older {
+      color: #1565c0;
+      background: #e3f2fd;
+    }
+
     .stats-row {
       grid-column: 2;
       display: flex;
@@ -4477,7 +4497,8 @@
             jobType: 'pilot',
             latitude: job.latitude || null,
             longitude: job.longitude || null,
-            locationBucket: job.location_bucket || ''
+            locationBucket: job.location_bucket || '',
+            verifiedAt: job.verified_at || ''
           };
         });
       } catch (err) {
@@ -4547,7 +4568,8 @@
             benefits: job.benefits || [],
             latitude: job.latitude || null,
             longitude: job.longitude || null,
-            locationBucket: job.location_bucket || ''
+            locationBucket: job.location_bucket || '',
+            verifiedAt: job.verified_at || ''
           };
         });
       } catch (err) {
@@ -4992,6 +5014,29 @@
     function iconLetter(name){
       const s = (name || "A").trim();
       return (s[0] || "A").toUpperCase();
+    }
+
+    function timeAgoDays(dateStr) {
+      if (!dateStr) return -1;
+      const date = new Date(dateStr.replace(' ', 'T') + 'Z');
+      if (isNaN(date)) return -1;
+      return Math.floor((new Date() - date) / (1000 * 60 * 60 * 24));
+    }
+
+    function timeAgo(dateStr) {
+      const diffDays = timeAgoDays(dateStr);
+      if (diffDays < 0 || diffDays > 14) return '';
+      if (diffDays === 0) return 'Added today';
+      if (diffDays === 1) return 'Added yesterday';
+      if (diffDays < 7) return `Added ${diffDays} days ago`;
+      if (diffDays < 14) return 'Added 1 week ago';
+      return 'Added 2 weeks ago';
+    }
+
+    function timeAgoClass(dateStr) {
+      const diffDays = timeAgoDays(dateStr);
+      if (diffDays < 0 || diffDays > 14) return '';
+      return diffDays < 7 ? 'recent' : 'older';
     }
 
     // Format salary with commas and handle ranges
@@ -5539,6 +5584,7 @@
             ` : ''}
             ${!j.description && !j.requirements ? `<div class="job-description-content"></div>` : ''}
           </div>
+          ${timeAgo(j.verifiedAt) ? `<span class="time-ago-mobile ${timeAgoClass(j.verifiedAt)}">${timeAgo(j.verifiedAt)}</span>` : ''}
         </article>
       `).join("");
 
@@ -7336,6 +7382,7 @@
               ${renderRequirements(job.requirements)}
             ` : ''}
           </div>
+          ${timeAgo(job.verifiedAt) ? `<span class="time-ago-mobile ${timeAgoClass(job.verifiedAt)}">${timeAgo(job.verifiedAt)}</span>` : ''}
         </article>
       `;
 
@@ -7766,9 +7813,11 @@
             ${renderStatsRow(j)}
           </div>
 
-          <div class="expand-link" onclick="toggleDescription(this)">
-            See job description
-            <div class="arrow-v"></div>
+          <div class="card-footer-actions">
+            <div class="expand-link" onclick="toggleDescription(this)">
+              See job description
+              <div class="arrow-v"></div>
+            </div>
           </div>
 
           <div class="job-description">
@@ -7779,6 +7828,7 @@
             ` : ''}
             ${!j.description && !j.requirements ? `<div class="job-description-content">No description available.</div>` : ''}
           </div>
+          ${timeAgo(j.verifiedAt) ? `<span class="time-ago-mobile ${timeAgoClass(j.verifiedAt)}">${timeAgo(j.verifiedAt)}</span>` : ''}
         </article>
       `;
 

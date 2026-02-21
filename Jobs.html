@@ -3462,6 +3462,21 @@
           <span>Your experience profile (hours, license, aircraft) will be used for eligibility matching</span>
         </div>
 
+        <!-- Airlines (Optional) -->
+        <div class="alert-section">
+          <div class="alert-section-title">Airlines <span style="font-weight:400;color:#9ca3af;font-size:12px;">(optional — leave empty for all)</span></div>
+          <div class="airline-selected-tags" id="proAirlineTags"></div>
+          <div class="airline-counter" id="proAirlineCounter" style="display:none;"></div>
+          <div class="airline-search-wrapper">
+            <svg class="airline-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" class="airline-search-input" id="proAirlineSearch" placeholder="Search airlines..." autocomplete="off">
+            <div class="airline-search-results" id="proAirlineResults"></div>
+          </div>
+        </div>
+
         <!-- Rank / Position (Required) -->
         <div class="alert-section" id="rankSection">
           <div class="alert-section-title">Rank / Position<span class="required">*</span></div>
@@ -6192,8 +6207,71 @@
     freeAirlineSearch.addEventListener('input', showAirlineResults);
     freeAirlineSearch.addEventListener('focus', showAirlineResults);
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.airline-search-wrapper')) freeAirlineResults.classList.remove('visible');
+      if (!e.target.closest('.airline-search-wrapper')) {
+        freeAirlineResults.classList.remove('visible');
+        proAirlineResults.classList.remove('visible');
+      }
     });
+
+    // --- PRO TIER: Airline Search (no limit) ---
+    let proSelectedAirlines = [];
+    const proAirlineSearch = el('proAirlineSearch');
+    const proAirlineResults = el('proAirlineResults');
+
+    function renderProAirlineTags() {
+      const tagsEl = el('proAirlineTags');
+      const counterEl = el('proAirlineCounter');
+      if (proSelectedAirlines.length === 0) {
+        tagsEl.innerHTML = '';
+        counterEl.style.display = 'none';
+        return;
+      }
+      tagsEl.innerHTML = proSelectedAirlines.map(name => `
+        <span class="airline-tag">${name}
+          <span class="airline-tag-remove" data-airline="${name}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </span>
+        </span>`).join('');
+      counterEl.innerHTML = `<strong>${proSelectedAirlines.length}</strong> airline${proSelectedAirlines.length !== 1 ? 's' : ''} selected`;
+      counterEl.style.display = '';
+      tagsEl.querySelectorAll('.airline-tag-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          proSelectedAirlines = proSelectedAirlines.filter(a => a !== btn.dataset.airline);
+          renderProAirlineTags();
+        });
+      });
+    }
+
+    function showProAirlineResults() {
+      const q = proAirlineSearch.value.trim().toLowerCase();
+      if (!q) { proAirlineResults.classList.remove('visible'); return; }
+      const matches = allAirlineNames.filter(n => n.toLowerCase().includes(q)).slice(0, 15);
+      if (!matches.length) {
+        proAirlineResults.innerHTML = '<div class="airline-search-no-results">No airlines found</div>';
+      } else {
+        proAirlineResults.innerHTML = matches.map(name => {
+          const sel = proSelectedAirlines.includes(name);
+          return `<div class="airline-search-item" data-airline="${name}">
+            <span>${name}</span>${sel ? '<span style="color:#10b981;font-size:12px;">✓</span>' : ''}
+          </div>`;
+        }).join('');
+      }
+      proAirlineResults.classList.add('visible');
+      proAirlineResults.querySelectorAll('.airline-search-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const a = item.dataset.airline;
+          if (proSelectedAirlines.includes(a)) proSelectedAirlines = proSelectedAirlines.filter(x => x !== a);
+          else proSelectedAirlines.push(a);
+          renderProAirlineTags();
+          proAirlineSearch.value = '';
+          proAirlineResults.classList.remove('visible');
+        });
+      });
+    }
+    proAirlineSearch.addEventListener('input', showProAirlineResults);
+    proAirlineSearch.addEventListener('focus', showProAirlineResults);
 
     // --- SUBMIT HANDLER (handles both tiers) ---
     alertSubmitBtn.addEventListener('click', async () => {
@@ -6278,6 +6356,7 @@
 
       try {
         const filters = {
+          airlines: proSelectedAirlines.length > 0 ? proSelectedAirlines : null,
           rank: alertFilters.rank.length > 0 ? alertFilters.rank : null,
           license_authority: alertFilters.license_authority.length > 0 ? alertFilters.license_authority : null,
           region: alertFilters.region.length > 0 ? alertFilters.region : null,

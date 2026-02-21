@@ -2206,12 +2206,21 @@
       top: 0;
       right: 0;
       display: flex;
-      align-items: stretch;
+      flex-direction: column;
       z-index: 2;
       border-radius: 0 14px 0 10px;
       overflow: hidden;
       border-bottom: 1px solid #e8ecf1;
       border-left: 1px solid #e8ecf1;
+    }
+    .card-top-buttons {
+      display: flex;
+      align-items: stretch;
+    }
+
+    /* Mobile apply inside card-top-actions - hidden on desktop */
+    .apply-btn-mobile {
+      display: none;
     }
 
     /* Save Button */
@@ -2669,23 +2678,22 @@
         z-index: 2;
       }
 
-      /* Apply button - below track/save actions */
+      /* Hide grid apply on mobile, show the one inside card-top-actions */
       .apply-container {
-        position: absolute;
-        top: 0;
-        right: 0;
-        margin: 0;
-        padding-top: 30px;
-        padding-right: 10px;
-        text-align: right;
+        display: none;
       }
 
-      .apply-btn {
+      .apply-btn-mobile {
+        display: block;
+        background: #0b2a6f;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-weight: 600;
         padding: 6px 12px;
         font-size: 11px;
-        border-radius: 5px;
-        display: inline-block;
         white-space: nowrap;
+        border-top: 1px solid #e8ecf1;
       }
 
       .attributes {
@@ -2800,13 +2808,8 @@
       }
       .job-title {
         font-size: 13px;
-        padding-right: 110px;
       }
-      .apply-container {
-        padding-top: 28px;
-        padding-right: 8px;
-      }
-      .apply-btn {
+      .apply-btn-mobile {
         padding: 5px 10px;
         font-size: 10px;
       }
@@ -2842,12 +2845,8 @@
         padding-right: 100px;
       }
 
-      .apply-container {
-        padding-top: 26px;
-        padding-right: 6px;
-      }
-      .apply-btn {
-        padding: 5px 8px;
+      .apply-btn-mobile {
+        padding: 4px 8px;
         font-size: 9px;
       }
 
@@ -2891,11 +2890,8 @@
         font-size: 11px;
         padding-right: 95px;
       }
-      .apply-container {
-        padding-top: 24px;
-      }
-      .apply-btn {
-        padding: 4px 7px;
+      .apply-btn-mobile {
+        padding: 3px 6px;
         font-size: 8px;
       }
     }
@@ -5485,13 +5481,16 @@
       const jobsHTML = list.map(j => `
         <article class="card${j.visa ? ' visa-sponsor' : ''}" style="position:relative;">
           <div class="card-top-actions">
-            <button class="track-btn${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' tracked' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleTrackJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Track application">
-              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-              <span>${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? 'Tracked' : 'Track'}</span>
-            </button>
-            <button class="save-btn${savedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' saved' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleSaveJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Save job">
-              <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-            </button>
+            <div class="card-top-buttons">
+              <button class="track-btn${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' tracked' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleTrackJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Track application">
+                <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                <span>${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? 'Tracked' : 'Track'}</span>
+              </button>
+              <button class="save-btn${savedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' saved' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleSaveJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Save job">
+                <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              </button>
+            </div>
+            <a href="${j.applyUrl}" class="apply-btn-mobile" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="company-logo">
@@ -7284,13 +7283,16 @@
       const jobHTML = `
         <article class="card${job.visa ? ' visa-sponsor' : ''}" style="position:relative;">
           <div class="card-top-actions">
-            <button class="track-btn${trackedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? ' tracked' : ''}" data-job-id="${job.id}" data-job-type="${job.jobType || 'pilot'}" onclick="toggleTrackJob(${job.id}, '${job.jobType || 'pilot'}', event)" title="Track application">
-              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-              <span>${trackedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? 'Tracked' : 'Track'}</span>
-            </button>
-            <button class="save-btn${savedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? ' saved' : ''}" data-job-id="${job.id}" data-job-type="${job.jobType || 'pilot'}" onclick="toggleSaveJob(${job.id}, '${job.jobType || 'pilot'}', event)" title="Save job">
-              <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-            </button>
+            <div class="card-top-buttons">
+              <button class="track-btn${trackedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? ' tracked' : ''}" data-job-id="${job.id}" data-job-type="${job.jobType || 'pilot'}" onclick="toggleTrackJob(${job.id}, '${job.jobType || 'pilot'}', event)" title="Track application">
+                <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                <span>${trackedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? 'Tracked' : 'Track'}</span>
+              </button>
+              <button class="save-btn${savedJobIds.has((job.jobType||'pilot')+'_'+job.id) ? ' saved' : ''}" data-job-id="${job.id}" data-job-type="${job.jobType || 'pilot'}" onclick="toggleSaveJob(${job.id}, '${job.jobType || 'pilot'}', event)" title="Save job">
+                <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              </button>
+            </div>
+            <a href="${job.applyUrl}" class="apply-btn-mobile" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="company-logo">
@@ -7727,13 +7729,16 @@
       const cardHTML = `
         <article class="card${j.visa ? ' visa-sponsor' : ''}" style="position:relative;">
           <div class="card-top-actions">
-            <button class="track-btn${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' tracked' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleTrackJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Track application">
-              <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-              <span>${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? 'Tracked' : 'Track'}</span>
-            </button>
-            <button class="save-btn${savedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' saved' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleSaveJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Save job">
-              <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-            </button>
+            <div class="card-top-buttons">
+              <button class="track-btn${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' tracked' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleTrackJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Track application">
+                <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                <span>${trackedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? 'Tracked' : 'Track'}</span>
+              </button>
+              <button class="save-btn${savedJobIds.has((j.jobType||'pilot')+'_'+j.id) ? ' saved' : ''}" data-job-id="${j.id}" data-job-type="${j.jobType || 'pilot'}" onclick="toggleSaveJob(${j.id}, '${j.jobType || 'pilot'}', event)" title="Save job">
+                <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              </button>
+            </div>
+            <a href="${j.applyUrl}" class="apply-btn-mobile" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="company-logo">

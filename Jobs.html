@@ -4444,8 +4444,7 @@
             .range(page * pageSize, (page + 1) * pageSize - 1);
 
           if (error) {
-            console.error('Error fetching verified jobs:', error);
-            break;
+            throw new Error('Supabase query error: ' + error.message);
           }
 
           allData = allData.concat(data);
@@ -4509,7 +4508,7 @@
         });
       } catch (err) {
         console.error('Failed to fetch pilot jobs:', err);
-        return [];
+        throw err;
       }
     }
 
@@ -4529,8 +4528,7 @@
             .range(page * pageSize, (page + 1) * pageSize - 1);
 
           if (error) {
-            console.error('Error fetching verified cabin crew jobs:', error);
-            break;
+            throw new Error('Supabase query error: ' + error.message);
           }
 
           allData = allData.concat(data);
@@ -4580,7 +4578,7 @@
         });
       } catch (err) {
         console.error('Failed to fetch cabin crew jobs:', err);
-        return [];
+        throw err;
       }
     }
 
@@ -6407,7 +6405,14 @@
         return;
       }
 
-      // --- PRO TIER SUBMIT (existing code, unchanged) ---
+      // --- PRO TIER SUBMIT ---
+      // Require login for pro alerts
+      if (!session) {
+        alert('Please log in to set up job alerts');
+        window.location.href = 'login.html';
+        return;
+      }
+
       // Clear previous validation errors
       el('rankSection').classList.remove('error');
       el('regionSection').classList.remove('error');
@@ -6460,21 +6465,17 @@
           frequency: alertFilters.frequency  // 'instant' or 'daily'
         };
 
-        // Check if user is logged in to link subscription to their profile
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        const userId = session?.user?.id || null;
-
-        // Insert into Supabase (include user_id if logged in for hour qualification matching)
+        // Insert into Supabase (user is guaranteed logged in from check above)
         const { data, error } = await supabaseClient
           .from('job_alert_subscriptions')
           .insert({
-            email: email,
+            email: session.user.email,
             filters: filters,
             verified: false,
             verification_token: crypto.randomUUID(),
             unsubscribe_token: crypto.randomUUID(),
             active: true,
-            user_id: userId,  // Links to user_profiles for hour-based matching
+            user_id: session.user.id,  // Links to user_profiles for hour-based matching
             tier: 'pro'
           });
 
@@ -6586,13 +6587,37 @@
       // Update job count from API for the new job type
       await updateJobCountFromAPI(jobType);
 
-      // Fetch new jobs
-      JOBS = await fetchJobs();
+      // Fetch new jobs with retry
+      let switchError = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          JOBS = await fetchJobs();
+          switchError = null;
+          break;
+        } catch (err) {
+          switchError = err;
+          console.warn(`Fetch attempt ${attempt}/3 failed:`, err.message);
+          if (attempt < 3) {
+            el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">Connection issue. Retrying...</div>';
+            await new Promise(r => setTimeout(r, 2000 * attempt));
+          }
+        }
+      }
+
+      if (switchError) {
+        el("cards").innerHTML = `<div style="padding:40px;text-align:center;color:#6b7890;">
+          <div style="margin-bottom:12px;">Unable to load jobs. Please check your internet connection.</div>
+          <button onclick="location.reload()" style="padding:10px 28px;border-radius:8px;border:1.5px solid #3d5a80;background:#fff;color:#3d5a80;font-size:15px;cursor:pointer;font-weight:600;">Tap to retry</button>
+        </div>`;
+        updateDisplay();
+        return;
+      }
+
       currentPage = 1;
       currentFilteredJobs = JOBS;
 
       if (JOBS.length === 0) {
-        el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">No jobs found.</div>';
+        el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">No jobs found at the moment. Please check back later.</div>';
         updateDisplay();
         return;
       }
@@ -7438,10 +7463,33 @@
         updateJobCountFromAPI('cabin_crew')
       ]);
 
-      JOBS = await fetchJobs();
+      // Fetch with retry (up to 3 attempts)
+      let fetchError = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          JOBS = await fetchJobs();
+          fetchError = null;
+          break;
+        } catch (err) {
+          fetchError = err;
+          console.warn(`Fetch attempt ${attempt}/3 failed:`, err.message);
+          if (attempt < 3) {
+            el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">Connection issue. Retrying...</div>';
+            await new Promise(r => setTimeout(r, 2000 * attempt));
+          }
+        }
+      }
+
+      if (fetchError) {
+        el("cards").innerHTML = `<div style="padding:40px;text-align:center;color:#6b7890;">
+          <div style="margin-bottom:12px;">Unable to load jobs. Please check your internet connection.</div>
+          <button onclick="location.reload()" style="padding:10px 28px;border-radius:8px;border:1.5px solid #3d5a80;background:#fff;color:#3d5a80;font-size:15px;cursor:pointer;font-weight:600;">Tap to retry</button>
+        </div>`;
+        return;
+      }
 
       if (JOBS.length === 0) {
-        el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">No jobs found. Check your Supabase connection.</div>';
+        el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">No jobs found at the moment. Please check back later.</div>';
         return;
       }
 

@@ -336,26 +336,25 @@
       showState('loadingState');
 
       try {
-        // Look up subscription by unsubscribe_token
+        // Look up subscription by unsubscribe_token (secure RPC function)
         const { data, error } = await supabaseClient
-          .from('job_alert_subscriptions')
-          .select('id, email, active')
-          .eq('unsubscribe_token', token)
-          .single();
+          .rpc('lookup_by_unsubscribe_token', { token: token });
 
-        if (error || !data) {
+        if (error || !data || data.length === 0) {
           showState('invalidState');
           return;
         }
 
-        if (!data.active) {
+        const sub = data[0];
+
+        if (!sub.active) {
           // Already unsubscribed
           showState('successState');
           return;
         }
 
-        subscriptionData = data;
-        document.getElementById('emailDisplay').textContent = data.email;
+        subscriptionData = sub;
+        document.getElementById('emailDisplay').textContent = sub.email;
         showState('confirmState');
 
       } catch (err) {
@@ -371,12 +370,10 @@
       showState('loadingState');
 
       try {
-        const { error } = await supabaseClient
-          .from('job_alert_subscriptions')
-          .update({ active: false })
-          .eq('id', subscriptionData.id);
+        const { data: success, error } = await supabaseClient
+          .rpc('unsubscribe_by_token', { token: token });
 
-        if (error) {
+        if (error || !success) {
           document.getElementById('errorMessage').textContent = 'Failed to unsubscribe. Please try again.';
           showState('errorState');
           return;

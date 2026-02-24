@@ -3810,18 +3810,18 @@
           </div>
         </div>
 
-        <!-- Email -->
-        <div class="alert-section" style="margin-bottom:0;">
+        <!-- Email (hidden — uses logged-in user's email) -->
+        <div class="alert-section" style="display:none;">
           <div class="alert-input-group" style="margin-bottom:0;">
-            <label for="alertEmail">Email Address<span class="required">*</span></label>
-            <input type="email" id="alertEmail" placeholder="you@example.com" required>
+            <label for="alertEmail">Email Address</label>
+            <input type="email" id="alertEmail">
           </div>
         </div>
         </div><!-- /alertProContent -->
       </div>
       <div class="alert-modal-footer">
         <button class="alert-submit-btn" id="alertSubmitBtn">Subscribe to Alerts</button>
-        <p class="alert-disclaimer">We'll send a verification email. You can unsubscribe anytime.</p>
+        <p class="alert-disclaimer">Alerts will be sent to your account email. You can unsubscribe anytime.</p>
       </div>
     </div>
   </div>
@@ -6439,11 +6439,7 @@
         hasErrors = true;
       }
 
-      const email = alertEmail.value.trim();
-      if (!email || !email.includes('@')) {
-        alert('Please enter a valid email address');
-        return;
-      }
+      const email = session.user.email;
 
       if (hasErrors) {
         // Scroll to first error
@@ -6476,11 +6472,11 @@
           .insert({
             email: session.user.email,
             filters: filters,
-            verified: false,
+            verified: true,
             verification_token: crypto.randomUUID(),
             unsubscribe_token: crypto.randomUUID(),
             active: true,
-            user_id: session.user.id,  // Links to user_profiles for hour-based matching
+            user_id: session.user.id,
             tier: 'pro'
           });
 

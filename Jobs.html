@@ -6376,15 +6376,15 @@
 
     // --- SUBMIT HANDLER (handles both tiers) ---
     alertSubmitBtn.addEventListener('click', async () => {
-      if (currentAlertTier === 'free') {
-        // Free tier requires login
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) {
-          alert('Please log in to set up job alerts');
-          window.location.href = 'login.html';
-          return;
-        }
+      // Fetch session ONCE for both tiers
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        alert('Please log in to set up job alerts');
+        window.location.href = 'login.html';
+        return;
+      }
 
+      if (currentAlertTier === 'free') {
         if (freeSelectedAirlines.length === 0) { alert('Please select at least one airline'); return; }
         const email = session.user.email;
 
@@ -6418,13 +6418,6 @@
       }
 
       // --- PRO TIER SUBMIT ---
-      // Require login for pro alerts
-      if (!session) {
-        alert('Please log in to set up job alerts');
-        window.location.href = 'login.html';
-        return;
-      }
-
       // Clear previous validation errors
       el('rankSection').classList.remove('error');
       el('regionSection').classList.remove('error');

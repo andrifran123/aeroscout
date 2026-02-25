@@ -4446,6 +4446,9 @@
         const pageSize = 1000;
         let hasMore = true;
 
+        // Start logo fetch in parallel with job pages
+        const logoPromise = getCompanyLogoMap();
+
         while (hasMore) {
           const { data, error } = await supabaseClient
             .from('public_verified_jobs')
@@ -4469,7 +4472,7 @@
           console.log('Sample job license_required:', data[0].license_required, 'type_rated:', data[0].type_rated);
         }
 
-        const logoMap = await getCompanyLogoMap();
+        const logoMap = await logoPromise;
         return data.map(job => {
           let orgName = job.airline || 'Unknown Airline';
 
@@ -4531,6 +4534,9 @@
         const pageSize = 1000;
         let hasMore = true;
 
+        // Start logo fetch in parallel with job pages
+        const logoPromise = getCompanyLogoMap();
+
         while (hasMore) {
           const { data, error } = await supabaseClient
             .from('public_verified_cabin_crew_jobs')
@@ -4550,7 +4556,7 @@
         const data = allData;
         console.log('Fetched', data.length, 'verified cabin crew jobs from Supabase');
 
-        const logoMap = await getCompanyLogoMap();
+        const logoMap = await logoPromise;
         return data.map(job => {
           let orgName = job.airline || 'Unknown Airline';
 
@@ -7442,12 +7448,10 @@
 
     // Initialize: fetch jobs from Supabase and render
     async function init() {
-      // Load user profile first
-      await loadUserProfile();
       // Show loading state
       el("cards").innerHTML = '<div style="padding:40px;text-align:center;color:#6b7890;">Loading jobs...</div>';
 
-      // Get URL parameters BEFORE fetching
+      // Get URL parameters BEFORE fetching (synchronous)
       const urlParams = getUrlParams();
 
       // Switch job type if specified in URL
@@ -7459,13 +7463,12 @@
         });
       }
 
-      // Fetch accurate job counts from API for both job types
-      await Promise.all([
-        updateJobCountFromAPI('pilot'),
-        updateJobCountFromAPI('cabin_crew')
-      ]);
+      // Start profile and counts in parallel (non-blocking)
+      const profilePromise = loadUserProfile().catch(err => console.error('Profile load error:', err));
+      updateJobCountFromAPI('pilot').catch(() => {});
+      updateJobCountFromAPI('cabin_crew').catch(() => {});
 
-      // Fetch with retry (up to 3 attempts)
+      // Fetch jobs with retry (up to 3 attempts) — runs in parallel with profile/counts
       let fetchError = null;
       for (let attempt = 1; attempt <= 3; attempt++) {
         try {
@@ -7481,6 +7484,9 @@
           }
         }
       }
+
+      // Wait for profile before rendering (needed for match scores)
+      await profilePromise;
 
       if (fetchError) {
         el("cards").innerHTML = `<div style="padding:40px;text-align:center;color:#6b7890;">

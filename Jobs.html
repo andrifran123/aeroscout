@@ -4561,6 +4561,7 @@
             location: job.location || '',
             chips: [job.position, job.contract_type].filter(Boolean),
             visa: job.visa_sponsor || false,
+            visaSponsor: job.visa_sponsor || false,
             direct: false,
             license: '',
             type: 'standard',
@@ -7575,44 +7576,38 @@
     let mapInstance = null;
     let mapInitialized = false;
 
-    // Build GeoJSON from pre-stored coordinates (no geocoding needed)
+    // Build GeoJSON from pre-stored coordinates (one feature per job)
     function buildGeoJSON() {
-      const locationMap = new Map();
+      const features = [];
+      const locationSet = new Set();
 
-      // Group jobs by their coordinates (rounded to avoid floating point mismatches)
+      // Create one feature per job with a small random offset so same-city jobs spread out
       JOBS.forEach(job => {
         if (job.latitude && job.longitude) {
-          const key = `${job.latitude.toFixed(4)},${job.longitude.toFixed(4)}`;
-          if (!locationMap.has(key)) {
-            locationMap.set(key, { lat: job.latitude, lng: job.longitude, location: job.location, jobs: [] });
-          }
-          locationMap.get(key).jobs.push(job);
+          locationSet.add(`${job.latitude.toFixed(4)},${job.longitude.toFixed(4)}`);
+          const offsetLat = (Math.random() - 0.5) * 0.2;
+          const offsetLng = (Math.random() - 0.5) * 0.2;
+          features.push({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [job.longitude + offsetLng, job.latitude + offsetLat]
+            },
+            properties: {
+              location: job.location,
+              jobCount: 1,
+              jobs: JSON.stringify([{
+                id: job.id,
+                title: job.title,
+                org: job.org,
+                applyUrl: job.applyUrl
+              }])
+            }
+          });
         }
       });
 
-      const features = [];
-      locationMap.forEach(({ lat, lng, location, jobs }) => {
-        features.push({
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [lng, lat]
-          },
-          properties: {
-            location: location,
-            jobCount: jobs.length,
-            jobs: jobs.map(j => ({
-              id: j.id,
-              title: j.title,
-              org: j.org,
-              applyUrl: j.applyUrl
-            }))
-          }
-        });
-      });
-
-      const totalJobs = features.reduce((sum, f) => sum + f.properties.jobCount, 0);
-      el('mapStats').innerHTML = `<strong>${totalJobs}</strong> jobs across <strong>${locationMap.size}</strong> locations`;
+      el('mapStats').innerHTML = `<strong>${features.length}</strong> jobs across <strong>${locationSet.size}</strong> locations`;
 
       return {
         type: 'FeatureCollection',
@@ -7689,16 +7684,17 @@
         mapInstance.removeSource('jobs');
       }
 
-      // Add clustered source
+      // Add clustered source (small radius = many small clusters)
       mapInstance.addSource('jobs', {
         type: 'geojson',
         data: geojson,
         cluster: true,
         clusterMaxZoom: 14,
-        clusterRadius: 50
+        clusterRadius: 30,
+        clusterMinPoints: 2
       });
 
-      // Cluster circles
+      // Cluster circles - alternating blue and green
       mapInstance.addLayer({
         id: 'clusters',
         type: 'circle',
@@ -7708,19 +7704,23 @@
           'circle-color': [
             'step',
             ['get', 'point_count'],
-            '#1b66ff',   // Blue for small clusters
-            10, '#00b7a8', // Teal for medium clusters
-            30, '#0b2a6f'  // Navy for large clusters
+            '#00b7ff',      // Blue for small clusters
+            10, '#00cc88',  // Green for medium clusters
+            20, '#00b7ff',  // Blue for larger clusters
+            40, '#00cc88'   // Green for large clusters
           ],
           'circle-radius': [
             'step',
             ['get', 'point_count'],
-            18,   // Small cluster
-            10, 24, // Medium cluster
-            30, 32  // Large cluster
+            14,
+            6, 16,
+            10, 18,
+            15, 20,
+            20, 22
           ],
-          'circle-stroke-width': 3,
-          'circle-stroke-color': '#ffffff'
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.9
         }
       });
 
@@ -7747,10 +7747,11 @@
         source: 'jobs',
         filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-color': '#1b66ff',
-          'circle-radius': 10,
-          'circle-stroke-width': 3,
-          'circle-stroke-color': '#ffffff'
+          'circle-color': '#00b7ff',
+          'circle-radius': 5,
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.85
         }
       });
 
@@ -7772,8 +7773,8 @@
         const coordinates = e.features[0].geometry.coordinates.slice();
         const props = e.features[0].properties;
         const location = props.location;
-        const jobs = JSON.parse(props.jobs);
-        const jobCount = props.jobCount;
+        const jobs = typeof props.jobs === 'string' ? JSON.parse(props.jobs) : props.jobs;
+        const jobCount = props.jobCount || jobs.length;
 
         // Store jobs for this location globally for click handler
         window.currentMapJobs = jobs;

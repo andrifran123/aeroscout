@@ -4505,7 +4505,8 @@
             minTypeTime: 0,
             workRegion: job.location || 'International',
             logo: job.logo_url || logoMap[job.company_id] || '',
-            applyUrl: job.url || '#',
+            applyUrl: job.apply_url || job.url || '#',
+            applyEmail: job.apply_email || null,
             description: job.description_summary || '',
             requirements: job.requirements || '',
             rank: job.rank || '',
@@ -4578,7 +4579,8 @@
             contractType: job.contract_type || '',
             workRegion: job.location || 'International',
             logo: job.logo_url || logoMap[job.company_id] || '',
-            applyUrl: job.url || '#',
+            applyUrl: job.apply_url || job.url || '#',
+            applyEmail: job.apply_email || null,
             description: job.description_summary || '',
             requirements: job.requirements || '',
             position: job.position || '',
@@ -5565,7 +5567,7 @@
                 <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
               </button>
             </div>
-            <a href="${j.applyUrl}" class="apply-btn-mobile" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
+            <a href="${j.applyEmail ? 'mailto:' + j.applyEmail : j.applyUrl}" class="apply-btn-mobile" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="company-logo">
@@ -5575,7 +5577,7 @@
           <h2 class="job-title">${j.title}<span class="airline-name">${j.org}</span></h2>
 
           <div class="apply-container">
-            <a href="${j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
+            <a href="${j.applyEmail ? 'mailto:' + j.applyEmail : j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="attributes">
@@ -7311,7 +7313,7 @@
 
     // Intercept mailto: apply links - show popup instead of opening mail
     document.addEventListener('click', function(e) {
-      const link = e.target.closest('a.apply-btn');
+      const link = e.target.closest('a.apply-btn, a.apply-btn-mobile');
       if (!link) return;
       const href = link.getAttribute('href') || '';
       if (!href.startsWith('mailto:')) return;
@@ -7323,7 +7325,7 @@
       const modal = document.createElement('div');
       modal.id = 'emailModal';
       modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;';
-      modal.innerHTML = '<div style="background:white;border-radius:10px;padding:24px 28px;max-width:360px;width:90%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.25);position:relative;"><button onclick="document.getElementById(\'emailModal\').remove()" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:20px;cursor:pointer;color:#999;">&times;</button><p style="margin:0 0 10px;color:#555;font-size:14px;">Send resume to</p><p style="margin:0;font-size:17px;font-weight:700;color:#0b2a6f;">' + email + '</p></div>';
+      modal.innerHTML = '<div style="background:white;border-radius:10px;padding:24px 28px;max-width:360px;width:90%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.25);position:relative;"><button onclick="document.getElementById(\'emailModal\').remove()" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:20px;cursor:pointer;color:#999;">&times;</button><p style="margin:0 0 10px;color:#555;font-size:14px;">To apply, send your CV to</p><p style="margin:0;font-size:17px;font-weight:700;color:#0b2a6f;">' + email + '</p></div>';
       modal.addEventListener('click', function(ev) { if (ev.target === modal) modal.remove(); });
       document.body.appendChild(modal);
       return false;
@@ -7384,7 +7386,7 @@
                 <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
               </button>
             </div>
-            <a href="${job.applyUrl}" class="apply-btn-mobile" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
+            <a href="${job.applyEmail ? 'mailto:' + job.applyEmail : job.applyUrl}" class="apply-btn-mobile" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="company-logo">
@@ -7394,7 +7396,7 @@
           <h2 class="job-title">${job.title}<span class="airline-name">${job.org}</span></h2>
 
           <div class="apply-container">
-            <a href="${job.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
+            <a href="${job.applyEmail ? 'mailto:' + job.applyEmail : job.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="attributes">
@@ -7854,7 +7856,7 @@
                 <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
               </button>
             </div>
-            <a href="${j.applyUrl}" class="apply-btn-mobile" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
+            <a href="${j.applyEmail ? 'mailto:' + j.applyEmail : j.applyUrl}" class="apply-btn-mobile" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="company-logo">
@@ -7864,7 +7866,7 @@
           <h2 class="job-title">${j.title}<span class="airline-name">${j.org}</span></h2>
 
           <div class="apply-container">
-            <a href="${j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
+            <a href="${j.applyEmail ? 'mailto:' + j.applyEmail : j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
           </div>
 
           <div class="attributes">

@@ -116,7 +116,8 @@ function mapPilotJob(row) {
     salary: row.salary_usd || 0,
     roster: row.roster || '',
     logo: row.logo_url || '',
-    applyUrl: row.url || '#',
+    applyUrl: row.apply_url || row.url || '#',
+    applyEmail: row.apply_email || null,
     description: row.description_summary || '',
     requirements: row.requirements || '',
     jobType: 'pilot',
@@ -137,7 +138,8 @@ function mapCabinCrewJob(row) {
     languageRequirements: row.language_requirements || '',
     salary: row.salary_usd || 0,
     logo: row.logo_url || '',
-    applyUrl: row.url || '#',
+    applyUrl: row.apply_url || row.url || '#',
+    applyEmail: row.apply_email || null,
     description: row.description_summary || '',
     requirements: row.requirements || '',
     minHeightCm: row.min_height_cm || null,
@@ -745,7 +747,7 @@ ${schemaJson}
       <h1 class="job-title">${escapeHtml(j.title)}<span class="airline-name">${escapeHtml(j.org)}</span></h1>
 
       <div class="apply-container">
-        <a href="${escapeHtml(j.applyUrl)}" class="apply-btn" target="_blank" rel="noopener noreferrer">Apply Now</a>
+        <a href="${j.applyEmail ? 'mailto:' + escapeHtml(j.applyEmail) : escapeHtml(j.applyUrl)}" class="apply-btn" target="_blank" rel="noopener noreferrer">Apply Now</a>
       </div>
 
       <div class="attributes">
@@ -768,6 +770,42 @@ ${schemaJson}
       <a href="/Jobs.html${isCabinCrew ? '?type=cabin_crew' : ''}" class="cta-btn">Browse All Jobs</a>
     </div>
   </main>
+
+  <script>
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('a.apply-btn');
+    if (!link) return;
+    var href = link.getAttribute('href') || '';
+    if (href.indexOf('mailto:') !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var email = href.replace('mailto:', '');
+    var existing = document.getElementById('emailModal');
+    if (existing) existing.remove();
+    var modal = document.createElement('div');
+    modal.id = 'emailModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;';
+    var box = document.createElement('div');
+    box.style.cssText = 'background:white;border-radius:10px;padding:24px 28px;max-width:360px;width:90%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.25);position:relative;';
+    var closeBtn = document.createElement('button');
+    closeBtn.textContent = String.fromCharCode(215);
+    closeBtn.style.cssText = 'position:absolute;top:8px;right:12px;background:none;border:none;font-size:20px;cursor:pointer;color:#999;';
+    closeBtn.onclick = function() { modal.remove(); };
+    var label = document.createElement('p');
+    label.style.cssText = 'margin:0 0 10px;color:#555;font-size:14px;';
+    label.textContent = 'To apply, send your CV to';
+    var emailEl = document.createElement('p');
+    emailEl.style.cssText = 'margin:0;font-size:17px;font-weight:700;color:#0b2a6f;';
+    emailEl.textContent = email;
+    box.appendChild(closeBtn);
+    box.appendChild(label);
+    box.appendChild(emailEl);
+    modal.appendChild(box);
+    modal.addEventListener('click', function(ev) { if (ev.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+    return false;
+  }, true);
+  </script>
 
   <footer class="footer">
     <p>&copy; ${new Date().getFullYear()} AeroScout. <a href="/terms.html">Terms</a> &middot; <a href="/privacy.html">Privacy</a></p>

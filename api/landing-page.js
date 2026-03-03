@@ -454,12 +454,18 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       color: var(--green);
     }
 
-    .placeholder-remove {
-      display: none;
-      height: 130px;
-      object-fit: cover;
+    /* Job locations map */
+    .job-map {
+      margin-top: 32px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+    }
+    .job-map img {
+      width: 100%;
+      height: auto;
       display: block;
-      opacity: 0.75;
     }
 
     /* ── Jobs section ─────────────────────────────────────────────────────── */
@@ -1186,6 +1192,10 @@ function buildLandingPage(pageData, jobs, relatedPages) {
           Detailed listings with pay, type rating requirements &amp; benefits
         </li>
       </ul>
+
+      <div class="job-map">
+        <img src="/images/job-locations-map.png" alt="AeroScout job locations worldwide - ${jobCount} positions across ${airlines.size}+ airlines" loading="lazy" width="900" height="600">
+      </div>
     </div>
 
   </section>

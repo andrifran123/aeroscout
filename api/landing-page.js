@@ -1245,10 +1245,14 @@ function buildLandingPage(pageData, jobs, relatedPages) {
           <div class="slideshow__slide">
             <img src="/images/tracker-preview.png" alt="AeroScout job tracker - track your applications" loading="lazy">
           </div>
+          <div class="slideshow__slide">
+            <img src="/images/profile-preview.png" alt="AeroScout pilot profile - set your flight hours and preferences" loading="lazy">
+          </div>
         </div>
         <div class="slideshow__dots">
           <button class="slideshow__dot active" onclick="goSlide(0)" aria-label="Show map"></button>
           <button class="slideshow__dot" onclick="goSlide(1)" aria-label="Show tracker"></button>
+          <button class="slideshow__dot" onclick="goSlide(2)" aria-label="Show profile"></button>
         </div>
       </div>
     </div>

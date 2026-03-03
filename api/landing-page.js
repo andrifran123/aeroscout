@@ -26,10 +26,32 @@ function formatSalary(salary) {
   const s = String(salary);
   if (s.includes('-')) {
     const p = s.split('-');
-    if (p.length === 2) { const l=parseInt(p[0],10),h=parseInt(p[1],10); if(!isNaN(l)&&!isNaN(h)) return {formatted:`$${l.toLocaleString('en-US')}-$${h.toLocaleString('en-US')}/yr`}; }
+    if (p.length === 2) { const l=parseInt(p[0],10),h=parseInt(p[1],10); if(!isNaN(l)&&!isNaN(h)) return {formatted:`$${l.toLocaleString('en-US')}-$${h.toLocaleString('en-US')}/yr`, isRange:true}; }
   }
   const v = parseInt(s, 10);
-  return (!isNaN(v) && v > 0) ? { formatted: `$${v.toLocaleString('en-US')}/yr` } : null;
+  return (!isNaN(v) && v > 0) ? { formatted: `$${v.toLocaleString('en-US')}/yr`, isRange: false } : null;
+}
+
+function timeAgoDays(dateStr) {
+  if (!dateStr) return -1;
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return -1;
+  return Math.floor((Date.now() - d.getTime()) / 86400000);
+}
+function timeAgo(dateStr) {
+  const diffDays = timeAgoDays(dateStr);
+  if (diffDays < 0 || diffDays > 21) return '';
+  if (diffDays === 0) return 'Added today';
+  if (diffDays === 1) return 'Added yesterday';
+  if (diffDays < 7) return `Added ${diffDays} days ago`;
+  if (diffDays < 14) return 'Added 1 week ago';
+  if (diffDays < 21) return 'Added 2 weeks ago';
+  return 'Added 3 weeks ago';
+}
+function timeAgoClass(dateStr) {
+  const diffDays = timeAgoDays(dateStr);
+  if (diffDays < 0 || diffDays > 21) return '';
+  return diffDays < 7 ? 'recent' : 'older';
 }
 
 // ── Job card ─────────────────────────────────────────────────────────────────
@@ -45,37 +67,45 @@ function renderJobCard(job, isCabinCrew, idx) {
     ? `<img src="${escapeHtml(job.logo_url)}" alt="${escapeHtml(job.airline)}" loading="${idx < 6 ? 'eager' : 'lazy'}" onerror="this.style.display='none'">`
     : `<span style="font-size:24px;font-weight:700;color:#0b2a6f;">${fl}</span>`;
 
-  // Pills (attr-pills)
+  // Pills (attr-pills) – matches Jobs.html renderAttributes()
   let pills = '';
   if (isCabinCrew) {
-    if (job.position)       pills += `<span class="attr-pill">${escapeHtml(job.position)}</span>`;
-    else                    pills += `<span class="attr-pill">Flight Attendant</span>`;
-    if (job.location)       pills += `<span class="attr-pill">${escapeHtml(job.location)}</span>`;
+    pills += `<span class="attr-item"><b>Position:</b> <span class="attr-pill">${escapeHtml(job.position || 'Flight Attendant')}</span></span>`;
+    if (job.location)       pills += `<span class="attr-item"><b>Location:</b> <span class="attr-pill">${escapeHtml(job.location)}</span></span>`;
     if (job.contract_type)  pills += `<span class="attr-pill">${escapeHtml(job.contract_type)}</span>`;
-    if (job.visa_sponsor)   pills += `<span class="attr-pill green">Visa Sponsored</span>`;
+    if (job.visa_sponsor)   pills += `<span class="attr-pill green"><b>Visa Sponsor</b></span>`;
   } else {
-    if (job.aircraft)       pills += `<span class="attr-pill">${escapeHtml(job.aircraft)}</span>`;
-    if (job.rank)           pills += `<span class="attr-pill">${escapeHtml(job.rank)}</span>`;
-    if (job.location)       pills += `<span class="attr-pill">${escapeHtml(job.location)}</span>`;
+    pills += `<span class="attr-item"><b>Aircraft:</b> <span class="attr-pill">${escapeHtml(job.aircraft || 'N/A')}</span></span>`;
+    pills += `<span class="attr-item"><b>Location:</b> <span class="attr-pill">${escapeHtml(job.location || 'Not specified')}</span></span>`;
     if (job.type_rated)     pills += `<span class="attr-pill">Type-rated</span>`;
-    else                    pills += `<span class="attr-pill">Non-type rated</span>`;
-    if (job.visa_sponsor)   pills += `<span class="attr-pill green">Visa Sponsored</span>`;
-    if (job.direct_entry)   pills += `<span class="attr-pill">Direct Entry</span>`;
+    else                    pills += `<span class="attr-pill green">Non-type rated</span>`;
+    if (job.visa_sponsor)   pills += `<span class="attr-pill green"><b>Visa sponsor</b></span>`;
+    if (job.direct_entry)   pills += `<span class="attr-pill"><b>Direct Entry</b></span>`;
   }
 
-  // Stats row (mirrors Jobs.html stat-box / stat-label / stat-value)
+  // Stats row – matches Jobs.html renderStatsRow() exactly
   let statsHtml = '';
   const statBoxes = [];
   if (isCabinCrew) {
-    if (job.experience_years > 0) statBoxes.push(`<div class="stat-box"><span class="stat-label">EXP</span><span class="stat-value">${job.experience_years}yr</span></div>`);
-    if (job.min_height_cm)        statBoxes.push(`<div class="stat-box"><span class="stat-label">HT</span><span class="stat-value">${job.min_height_cm}cm</span></div>`);
+    if (job.min_height_cm)        statBoxes.push(`<div class="stat-box"><span class="stat-label">Min Height</span><span class="stat-value">${job.min_height_cm} cm</span></div>`);
+    if (job.min_age)              statBoxes.push(`<div class="stat-box"><span class="stat-label">Min Age</span><span class="stat-value">${job.min_age}+ years</span></div>`);
+    if (job.experience_years > 0) statBoxes.push(`<div class="stat-box"><span class="stat-label">Experience</span><span class="stat-value">${job.experience_years} ${job.experience_years === 1 ? 'year' : 'years'}</span></div>`);
+    if (job.contract_type)        statBoxes.push(`<div class="stat-box"><span class="stat-label">Contract</span><span class="stat-value">${escapeHtml(job.contract_type)}</span></div>`);
   } else {
-    if (job.total_hours)  statBoxes.push(`<div class="stat-box"><span class="stat-label">TT</span><span class="stat-value">${formatNumber(job.total_hours)}</span></div>`);
-    if (job.pic_hours)    statBoxes.push(`<div class="stat-box"><span class="stat-label">PIC</span><span class="stat-value">${formatNumber(job.pic_hours)}</span></div>`);
+    statBoxes.push(`<div class="stat-box"><span class="stat-label">Total Time</span><span class="stat-value">${formatNumber(job.total_hours)} hrs</span></div>`);
+    statBoxes.push(`<div class="stat-box"><span class="stat-label">PIC Time</span><span class="stat-value">${formatNumber(job.pic_hours)} hrs</span></div>`);
+    if (job.jet_time)             statBoxes.push(`<div class="stat-box"><span class="stat-label">Jet Time</span><span class="stat-value">${formatNumber(job.jet_time)} hrs</span></div>`);
+    if (job.multi_engine_time)    statBoxes.push(`<div class="stat-box"><span class="stat-label">Multi-Engine</span><span class="stat-value">${formatNumber(job.multi_engine_time)} hrs</span></div>`);
+    if (job.roster)               statBoxes.push(`<div class="stat-box"><span class="stat-label">Roster</span><span class="stat-value">${escapeHtml(job.roster)}</span></div>`);
   }
   const sal = formatSalary(job.salary_usd);
-  if (sal) statBoxes.push(`<div class="stat-box"><span class="stat-label">SALARY</span><span class="stat-value" style="color:#2e7d32;">${sal.formatted}</span></div>`);
+  if (sal) statBoxes.push(`<div class="stat-box"><span class="stat-label">Salary${sal.isRange ? ' (range)' : ''}</span><span class="stat-value" style="color:#22c55e;">${sal.formatted}</span></div>`);
   if (statBoxes.length > 0) statsHtml = `<div class="stats-row">${statBoxes.join('')}</div>`;
+
+  // Time ago badge – matches Jobs.html
+  const timeBadge = timeAgo(job.verified_at);
+  const timeClass = timeAgoClass(job.verified_at);
+  const timeBadgeHtml = timeBadge ? `<span class="time-ago ${timeClass}">${timeBadge}</span>` : '';
 
   return `
 <a href="${jobUrl}" class="card${visaClass}" aria-label="${escapeHtml(job.title)} at ${escapeHtml(job.airline)}">
@@ -85,6 +115,7 @@ function renderJobCard(job, isCabinCrew, idx) {
   </div>
   <div class="attributes">${pills}</div>
   ${statsHtml}
+  ${timeBadgeHtml}
   <div class="card-arrow">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </div>
@@ -484,6 +515,17 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       flex-wrap: wrap;
       align-items: center;
     }
+    .attr-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: #475569;
+    }
+    .attr-item b {
+      font-weight: 600;
+      color: #475569;
+    }
     .attr-pill {
       background: #e3f2fd;
       color: #1565c0;
@@ -522,6 +564,27 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       font-size: 15px;
       font-weight: 700;
       color: #0f172a;
+    }
+
+    /* Time ago badge – matches Jobs.html */
+    .time-ago {
+      grid-column: 1;
+      grid-row: 3;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+      align-self: end;
+      justify-self: start;
+    }
+    .time-ago.recent {
+      color: #2e7d32;
+      background: #e8f5e9;
+    }
+    .time-ago.older {
+      color: #1565c0;
+      background: #e3f2fd;
     }
 
     /* Right arrow indicator */

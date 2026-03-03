@@ -63,10 +63,16 @@ module.exports = async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
 
-    // Fetch all job IDs from both tables
-    const [pilotJobs, cabinJobs] = await Promise.all([
+    // Fetch all job IDs from both tables + landing pages
+    const [pilotJobs, cabinJobs, landingPages] = await Promise.all([
       fetchJobs('public_verified_jobs'),
       fetchJobs('public_verified_cabin_crew_jobs'),
+      supabase
+        .from('seo_landing_pages')
+        .select('slug, updated_at')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true })
+        .then(r => r.data || []),
     ]);
 
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -79,6 +85,17 @@ module.exports = async (req, res) => {
       xml += `    <lastmod>${today}</lastmod>\n`;
       xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
       xml += `    <priority>${page.priority}</priority>\n`;
+      xml += '  </url>\n';
+    }
+
+    // SEO Landing pages
+    for (const lp of landingPages) {
+      const lastmod = lp.updated_at ? lp.updated_at.split('T')[0] : today;
+      xml += '  <url>\n';
+      xml += `    <loc>https://www.aeroscout.net/${lp.slug}</loc>\n`;
+      xml += `    <lastmod>${lastmod}</lastmod>\n`;
+      xml += '    <changefreq>daily</changefreq>\n';
+      xml += '    <priority>0.85</priority>\n';
       xml += '  </url>\n';
     }
 

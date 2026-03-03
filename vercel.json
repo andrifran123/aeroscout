@@ -19,6 +19,10 @@
     {
       "source": "/jobs/:id",
       "destination": "/api/job-page?id=:id"
+    },
+    {
+      "source": "/:slug(captain-jobs|first-officer-jobs|flight-instructor-jobs|cadet-pilot-jobs|a320-pilot-jobs|b737-pilot-jobs|learjet-pilot-jobs|atr-pilot-jobs|pc12-pilot-jobs|king-air-pilot-jobs|citation-pilot-jobs|challenger-650-pilot-jobs|dash-8-pilot-jobs|gulfstream-pilot-jobs|a330-pilot-jobs|embraer-pilot-jobs|business-aviation-jobs|airline-pilot-jobs|flight-instructor-positions|air-ambulance-pilot-jobs|government-pilot-jobs|pilot-jobs-california|pilot-jobs-florida|pilot-jobs-texas|pilot-jobs-europe|pilot-jobs-worldwide|pilot-jobs-new-york|pilot-jobs-ohio|pilot-jobs-arizona|pilot-jobs-canada|pilot-jobs-london|pilot-jobs-middle-east|pilot-jobs-colorado|pilot-jobs-alaska|pilot-jobs-hong-kong|pilot-jobs-uk|emirates-pilot-jobs|ryanair-pilot-jobs|wizz-air-pilot-jobs|sas-pilot-jobs|etihad-pilot-jobs|vistajet-pilot-jobs|vietnam-airlines-pilot-jobs|jet2-pilot-jobs|netjets-pilot-jobs|air-astana-pilot-jobs|a320-captain-jobs|a320-first-officer-jobs|b737-captain-jobs|b737-first-officer-jobs|atr-captain-jobs|atr-first-officer-jobs|flight-attendant-jobs|cabin-crew-jobs|cabin-manager-jobs|cabin-crew-jobs-middle-east|cabin-crew-jobs-europe|visa-sponsorship-pilot-jobs|direct-entry-pilot-jobs|type-rated-pilot-jobs)",
+      "destination": "/api/landing-page?slug=:slug"
     }
   ],
   "redirects": [

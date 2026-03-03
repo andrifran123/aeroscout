@@ -462,55 +462,17 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       color: var(--green);
     }
 
-    /* Slideshow */
-    .slideshow {
+    /* Job map */
+    .job-map {
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--border);
       box-shadow: var(--shadow-md);
-      position: relative;
     }
-    .slideshow__track {
-      position: relative;
-      aspect-ratio: 4 / 3;
-      background: #0d1b2a;
-    }
-    .slideshow__slide {
-      display: none;
-      position: absolute;
-      inset: 0;
-    }
-    .slideshow__slide.active {
-      display: block;
-    }
-    .slideshow__slide img {
+    .job-map img {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: auto;
       display: block;
-    }
-    .slideshow__dots {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px 0;
-      background: var(--white);
-    }
-    .slideshow__dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      border: 1.5px solid var(--gold);
-      background: transparent;
-      cursor: pointer;
-      padding: 0;
-      transition: background 0.2s;
-    }
-    .slideshow__dot.active {
-      background: var(--gold);
-    }
-    .slideshow__dot:hover {
-      background: var(--gold-light);
     }
 
     /* ── Jobs section ─────────────────────────────────────────────────────── */
@@ -1154,6 +1116,7 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     </a>
     <div class="nav__links">
       <a href="/Jobs.html">Browse Jobs</a>
+      <a href="/blog">Blog</a>
       <a href="/about.html">About</a>
       <a href="/pricing.html">Pricing</a>
       <a href="/login.html" class="nav__login">Login &rsaquo;</a>
@@ -1240,25 +1203,10 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       </ul>
     </div>
 
-    <!-- Right column: slideshow -->
+    <!-- Right column: map -->
     <div class="map-col">
-      <div class="slideshow">
-        <div class="slideshow__track">
-          <div class="slideshow__slide active">
-            <img src="/images/job-locations-map.png" alt="AeroScout job locations worldwide" loading="lazy">
-          </div>
-          <div class="slideshow__slide">
-            <img src="/images/tracker-preview.png" alt="AeroScout job tracker - track your applications" loading="lazy">
-          </div>
-          <div class="slideshow__slide">
-            <img src="/images/profile-preview.png" alt="AeroScout pilot profile - set your flight hours and preferences" loading="lazy">
-          </div>
-        </div>
-        <div class="slideshow__dots">
-          <button class="slideshow__dot active" onclick="goSlide(0)" aria-label="Show map"></button>
-          <button class="slideshow__dot" onclick="goSlide(1)" aria-label="Show tracker"></button>
-          <button class="slideshow__dot" onclick="goSlide(2)" aria-label="Show profile"></button>
-        </div>
+      <div class="job-map">
+        <img src="/images/job-locations-map.png" alt="AeroScout job locations worldwide" loading="lazy">
       </div>
     </div>
 
@@ -1355,22 +1303,6 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     var f0 = document.getElementById('faq-0');
     if (f0) toggleFaq(0);
 
-    // Slideshow
-    var slideIdx = 0;
-    var slides = document.querySelectorAll('.slideshow__slide');
-    var dots = document.querySelectorAll('.slideshow__dot');
-    function goSlide(n) {
-      slides.forEach(function(s) { s.classList.remove('active'); });
-      dots.forEach(function(d) { d.classList.remove('active'); });
-      slideIdx = n;
-      if (slides[n]) slides[n].classList.add('active');
-      if (dots[n]) dots[n].classList.add('active');
-    }
-    if (slides.length > 1) {
-      setInterval(function() {
-        goSlide((slideIdx + 1) % slides.length);
-      }, 5000);
-    }
   </script>
 
 </body>

@@ -1030,6 +1030,7 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     }
 
     /* ── Responsive: Large mobile (600px) ─────────────────────────────────── */
+    /* Matches Jobs.html 768px: switches from grid to block + float layout */
     @media (max-width: 600px) {
       .nav__signup, .nav__login { font-size: 12px !important; padding: 6px 10px !important; }
       .hero h1 { font-size: 1.7rem; }
@@ -1037,41 +1038,65 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       .hero__btn { padding: 11px 22px; font-size: 14px; }
       .stats-bar__value { font-size: 19px; }
       .intro-col__heading { font-size: 1.4rem; }
+
+      /* Card: switch to block layout like Jobs.html mobile */
       .card {
-        grid-template-columns: 70px minmax(0, 1fr);
-        grid-template-rows: auto auto auto auto;
-        padding: 14px 14px;
-        gap: 4px 10px;
+        display: block;
+        position: relative;
+        padding: 14px;
+        overflow: hidden;
       }
       .company-logo {
-        grid-column: 1;
-        grid-row: 1 / span 2;
         width: 70px;
         height: 70px;
         font-size: 18px;
+        float: left;
+        margin-right: 12px;
+        margin-bottom: 10px;
       }
-      .job-title-row { grid-column: 2; grid-row: 1; }
-      .apply-col {
-        grid-column: 2;
-        grid-row: 1;
-        justify-content: flex-end;
-        align-items: flex-start;
+      .job-title-row {
+        display: block;
+        min-width: 0;
+        padding-right: 0;
       }
-      .view-details { font-size: 12px; }
-      .attributes { grid-column: 2; grid-row: 2; gap: 6px; }
-      .stats-row {
-        grid-column: 1 / -1;
-        grid-row: 3;
-        gap: 16px;
+      .job-title { font-size: 14px; line-height: 1.3; margin-bottom: 2px; }
+      .airline-badge {
+        display: block;
+        margin-left: 0;
+        margin-top: 4px;
+        margin-bottom: 6px;
+        font-size: 12px;
+        background: none;
+        border: none;
+        padding: 0;
+        color: var(--text-light);
       }
-      .time-ago {
-        grid-column: 1 / -1;
-        grid-row: 4;
-        justify-self: start;
+      /* Hide View Details on mobile – entire card is clickable */
+      .apply-col { display: none; }
+      .attributes {
+        clear: both;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        font-size: 11px;
+        margin-top: 10px;
       }
-      .airline-badge { font-size: 11px; margin-left: 8px; }
-      .attr-pill { font-size: 10px; padding: 2px 6px; }
       .attr-item { font-size: 11px; }
+      .attr-item b { display: none; }
+      .attr-pill { font-size: 10px; padding: 3px 7px; border-radius: 4px; }
+      .stats-row {
+        display: flex;
+        gap: 16px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+      }
+      .stat-label { font-size: 9px; }
+      .stat-value { font-size: 13px; }
+      .time-ago {
+        display: inline-block;
+        margin-top: 8px;
+      }
       .faq-trigger { padding: 14px 16px; }
       .faq-trigger h3 { font-size: 14px; }
       .faq-answer-inner p { padding: 0 16px 16px; font-size: 13.5px; }
@@ -1081,49 +1106,58 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       .related__link { font-size: 12px; padding: 6px 12px; }
     }
 
-    /* ── Responsive: Small mobile (420px) ──────────────────────────────────── */
-    @media (max-width: 420px) {
-      .nav { padding: 0 14px; }
+    /* ── Responsive: Small mobile (480px) ──────────────────────────────────── */
+    @media (max-width: 480px) {
+      .card { padding: 12px; }
+      .company-logo {
+        width: 60px;
+        height: 60px;
+        font-size: 16px;
+        margin-right: 10px;
+      }
+      .job-title { font-size: 13px; }
+      .attr-pill { font-size: 9px; padding: 2px 6px; }
+      .stat-value { font-size: 12px; }
+    }
+
+    /* ── Responsive: Extra small mobile (380px) ────────────────────────────── */
+    @media (max-width: 380px) {
+      .nav { padding: 0 12px; }
       .nav__brand { font-size: 1.1rem; gap: 8px; }
       .nav__logo-icon { width: 30px; height: 30px; }
       .nav__signup { display: none !important; }
       .hero { min-height: 300px; }
-      .hero__content { padding: 36px 16px; }
-      .hero h1 { font-size: 1.45rem; }
-      .hero__sub { font-size: 13.5px; margin-bottom: 24px; }
+      .hero__content { padding: 36px 14px; }
+      .hero h1 { font-size: 1.35rem; }
+      .hero__sub { font-size: 13px; margin-bottom: 24px; }
       .hero__eyebrow { font-size: 10px; padding: 4px 10px; }
       .hero__btn { padding: 10px 18px; font-size: 13px; }
       .stats-bar__value { font-size: 17px; }
       .stats-bar__label { font-size: 9px; }
       .stats-bar__item { padding: 12px 10px; }
-      .content-section { padding: 28px 14px; }
-      .jobs-section { padding: 0 14px 36px; }
-      .bottom-section { padding: 0 14px 36px; }
-      .intro-col__heading { font-size: 1.25rem; }
+      .content-section { padding: 28px 12px; }
+      .jobs-section { padding: 0 12px 36px; }
+      .bottom-section { padding: 0 12px 36px; }
+      .intro-col__heading { font-size: 1.2rem; }
       .intro-col__body { font-size: 14px; }
       .intro-checklist li { font-size: 13.5px; gap: 8px; }
-      .search-card { padding: 20px 18px 18px; }
+      .search-card { padding: 18px 14px 14px; }
       .search-card__title { font-size: 1rem; }
       .section-heading { font-size: 1.15rem; }
-      .card {
-        grid-template-columns: 60px minmax(0, 1fr);
-        padding: 12px 12px;
-        gap: 3px 8px;
-      }
+      .card { padding: 10px; }
       .company-logo {
-        width: 60px;
-        height: 60px;
-        font-size: 16px;
+        width: 55px;
+        height: 55px;
+        font-size: 14px;
+        margin-right: 8px;
       }
-      .job-title { font-size: 14px; }
-      .airline-badge { font-size: 10px; padding: 1px 6px; margin-left: 6px; }
-      .view-details { font-size: 11px; }
-      .attr-pill { font-size: 9.5px; padding: 1.5px 5px; }
-      .attr-item { font-size: 10px; gap: 3px; }
-      .attr-item b { font-size: 10px; }
-      .stats-row { gap: 12px; padding-top: 6px; }
-      .stat-label { font-size: 9px; }
-      .stat-value { font-size: 13px; }
+      .job-title { font-size: 12px; }
+      .airline-badge { font-size: 10px; }
+      .attr-pill { font-size: 9px; padding: 2px 5px; }
+      .attr-item { font-size: 10px; }
+      .stats-row { gap: 12px; padding-top: 8px; }
+      .stat-label { font-size: 8px; }
+      .stat-value { font-size: 11px; }
       .browse-all-btn { font-size: 13px; padding: 10px 22px; }
       .cta__primary { padding: 11px 24px; font-size: 13px; }
       .cta__secondary { padding: 10px 20px; font-size: 13px; }

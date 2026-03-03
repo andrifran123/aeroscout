@@ -462,18 +462,50 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       color: var(--green);
     }
 
-    /* Job locations map */
-    .job-map {
-      margin-top: 32px;
+    /* Slideshow */
+    .slideshow {
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--border);
       box-shadow: var(--shadow-md);
+      position: relative;
     }
-    .job-map img {
+    .slideshow__track {
+      position: relative;
+    }
+    .slideshow__slide {
+      display: none;
+    }
+    .slideshow__slide.active {
+      display: block;
+    }
+    .slideshow__slide img {
       width: 100%;
       height: auto;
       display: block;
+    }
+    .slideshow__dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 0;
+      background: var(--white);
+    }
+    .slideshow__dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.2s;
+    }
+    .slideshow__dot.active {
+      background: var(--gold);
+    }
+    .slideshow__dot:hover {
+      background: var(--gold-light);
     }
 
     /* ── Jobs section ─────────────────────────────────────────────────────── */
@@ -1131,7 +1163,7 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     <div class="hero__content">
       <div class="hero__left">
         <h1>${escapeHtml(pageData.h1 || pageData.page_title)}</h1>
-        <p class="hero__sub">Updated daily from ${airlines.size}+ airlines and operators worldwide. Find your next ${isCabinCrew ? 'cabin crew' : 'cockpit'} role in minutes.</p>
+        <p class="hero__sub">Updated daily from 850+ airlines and operators worldwide. Find your next ${isCabinCrew ? 'cabin crew' : 'cockpit'} role in minutes.</p>
         <a href="/Jobs.html" class="hero__btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           Browse ${jobCount} Jobs
@@ -1153,7 +1185,7 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       <div class="stats-bar__icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </div>
-      <div class="stats-bar__value">${airlines.size}</div>
+      <div class="stats-bar__value">850</div>
       <div class="stats-bar__label">Airlines &amp; Operators</div>
     </div>
     <div class="stats-bar__item">
@@ -1186,7 +1218,7 @@ function buildLandingPage(pageData, jobs, relatedPages) {
           <span class="check-icon">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </span>
-          Active job postings from ${airlines.size}+ airlines worldwide
+          Active job postings from 850+ airlines worldwide
         </li>
         <li>
           <span class="check-icon">
@@ -1203,10 +1235,21 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       </ul>
     </div>
 
-    <!-- Right column: map -->
+    <!-- Right column: slideshow -->
     <div class="map-col">
-      <div class="job-map">
-        <img src="/images/job-locations-map.png" alt="AeroScout job locations worldwide - ${jobCount} positions across ${airlines.size}+ airlines" loading="lazy" width="900" height="600">
+      <div class="slideshow">
+        <div class="slideshow__track">
+          <div class="slideshow__slide active">
+            <img src="/images/job-locations-map.png" alt="AeroScout job locations worldwide" loading="lazy">
+          </div>
+          <div class="slideshow__slide">
+            <img src="/images/tracker-preview.png" alt="AeroScout job tracker - track your applications" loading="lazy">
+          </div>
+        </div>
+        <div class="slideshow__dots">
+          <button class="slideshow__dot active" onclick="goSlide(0)" aria-label="Show map"></button>
+          <button class="slideshow__dot" onclick="goSlide(1)" aria-label="Show tracker"></button>
+        </div>
       </div>
     </div>
 
@@ -1302,6 +1345,23 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     // Open the first FAQ by default
     var f0 = document.getElementById('faq-0');
     if (f0) toggleFaq(0);
+
+    // Slideshow
+    var slideIdx = 0;
+    var slides = document.querySelectorAll('.slideshow__slide');
+    var dots = document.querySelectorAll('.slideshow__dot');
+    function goSlide(n) {
+      slides.forEach(function(s) { s.classList.remove('active'); });
+      dots.forEach(function(d) { d.classList.remove('active'); });
+      slideIdx = n;
+      if (slides[n]) slides[n].classList.add('active');
+      if (dots[n]) dots[n].classList.add('active');
+    }
+    if (slides.length > 1) {
+      setInterval(function() {
+        goSlide((slideIdx + 1) % slides.length);
+      }, 5000);
+    }
   </script>
 
 </body>

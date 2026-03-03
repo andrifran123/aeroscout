@@ -62,45 +62,44 @@ function renderJobCard(job, isCabinCrew, idx) {
   const fl = iconLetter(job.airline);
   const visaClass = job.visa_sponsor ? ' visa-sponsor' : '';
 
-  // Logo
+  // Logo – matches Jobs.html
   const logoHtml = job.logo_url
-    ? `<img src="${escapeHtml(job.logo_url)}" alt="${escapeHtml(job.airline)}" loading="${idx < 6 ? 'eager' : 'lazy'}" onerror="this.style.display='none'">`
-    : `<span class="logo-letter">${fl}</span>`;
+    ? `<img src="${escapeHtml(job.logo_url)}" alt="${escapeHtml(job.airline)}" loading="${idx < 6 ? 'eager' : 'lazy'}" onerror="this.parentElement.textContent='${fl}'">`
+    : `<span style="font-size:24px;font-weight:700;color:var(--navy);">${fl}</span>`;
 
-  // Pills
-  let pills = '';
+  // Attributes – matches Jobs.html renderAttributes() exactly
+  let attrs = '';
   if (isCabinCrew) {
-    pills += `<span class="attr-pill">${escapeHtml(job.position || 'Flight Attendant')}</span>`;
-    if (job.location)      pills += `<span class="attr-pill loc-pill"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${escapeHtml(job.location)}</span>`;
-    if (job.contract_type) pills += `<span class="attr-pill">${escapeHtml(job.contract_type)}</span>`;
-    if (job.visa_sponsor)  pills += `<span class="attr-pill pill-green">Visa Sponsor</span>`;
+    attrs += `<span class="attr-item"><b>Position:</b> <span class="attr-pill">${escapeHtml(job.position || 'Flight Attendant')}</span></span>`;
+    if (job.location)       attrs += `<span class="attr-item"><b>Location:</b> <span class="attr-pill">${escapeHtml(job.location)}</span></span>`;
+    if (job.contract_type)  attrs += `<span class="attr-pill">${escapeHtml(job.contract_type)}</span>`;
+    if (job.visa_sponsor)   attrs += `<span class="attr-pill pill-green"><b>Visa Sponsor</b></span>`;
   } else {
-    pills += `<span class="attr-pill acft-pill">${escapeHtml(job.aircraft || 'N/A')}</span>`;
-    pills += `<span class="attr-pill loc-pill"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${escapeHtml(job.location || 'Not specified')}</span>`;
-    if (job.type_rated)    pills += `<span class="attr-pill">Type-rated</span>`;
-    else                   pills += `<span class="attr-pill pill-green">Non-type rated</span>`;
-    if (job.visa_sponsor)  pills += `<span class="attr-pill pill-green">Visa Sponsor</span>`;
-    if (job.direct_entry)  pills += `<span class="attr-pill">Direct Entry</span>`;
+    attrs += `<span class="attr-item"><b>Aircraft:</b> <span class="attr-pill">${escapeHtml(job.aircraft || 'N/A')}</span></span>`;
+    attrs += `<span class="attr-item"><b>Location:</b> <span class="attr-pill">${escapeHtml(job.location || 'Not specified')}</span></span>`;
+    if (job.type_rated)     attrs += `<span class="attr-pill">Type-rated</span>`;
+    else                    attrs += `<span class="attr-pill pill-green">Non-type rated</span>`;
+    if (job.visa_sponsor)   attrs += `<span class="attr-pill pill-green"><b>Visa sponsor</b></span>`;
+    if (job.direct_entry)   attrs += `<span class="attr-pill"><b>Direct Entry</b></span>`;
   }
 
-  // Stats row
-  let statsHtml = '';
+  // Stats row – matches Jobs.html renderStatsRow() exactly
   const statBoxes = [];
   if (isCabinCrew) {
     if (job.min_height_cm)        statBoxes.push(`<div class="stat-box"><span class="stat-label">Min Height</span><span class="stat-value">${job.min_height_cm} cm</span></div>`);
-    if (job.min_age)              statBoxes.push(`<div class="stat-box"><span class="stat-label">Min Age</span><span class="stat-value">${job.min_age}+ yrs</span></div>`);
-    if (job.experience_years > 0) statBoxes.push(`<div class="stat-box"><span class="stat-label">Experience</span><span class="stat-value">${job.experience_years} ${job.experience_years === 1 ? 'yr' : 'yrs'}</span></div>`);
+    if (job.min_age)              statBoxes.push(`<div class="stat-box"><span class="stat-label">Min Age</span><span class="stat-value">${job.min_age}+ years</span></div>`);
+    if (job.experience_years > 0) statBoxes.push(`<div class="stat-box"><span class="stat-label">Experience</span><span class="stat-value">${job.experience_years} ${job.experience_years === 1 ? 'year' : 'years'}</span></div>`);
     if (job.contract_type)        statBoxes.push(`<div class="stat-box"><span class="stat-label">Contract</span><span class="stat-value">${escapeHtml(job.contract_type)}</span></div>`);
   } else {
     statBoxes.push(`<div class="stat-box"><span class="stat-label">Total Time</span><span class="stat-value">${formatNumber(job.total_hours)} hrs</span></div>`);
     statBoxes.push(`<div class="stat-box"><span class="stat-label">PIC Time</span><span class="stat-value">${formatNumber(job.pic_hours)} hrs</span></div>`);
-    if (job.jet_time)          statBoxes.push(`<div class="stat-box"><span class="stat-label">Jet Time</span><span class="stat-value">${formatNumber(job.jet_time)} hrs</span></div>`);
-    if (job.multi_engine_time) statBoxes.push(`<div class="stat-box"><span class="stat-label">Multi-Engine</span><span class="stat-value">${formatNumber(job.multi_engine_time)} hrs</span></div>`);
-    if (job.roster)            statBoxes.push(`<div class="stat-box"><span class="stat-label">Roster</span><span class="stat-value">${escapeHtml(job.roster)}</span></div>`);
+    if (job.jet_time)             statBoxes.push(`<div class="stat-box"><span class="stat-label">Jet Time</span><span class="stat-value">${formatNumber(job.jet_time)} hrs</span></div>`);
+    if (job.multi_engine_time)    statBoxes.push(`<div class="stat-box"><span class="stat-label">Multi-Engine</span><span class="stat-value">${formatNumber(job.multi_engine_time)} hrs</span></div>`);
+    if (job.roster)               statBoxes.push(`<div class="stat-box"><span class="stat-label">Roster</span><span class="stat-value">${escapeHtml(job.roster)}</span></div>`);
   }
   const sal = formatSalary(job.salary_usd);
   if (sal) statBoxes.push(`<div class="stat-box"><span class="stat-label">Salary${sal.isRange ? ' (range)' : ''}</span><span class="stat-value salary-val">${sal.formatted}</span></div>`);
-  if (statBoxes.length > 0) statsHtml = `<div class="stats-row">${statBoxes.join('')}</div>`;
+  const statsHtml = statBoxes.length > 0 ? `<div class="stats-row">${statBoxes.join('')}</div>` : '';
 
   // Time ago badge
   const timeBadge = timeAgo(job.verified_at);
@@ -109,21 +108,16 @@ function renderJobCard(job, isCabinCrew, idx) {
 
   return `
 <a href="${jobUrl}" class="card${visaClass}" aria-label="${escapeHtml(job.title)} at ${escapeHtml(job.airline)}">
-  <div class="card-logo">
-    <div class="logo-wrap">${logoHtml}</div>
+  <div class="company-logo">${logoHtml}</div>
+  <div class="job-title-row">
+    <h3 class="job-title">${escapeHtml(job.title)}</h3><span class="airline-badge">${escapeHtml(job.airline)}</span>
   </div>
-  <div class="card-body">
-    <div class="card-top">
-      <div class="card-title-block">
-        <h3 class="job-title">${escapeHtml(job.title)}</h3>
-        <span class="airline-name">${escapeHtml(job.airline)}</span>
-      </div>
-      <div class="card-cta">View Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-    </div>
-    <div class="card-pills">${pills}</div>
-    ${statsHtml}
-    ${timeBadgeHtml}
+  <div class="apply-col">
+    <span class="view-details">View Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
   </div>
+  <div class="attributes">${attrs}</div>
+  ${statsHtml}
+  ${timeBadgeHtml}
 </a>`;
 }
 
@@ -584,20 +578,22 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       white-space: nowrap;
     }
 
-    /* ── Cards ────────────────────────────────────────────────────────────── */
-    .cards-list { display: flex; flex-direction: column; gap: 10px; }
+    /* ── Cards – matches Jobs.html grid layout exactly ──────────────────── */
+    .cards-list { display: grid; gap: 8px; min-width: 0; }
 
     .card {
-      display: flex;
-      align-items: stretch;
       background: var(--white);
+      border-radius: 14px;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: 100px minmax(0, 1fr) 150px;
+      grid-template-rows: auto auto auto;
+      gap: 6px 14px;
+      transition: all 0.2s ease;
       box-shadow: var(--shadow-sm);
-      transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
-      color: inherit;
       cursor: pointer;
+      color: inherit;
     }
     .card:hover {
       transform: translateY(-2px);
@@ -605,121 +601,130 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       border-color: var(--gold);
     }
     .card.visa-sponsor {
-      border-left: 3px solid var(--green);
+      background: #f1f8e9;
+      border-color: #a5d6a7;
     }
 
-    .card-logo {
-      width: 80px;
+    /* Logo – grid-row spans rows 1 and 2, matches Jobs.html */
+    .company-logo {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 24px;
+      color: var(--navy);
       flex-shrink: 0;
-      border-right: 1px solid var(--border-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--cream);
-      padding: 16px 10px;
     }
-    .logo-wrap {
-      width: 52px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .logo-wrap img {
+    .company-logo img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
-    .logo-letter {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--navy);
-      font-family: 'Playfair Display', Georgia, serif;
-    }
 
-    .card-body {
-      flex: 1;
-      padding: 14px 18px;
+    /* Title row: job title + airline badge inline */
+    .job-title-row {
+      grid-column: 2;
+      grid-row: 1;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0;
+      align-self: center;
       min-width: 0;
     }
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-    .card-title-block { min-width: 0; }
     .job-title {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
+      margin: 0;
       color: var(--navy);
       line-height: 1.3;
-      margin-bottom: 3px;
     }
-    .airline-name {
-      font-size: 12.5px;
+    .airline-badge {
+      margin-left: 12px;
+      font-size: 12px;
       font-weight: 500;
       color: var(--text-mid);
+      letter-spacing: 0.3px;
+      background: rgba(71,85,105,0.06);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(71,85,105,0.15);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
-    .card-cta {
+
+    /* Apply/View column – matches Jobs.html apply-container position */
+    .apply-col {
+      grid-column: 3;
+      grid-row: 1 / span 2;
       display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .view-details {
+      display: inline-flex;
       align-items: center;
       gap: 5px;
       font-size: 13px;
       font-weight: 600;
       color: var(--navy);
       white-space: nowrap;
-      flex-shrink: 0;
       transition: color 0.15s;
-      padding-top: 2px;
     }
-    .card:hover .card-cta { color: var(--gold); }
+    .card:hover .view-details { color: var(--gold); }
 
-    .card-pills {
+    /* Attributes row – matches Jobs.html */
+    .attributes {
+      grid-column: 2;
+      grid-row: 2;
       display: flex;
+      gap: 10px;
+      color: var(--text-light);
+      font-size: 12px;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 10px;
+      align-items: center;
     }
-    .attr-pill {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 20px;
-      background: #edf2f7;
-      color: var(--text-dark);
-      border: 1px solid #e2e8f0;
+    .attr-item {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-    }
-    .attr-pill.acft-pill {
-      background: #ebf4ff;
-      color: #1a56a0;
-      border-color: #bee3f8;
-    }
-    .attr-pill.loc-pill {
-      background: var(--cream-dark);
+      gap: 5px;
+      font-size: 12px;
       color: var(--text-mid);
-      border-color: var(--border);
+    }
+    .attr-item b {
+      font-weight: 600;
+      color: var(--text-mid);
+    }
+    .attr-pill {
+      background: #e3f2fd;
+      color: #1565c0;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
     }
     .attr-pill.pill-green {
-      background: var(--green-pale);
+      background: white;
       color: #2e7d32;
-      border: 1.5px solid #a5d6a7;
+      border: 1.5px solid #4caf50;
     }
 
-    /* Stats row */
+    /* Stats row – matches Jobs.html exactly */
     .stats-row {
+      grid-column: 2;
+      grid-row: 3;
       display: flex;
-      gap: 20px;
+      gap: 24px;
       flex-wrap: wrap;
-      padding-top: 10px;
-      border-top: 1px dashed var(--border);
       margin-top: 4px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
     }
-    .stat-box { display: flex; flex-direction: column; gap: 1px; }
+    .stat-box { display: flex; flex-direction: column; }
     .stat-label {
       font-size: 10px;
       text-transform: uppercase;
@@ -728,20 +733,23 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       font-weight: 700;
     }
     .stat-value {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--navy);
     }
-    .salary-val { color: var(--gold); }
+    .salary-val { color: #22c55e; }
 
-    /* Time ago badge */
+    /* Time ago badge – matches Jobs.html */
     .time-ago {
-      display: inline-block;
-      margin-top: 8px;
+      grid-column: 1;
+      grid-row: 3;
       font-size: 10px;
-      font-weight: 700;
-      padding: 2px 8px;
+      font-weight: 600;
+      padding: 3px 8px;
       border-radius: 10px;
+      white-space: nowrap;
+      align-self: end;
+      justify-self: start;
     }
     .time-ago.recent { color: #2e7d32; background: #e8f5e9; }
     .time-ago.older  { color: #1565c0; background: #e3f2fd; }
@@ -981,23 +989,26 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     .footer a:hover { color: var(--navy); }
     .footer__dot { margin: 0 10px; opacity: 0.35; }
 
-    /* ── Responsive ───────────────────────────────────────────────────────── */
-    @media (max-width: 900px) {
+    /* ── Responsive: Tablet landscape (1024px) ──────────────────────────── */
+    @media (max-width: 1024px) {
       .content-section {
         grid-template-columns: 1fr;
         gap: 36px;
-        padding: 44px 28px;
+        padding: 48px 32px;
       }
       .search-card { max-width: 480px; }
-      .world-map-wrap { display: none; }
+      .card { grid-template-columns: 90px minmax(0, 1fr) 130px; }
+      .company-logo { width: 90px; height: 90px; }
     }
+
+    /* ── Responsive: Tablet portrait / iPad (768px) ──────────────────────── */
     @media (max-width: 768px) {
       .nav { padding: 0 20px; height: 56px; }
       .nav__links a:not(.nav__signup):not(.nav__login) { display: none; }
       .hero__content { padding: 48px 24px; }
-      .hero { min-height: 360px; }
+      .hero { min-height: 340px; }
       .hero__overlay {
-        background: linear-gradient(180deg, rgba(17,28,53,0.92) 0%, rgba(26,39,68,0.80) 60%, rgba(26,39,68,0.6) 100%);
+        background: linear-gradient(180deg, rgba(17,28,53,0.93) 0%, rgba(26,39,68,0.82) 50%, rgba(26,39,68,0.55) 100%);
       }
       .stats-bar { grid-template-columns: repeat(2, 1fr); }
       .stats-bar__item:nth-child(2) { border-right: none; }
@@ -1006,24 +1017,118 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       .content-section { padding: 36px 20px; }
       .jobs-section { padding: 0 20px 44px; }
       .bottom-section { padding: 0 20px 44px; }
+      .world-map-wrap { display: none; }
+      .card {
+        grid-template-columns: 80px minmax(0, 1fr) 110px;
+        padding: 14px 16px;
+        gap: 5px 12px;
+      }
+      .company-logo { width: 80px; height: 80px; font-size: 20px; }
+      .job-title { font-size: 15px; }
       .cta { padding: 36px 24px; }
       .footer { padding: 24px 20px; }
-      .card-logo { width: 64px; }
-      .logo-wrap { width: 42px; height: 42px; }
-      .logo-letter { font-size: 18px; }
     }
-    @media (max-width: 480px) {
+
+    /* ── Responsive: Large mobile (600px) ─────────────────────────────────── */
+    @media (max-width: 600px) {
+      .nav__signup, .nav__login { font-size: 12px !important; padding: 6px 10px !important; }
       .hero h1 { font-size: 1.7rem; }
-      .hero__sub { font-size: 14.5px; }
+      .hero__sub { font-size: 14.5px; max-width: 320px; }
       .hero__btn { padding: 11px 22px; font-size: 14px; }
       .stats-bar__value { font-size: 19px; }
-      .card-logo { width: 56px; }
-      .logo-wrap { width: 36px; height: 36px; }
+      .intro-col__heading { font-size: 1.4rem; }
+      .card {
+        grid-template-columns: 70px minmax(0, 1fr);
+        grid-template-rows: auto auto auto auto;
+        padding: 14px 14px;
+        gap: 4px 10px;
+      }
+      .company-logo {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        width: 70px;
+        height: 70px;
+        font-size: 18px;
+      }
+      .job-title-row { grid-column: 2; grid-row: 1; }
+      .apply-col {
+        grid-column: 2;
+        grid-row: 1;
+        justify-content: flex-end;
+        align-items: flex-start;
+      }
+      .view-details { font-size: 12px; }
+      .attributes { grid-column: 2; grid-row: 2; gap: 6px; }
+      .stats-row {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        gap: 16px;
+      }
+      .time-ago {
+        grid-column: 1 / -1;
+        grid-row: 4;
+        justify-self: start;
+      }
+      .airline-badge { font-size: 11px; margin-left: 8px; }
+      .attr-pill { font-size: 10px; padding: 2px 6px; }
+      .attr-item { font-size: 11px; }
+      .faq-trigger { padding: 14px 16px; }
+      .faq-trigger h3 { font-size: 14px; }
+      .faq-answer-inner p { padding: 0 16px 16px; font-size: 13.5px; }
+      .cta { padding: 32px 20px; border-radius: 10px; }
+      .cta h2 { font-size: 1.3rem; }
+      .related__grid { gap: 6px; }
+      .related__link { font-size: 12px; padding: 6px 12px; }
+    }
+
+    /* ── Responsive: Small mobile (420px) ──────────────────────────────────── */
+    @media (max-width: 420px) {
+      .nav { padding: 0 14px; }
+      .nav__brand { font-size: 1.1rem; gap: 8px; }
+      .nav__logo-icon { width: 30px; height: 30px; }
+      .nav__signup { display: none !important; }
+      .hero { min-height: 300px; }
+      .hero__content { padding: 36px 16px; }
+      .hero h1 { font-size: 1.45rem; }
+      .hero__sub { font-size: 13.5px; margin-bottom: 24px; }
+      .hero__eyebrow { font-size: 10px; padding: 4px 10px; }
+      .hero__btn { padding: 10px 18px; font-size: 13px; }
+      .stats-bar__value { font-size: 17px; }
+      .stats-bar__label { font-size: 9px; }
+      .stats-bar__item { padding: 12px 10px; }
+      .content-section { padding: 28px 14px; }
+      .jobs-section { padding: 0 14px 36px; }
+      .bottom-section { padding: 0 14px 36px; }
+      .intro-col__heading { font-size: 1.25rem; }
+      .intro-col__body { font-size: 14px; }
+      .intro-checklist li { font-size: 13.5px; gap: 8px; }
+      .search-card { padding: 20px 18px 18px; }
+      .search-card__title { font-size: 1rem; }
+      .section-heading { font-size: 1.15rem; }
+      .card {
+        grid-template-columns: 60px minmax(0, 1fr);
+        padding: 12px 12px;
+        gap: 3px 8px;
+      }
+      .company-logo {
+        width: 60px;
+        height: 60px;
+        font-size: 16px;
+      }
       .job-title { font-size: 14px; }
-      .card-body { padding: 12px 14px; }
-      .card-cta { display: none; }
-      .stats-row { gap: 14px; }
+      .airline-badge { font-size: 10px; padding: 1px 6px; margin-left: 6px; }
+      .view-details { font-size: 11px; }
+      .attr-pill { font-size: 9.5px; padding: 1.5px 5px; }
+      .attr-item { font-size: 10px; gap: 3px; }
+      .attr-item b { font-size: 10px; }
+      .stats-row { gap: 12px; padding-top: 6px; }
+      .stat-label { font-size: 9px; }
       .stat-value { font-size: 13px; }
+      .browse-all-btn { font-size: 13px; padding: 10px 22px; }
+      .cta__primary { padding: 11px 24px; font-size: 13px; }
+      .cta__secondary { padding: 10px 20px; font-size: 13px; }
+      .footer p { font-size: 11px; }
+      .footer__dot { margin: 0 6px; }
     }
   </style>
 </head>

@@ -65,59 +65,64 @@ function renderJobCard(job, isCabinCrew, idx) {
   // Logo
   const logoHtml = job.logo_url
     ? `<img src="${escapeHtml(job.logo_url)}" alt="${escapeHtml(job.airline)}" loading="${idx < 6 ? 'eager' : 'lazy'}" onerror="this.style.display='none'">`
-    : `<span style="font-size:24px;font-weight:700;color:#0b2a6f;">${fl}</span>`;
+    : `<span class="logo-letter">${fl}</span>`;
 
-  // Pills (attr-pills) – matches Jobs.html renderAttributes()
+  // Pills
   let pills = '';
   if (isCabinCrew) {
-    pills += `<span class="attr-item"><b>Position:</b> <span class="attr-pill">${escapeHtml(job.position || 'Flight Attendant')}</span></span>`;
-    if (job.location)       pills += `<span class="attr-item"><b>Location:</b> <span class="attr-pill">${escapeHtml(job.location)}</span></span>`;
-    if (job.contract_type)  pills += `<span class="attr-pill">${escapeHtml(job.contract_type)}</span>`;
-    if (job.visa_sponsor)   pills += `<span class="attr-pill green"><b>Visa Sponsor</b></span>`;
+    pills += `<span class="attr-pill">${escapeHtml(job.position || 'Flight Attendant')}</span>`;
+    if (job.location)      pills += `<span class="attr-pill loc-pill"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${escapeHtml(job.location)}</span>`;
+    if (job.contract_type) pills += `<span class="attr-pill">${escapeHtml(job.contract_type)}</span>`;
+    if (job.visa_sponsor)  pills += `<span class="attr-pill pill-green">Visa Sponsor</span>`;
   } else {
-    pills += `<span class="attr-item"><b>Aircraft:</b> <span class="attr-pill">${escapeHtml(job.aircraft || 'N/A')}</span></span>`;
-    pills += `<span class="attr-item"><b>Location:</b> <span class="attr-pill">${escapeHtml(job.location || 'Not specified')}</span></span>`;
-    if (job.type_rated)     pills += `<span class="attr-pill">Type-rated</span>`;
-    else                    pills += `<span class="attr-pill green">Non-type rated</span>`;
-    if (job.visa_sponsor)   pills += `<span class="attr-pill green"><b>Visa sponsor</b></span>`;
-    if (job.direct_entry)   pills += `<span class="attr-pill"><b>Direct Entry</b></span>`;
+    pills += `<span class="attr-pill acft-pill">${escapeHtml(job.aircraft || 'N/A')}</span>`;
+    pills += `<span class="attr-pill loc-pill"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${escapeHtml(job.location || 'Not specified')}</span>`;
+    if (job.type_rated)    pills += `<span class="attr-pill">Type-rated</span>`;
+    else                   pills += `<span class="attr-pill pill-green">Non-type rated</span>`;
+    if (job.visa_sponsor)  pills += `<span class="attr-pill pill-green">Visa Sponsor</span>`;
+    if (job.direct_entry)  pills += `<span class="attr-pill">Direct Entry</span>`;
   }
 
-  // Stats row – matches Jobs.html renderStatsRow() exactly
+  // Stats row
   let statsHtml = '';
   const statBoxes = [];
   if (isCabinCrew) {
     if (job.min_height_cm)        statBoxes.push(`<div class="stat-box"><span class="stat-label">Min Height</span><span class="stat-value">${job.min_height_cm} cm</span></div>`);
-    if (job.min_age)              statBoxes.push(`<div class="stat-box"><span class="stat-label">Min Age</span><span class="stat-value">${job.min_age}+ years</span></div>`);
-    if (job.experience_years > 0) statBoxes.push(`<div class="stat-box"><span class="stat-label">Experience</span><span class="stat-value">${job.experience_years} ${job.experience_years === 1 ? 'year' : 'years'}</span></div>`);
+    if (job.min_age)              statBoxes.push(`<div class="stat-box"><span class="stat-label">Min Age</span><span class="stat-value">${job.min_age}+ yrs</span></div>`);
+    if (job.experience_years > 0) statBoxes.push(`<div class="stat-box"><span class="stat-label">Experience</span><span class="stat-value">${job.experience_years} ${job.experience_years === 1 ? 'yr' : 'yrs'}</span></div>`);
     if (job.contract_type)        statBoxes.push(`<div class="stat-box"><span class="stat-label">Contract</span><span class="stat-value">${escapeHtml(job.contract_type)}</span></div>`);
   } else {
     statBoxes.push(`<div class="stat-box"><span class="stat-label">Total Time</span><span class="stat-value">${formatNumber(job.total_hours)} hrs</span></div>`);
     statBoxes.push(`<div class="stat-box"><span class="stat-label">PIC Time</span><span class="stat-value">${formatNumber(job.pic_hours)} hrs</span></div>`);
-    if (job.jet_time)             statBoxes.push(`<div class="stat-box"><span class="stat-label">Jet Time</span><span class="stat-value">${formatNumber(job.jet_time)} hrs</span></div>`);
-    if (job.multi_engine_time)    statBoxes.push(`<div class="stat-box"><span class="stat-label">Multi-Engine</span><span class="stat-value">${formatNumber(job.multi_engine_time)} hrs</span></div>`);
-    if (job.roster)               statBoxes.push(`<div class="stat-box"><span class="stat-label">Roster</span><span class="stat-value">${escapeHtml(job.roster)}</span></div>`);
+    if (job.jet_time)          statBoxes.push(`<div class="stat-box"><span class="stat-label">Jet Time</span><span class="stat-value">${formatNumber(job.jet_time)} hrs</span></div>`);
+    if (job.multi_engine_time) statBoxes.push(`<div class="stat-box"><span class="stat-label">Multi-Engine</span><span class="stat-value">${formatNumber(job.multi_engine_time)} hrs</span></div>`);
+    if (job.roster)            statBoxes.push(`<div class="stat-box"><span class="stat-label">Roster</span><span class="stat-value">${escapeHtml(job.roster)}</span></div>`);
   }
   const sal = formatSalary(job.salary_usd);
-  if (sal) statBoxes.push(`<div class="stat-box"><span class="stat-label">Salary${sal.isRange ? ' (range)' : ''}</span><span class="stat-value" style="color:#22c55e;">${sal.formatted}</span></div>`);
+  if (sal) statBoxes.push(`<div class="stat-box"><span class="stat-label">Salary${sal.isRange ? ' (range)' : ''}</span><span class="stat-value salary-val">${sal.formatted}</span></div>`);
   if (statBoxes.length > 0) statsHtml = `<div class="stats-row">${statBoxes.join('')}</div>`;
 
-  // Time ago badge – matches Jobs.html
+  // Time ago badge
   const timeBadge = timeAgo(job.verified_at);
   const timeClass = timeAgoClass(job.verified_at);
   const timeBadgeHtml = timeBadge ? `<span class="time-ago ${timeClass}">${timeBadge}</span>` : '';
 
   return `
 <a href="${jobUrl}" class="card${visaClass}" aria-label="${escapeHtml(job.title)} at ${escapeHtml(job.airline)}">
-  <div class="company-logo">${logoHtml}</div>
-  <div class="job-title-row">
-    <h3 class="job-title">${escapeHtml(job.title)}</h3><span class="airline-name">${escapeHtml(job.airline)}</span>
+  <div class="card-logo">
+    <div class="logo-wrap">${logoHtml}</div>
   </div>
-  <div class="attributes">${pills}</div>
-  ${statsHtml}
-  ${timeBadgeHtml}
-  <div class="card-arrow">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  <div class="card-body">
+    <div class="card-top">
+      <div class="card-title-block">
+        <h3 class="job-title">${escapeHtml(job.title)}</h3>
+        <span class="airline-name">${escapeHtml(job.airline)}</span>
+      </div>
+      <div class="card-cta">View Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+    </div>
+    <div class="card-pills">${pills}</div>
+    ${statsHtml}
+    ${timeBadgeHtml}
   </div>
 </a>`;
 }
@@ -149,6 +154,16 @@ function buildLandingPage(pageData, jobs, relatedPages) {
   const airlines = new Set(jobs.map(j => j.airline).filter(Boolean));
   const visaCount = jobs.filter(j => j.visa_sponsor).length;
 
+  // Extract category word from h1 for the search card title (e.g. "Captain Pilot" from "Captain Pilot Jobs Worldwide")
+  const h1Text = pageData.h1 || pageData.page_title || '';
+  const categoryLabel = h1Text.replace(/jobs?/gi, '').replace(/worldwide|global/gi, '').trim() || (isCabinCrew ? 'Cabin Crew' : 'Pilot');
+
+  // Intro text: split into paragraphs
+  const introText = pageData.intro_text || '';
+  const introParagraphs = introText
+    ? introText.split(/\n\n+/).map(p => p.trim()).filter(Boolean).map(p => `<p>${p}</p>`).join('\n')
+    : '';
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -176,45 +191,72 @@ function buildLandingPage(pageData, jobs, relatedPages) {
   <script type="application/ld+json">${JSON.stringify(itemListSchema)}</script>
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --navy: #1a2744;
+      --navy-deep: #111c35;
+      --gold: #b8944f;
+      --gold-light: #c8a44e;
+      --gold-pale: #f5eed9;
+      --cream: #faf9f6;
+      --cream-dark: #f2efe8;
+      --white: #ffffff;
+      --text-dark: #1a2744;
+      --text-mid: #4a5568;
+      --text-light: #718096;
+      --border: #e8e3d8;
+      --border-light: #f0ece3;
+      --green: #4caf50;
+      --green-pale: #f0faf0;
+      --shadow-sm: 0 1px 3px rgba(26,39,68,0.07), 0 1px 2px rgba(26,39,68,0.05);
+      --shadow-md: 0 4px 12px rgba(26,39,68,0.1), 0 2px 4px rgba(26,39,68,0.06);
+      --shadow-lg: 0 10px 28px rgba(26,39,68,0.13), 0 4px 8px rgba(26,39,68,0.06);
+    }
+
     body {
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: #f1f5f9;
-      color: #0e1830;
+      font-family: 'Source Sans 3', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     a { text-decoration: none; color: inherit; }
 
-    /* ── Nav ─────────────────────────────────────────────────────────── */
+    /* ── Nav ──────────────────────────────────────────────────────────────── */
     .nav {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: #0b2a6f;
-      height: 58px;
-      padding: 0 32px;
+      z-index: 200;
+      background: var(--white);
+      height: 62px;
+      padding: 0 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 8px rgba(11,42,111,0.18);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 4px rgba(26,39,68,0.06);
     }
     .nav__brand {
-      font-weight: 800;
-      font-size: 1.25rem;
-      color: #fff;
-      letter-spacing: 0.3px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--navy);
+      letter-spacing: 0.01em;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .nav__logo {
-      width: 32px;
-      height: 32px;
+    .nav__logo-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--navy);
       border-radius: 8px;
-      background: linear-gradient(135deg, #1b66ff, #00b7a8);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -222,430 +264,561 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     }
     .nav__links {
       display: flex;
-      gap: 4px;
+      gap: 2px;
       align-items: center;
     }
     .nav__links a {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
-      color: rgba(255,255,255,0.75);
-      padding: 7px 14px;
+      color: var(--text-mid);
+      padding: 8px 14px;
       border-radius: 6px;
       transition: color 0.15s, background 0.15s;
     }
-    .nav__links a:hover { color: #fff; background: rgba(255,255,255,0.1); }
-    .nav__cta {
-      background: rgba(255,255,255,0.15) !important;
-      color: #fff !important;
-      border: 1px solid rgba(255,255,255,0.25) !important;
-      font-weight: 700 !important;
-      margin-left: 6px !important;
+    .nav__links a:hover { color: var(--navy); background: var(--cream-dark); }
+    .nav__signup {
+      border: 1.5px solid var(--gold) !important;
+      color: var(--navy) !important;
+      font-weight: 600 !important;
+      border-radius: 7px !important;
+      margin-left: 4px !important;
     }
-    .nav__cta:hover { background: rgba(255,255,255,0.25) !important; }
+    .nav__signup:hover { background: var(--gold-pale) !important; color: var(--navy) !important; }
+    .nav__login {
+      border: 1.5px solid var(--border) !important;
+      color: var(--navy) !important;
+      font-weight: 600 !important;
+      border-radius: 7px !important;
+    }
+    .nav__login:hover { border-color: var(--navy) !important; background: transparent !important; }
 
-    /* ── Hero ────────────────────────────────────────────────────────── */
+    /* ── Hero ──────────────────────────────────────────────────────────────── */
     .hero {
-      background: #0b2a6f;
-      padding: 56px 32px 48px;
-      text-align: center;
       position: relative;
+      min-height: 440px;
+      display: flex;
+      align-items: stretch;
       overflow: hidden;
     }
-    .hero::before {
-      content: '';
+    .hero__bg {
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 1px);
-      background-size: 28px 28px;
-      pointer-events: none;
+      background-image: url('https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=1600&q=80');
+      background-size: cover;
+      background-position: center right;
+      z-index: 0;
     }
-    .hero::after {
-      content: '';
+    .hero__overlay {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 900px 400px at 50% 100%, rgba(27,102,255,0.25), transparent 70%);
-      pointer-events: none;
-    }
-    .hero__inner {
-      position: relative;
+      background: linear-gradient(100deg, rgba(17,28,53,0.96) 0%, rgba(26,39,68,0.90) 45%, rgba(26,39,68,0.4) 70%, transparent 100%);
       z-index: 1;
-      max-width: 700px;
-      margin: 0 auto;
     }
-    .hero__tag {
+    .hero__content {
+      position: relative;
+      z-index: 2;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 64px 40px;
+      display: flex;
+      align-items: center;
+    }
+    .hero__left {
+      max-width: 520px;
+    }
+    .hero__eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: #00b7a8;
-      margin-bottom: 18px;
+      color: var(--gold-light);
+      background: rgba(184,148,79,0.12);
+      border: 1px solid rgba(184,148,79,0.3);
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
     }
-    .hero__tag-dot {
-      width: 6px;
-      height: 6px;
-      background: #00b7a8;
+    .hero__eyebrow-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--gold-light);
       border-radius: 50%;
     }
     .hero h1 {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-      margin-bottom: 14px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.18;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
     }
     .hero__sub {
       font-size: 16px;
-      color: rgba(255,255,255,0.65);
-      line-height: 1.6;
-      max-width: 500px;
-      margin: 0 auto 32px;
-    }
-    .hero__actions {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .hero__count {
-      font-size: 14px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.8);
-      padding: 10px 22px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 8px;
-      background: rgba(255,255,255,0.07);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .hero__count strong {
-      font-size: 18px;
-      font-weight: 800;
-      color: #fff;
+      font-weight: 400;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 420px;
     }
     .hero__btn {
-      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
       font-weight: 700;
-      color: #0b2a6f;
-      background: #fff;
-      padding: 10px 26px;
+      color: var(--navy);
+      background: var(--gold-light);
+      padding: 13px 30px;
       border-radius: 8px;
-      transition: background 0.15s, transform 0.12s;
       letter-spacing: 0.01em;
+      transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
+      box-shadow: 0 4px 16px rgba(184,148,79,0.35);
     }
-    .hero__btn:hover { background: #dbe8ff; transform: translateY(-1px); }
+    .hero__btn:hover {
+      background: #d4a94a;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(184,148,79,0.4);
+    }
+    .hero__btn svg { flex-shrink: 0; }
 
-    /* ── Stats bar ───────────────────────────────────────────────────── */
+    /* ── Stats bar ─────────────────────────────────────────────────────────── */
     .stats-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      background: #fff;
-      border-bottom: 1px solid #e2e8f0;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      background: linear-gradient(90deg, var(--gold-light) 0%, var(--gold) 100%);
     }
     .stats-bar__item {
-      padding: 18px 16px;
+      padding: 16px 20px;
       text-align: center;
-      border-right: 1px solid #e2e8f0;
+      border-right: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
     }
     .stats-bar__item:last-child { border-right: none; }
-    .stats-bar__num {
-      font-size: 26px;
-      font-weight: 800;
-      color: #0b2a6f;
+    .stats-bar__value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
       line-height: 1;
       letter-spacing: -0.02em;
-    }
-    .stats-bar__unit {
-      font-size: 13px;
-      font-weight: 400;
-      color: #94a3b8;
-      margin-left: 2px;
     }
     .stats-bar__label {
       font-size: 10px;
       font-weight: 700;
-      color: #94a3b8;
+      color: rgba(255,255,255,0.82);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-top: 3px;
+      letter-spacing: 0.1em;
+    }
+    .stats-bar__icon {
+      margin-bottom: 2px;
+      color: rgba(255,255,255,0.85);
     }
 
-    /* ── Main wrapper ────────────────────────────────────────────────── */
-    .main {
-      max-width: 860px;
+    /* ── Two-column content section ───────────────────────────────────────── */
+    .content-section {
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 40px 24px 64px;
-    }
-
-    /* ── Intro ───────────────────────────────────────────────────────── */
-    .intro {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-left: 4px solid #0b2a6f;
-      border-radius: 10px;
-      padding: 24px 28px;
-      margin-bottom: 36px;
-      box-shadow: 0 2px 4px -1px rgba(0,0,0,0.06);
-    }
-    .intro p {
-      font-size: 15px;
-      line-height: 1.75;
-      color: #334155;
-      margin-bottom: 10px;
-    }
-    .intro p:last-child { margin-bottom: 0; }
-
-    /* ── Section heading ─────────────────────────────────────────────── */
-    .sec-head {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-    .sec-head h2 {
-      font-size: 20px;
-      font-weight: 700;
-      color: #0b2a6f;
-      white-space: nowrap;
-    }
-    .sec-head__line { flex: 1; height: 1px; background: #e2e8f0; }
-    .sec-head__badge {
-      font-size: 11px;
-      font-weight: 700;
-      color: #64748b;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    /* ── Cards container ─────────────────────────────────────────────── */
-    .cards { display: grid; gap: 8px; min-width: 0; }
-
-    /* ── Card - matching Jobs.html exactly ───────────────────────────── */
-    .card {
-      background: white;
-      border-radius: 14px;
-      border: 1px solid #e2e8f0;
-      padding: 16px 20px;
+      padding: 64px 40px;
       display: grid;
-      grid-template-columns: 100px minmax(0, 1fr) 36px;
-      grid-template-rows: auto auto auto;
-      gap: 6px 14px;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 4px -1px rgba(0,0,0,0.08);
-      cursor: pointer;
-      color: inherit;
-    }
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-      border-color: #cbd5e1;
-    }
-    .card.visa-sponsor {
-      background: #f1f8e9;
-      border-color: #a5d6a7;
+      grid-template-columns: 3fr 2fr;
+      gap: 56px;
+      align-items: start;
     }
 
-    /* Logo - grid-row spans rows 1 and 2, matches Jobs.html */
-    .company-logo {
-      grid-column: 1;
-      grid-row: 1 / span 2;
-      width: 100px;
-      height: 100px;
+    /* Left: intro text */
+    .intro-col__heading {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.25;
+      margin-bottom: 22px;
+    }
+    .intro-col__body {
+      font-size: 15.5px;
+      line-height: 1.8;
+      color: var(--text-mid);
+      margin-bottom: 28px;
+    }
+    .intro-col__body p { margin-bottom: 14px; }
+    .intro-col__body p:last-child { margin-bottom: 0; }
+    .intro-checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .intro-checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 15px;
+      color: var(--text-dark);
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .check-icon {
+      width: 20px;
+      height: 20px;
+      background: var(--green-pale);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 24px;
-      color: #0b2a6f;
       flex-shrink: 0;
+      margin-top: 1px;
+      color: var(--green);
     }
-    .company-logo img {
+
+    /* Right: search card */
+    .search-card {
+      background: var(--white);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 28px 28px 24px;
+      box-shadow: var(--shadow-md);
+    }
+    .search-card__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 20px;
+    }
+    .search-field {
+      margin-bottom: 12px;
+    }
+    .search-field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 6px;
+    }
+    .search-field select {
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      background: var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 36px 10px 14px;
+      font-size: 14px;
+      font-family: 'Source Sans 3', sans-serif;
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .search-field select:focus { outline: none; border-color: var(--gold); }
+    .search-card__btn {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      background: var(--navy);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Source Sans 3', sans-serif;
+      text-align: center;
+      padding: 13px 20px;
+      border-radius: 8px;
+      letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.12s;
+      border: none;
+      cursor: pointer;
+    }
+    .search-card__btn:hover { background: var(--gold); color: var(--navy); transform: translateY(-1px); }
+    .search-card__divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 22px 0;
+    }
+    .world-map-wrap {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-top: 20px;
+    }
+    .world-map-wrap img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      display: block;
+      opacity: 0.75;
+    }
+
+    /* ── Jobs section ─────────────────────────────────────────────────────── */
+    .jobs-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 64px;
+    }
+    .section-heading {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .section-heading__line { flex: 1; height: 1px; background: var(--border); }
+    .section-heading__count {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    /* ── Cards ────────────────────────────────────────────────────────────── */
+    .cards-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .card {
+      display: flex;
+      align-items: stretch;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+      color: inherit;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--gold);
+    }
+    .card.visa-sponsor {
+      border-left: 3px solid var(--green);
+    }
+
+    .card-logo {
+      width: 80px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--cream);
+      padding: 16px 10px;
+    }
+    .logo-wrap {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-wrap img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
+    .logo-letter {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+      font-family: 'Playfair Display', Georgia, serif;
+    }
 
-    /* Title row: job title + airline badge inline */
-    .job-title-row {
-      grid-column: 2;
-      grid-row: 1;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0;
-      align-self: center;
+    .card-body {
+      flex: 1;
+      padding: 14px 18px;
       min-width: 0;
     }
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .card-title-block { min-width: 0; }
     .job-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
-      margin: 0;
-      color: #1e293b;
+      color: var(--navy);
       line-height: 1.3;
+      margin-bottom: 3px;
     }
     .airline-name {
-      margin-left: 12px;
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 500;
-      color: #475569;
-      letter-spacing: 0.3px;
-      background: rgba(71,85,105,0.06);
-      padding: 2px 8px;
-      border-radius: 4px;
-      border: 1px solid rgba(71,85,105,0.15);
-      white-space: nowrap;
-      flex-shrink: 0;
+      color: var(--text-mid);
     }
-
-    /* Attributes row */
-    .attributes {
-      grid-column: 2;
-      grid-row: 2;
+    .card-cta {
       display: flex;
-      gap: 10px;
-      color: #64748b;
-      font-size: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .attr-item {
-      display: inline-flex;
       align-items: center;
       gap: 5px;
-      font-size: 12px;
-      color: #475569;
-    }
-    .attr-item b {
+      font-size: 13px;
       font-weight: 600;
-      color: #475569;
+      color: var(--navy);
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: color 0.15s;
+      padding-top: 2px;
+    }
+    .card:hover .card-cta { color: var(--gold); }
+
+    .card-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
     }
     .attr-pill {
-      background: #e3f2fd;
-      color: #1565c0;
-      padding: 2px 8px;
-      border-radius: 12px;
       font-size: 11px;
       font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: #edf2f7;
+      color: var(--text-dark);
+      border: 1px solid #e2e8f0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
-    .attr-pill.green {
-      background: white;
+    .attr-pill.acft-pill {
+      background: #ebf4ff;
+      color: #1a56a0;
+      border-color: #bee3f8;
+    }
+    .attr-pill.loc-pill {
+      background: var(--cream-dark);
+      color: var(--text-mid);
+      border-color: var(--border);
+    }
+    .attr-pill.pill-green {
+      background: var(--green-pale);
       color: #2e7d32;
-      border: 1.5px solid #4caf50;
+      border: 1.5px solid #a5d6a7;
     }
 
-    /* Stats row - matches Jobs.html exactly */
+    /* Stats row */
     .stats-row {
-      grid-column: 2;
-      grid-row: 3;
       display: flex;
-      gap: 24px;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
       margin-top: 4px;
-      padding-top: 8px;
-      border-top: 1px dashed #e2e8f0;
     }
-    .stat-box {
-      display: flex;
-      flex-direction: column;
-    }
+    .stat-box { display: flex; flex-direction: column; gap: 1px; }
     .stat-label {
       font-size: 10px;
       text-transform: uppercase;
-      color: #94a3b8;
+      letter-spacing: 0.07em;
+      color: var(--text-light);
       font-weight: 700;
     }
     .stat-value {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
-      color: #0f172a;
+      color: var(--navy);
     }
+    .salary-val { color: var(--gold); }
 
-    /* Time ago badge – matches Jobs.html */
+    /* Time ago badge */
     .time-ago {
-      grid-column: 1;
-      grid-row: 3;
+      display: inline-block;
+      margin-top: 8px;
       font-size: 10px;
-      font-weight: 600;
-      padding: 3px 8px;
+      font-weight: 700;
+      padding: 2px 8px;
       border-radius: 10px;
-      white-space: nowrap;
-      align-self: end;
-      justify-self: start;
     }
-    .time-ago.recent {
-      color: #2e7d32;
-      background: #e8f5e9;
-    }
-    .time-ago.older {
-      color: #1565c0;
-      background: #e3f2fd;
-    }
+    .time-ago.recent { color: #2e7d32; background: #e8f5e9; }
+    .time-ago.older  { color: #1565c0; background: #e3f2fd; }
 
-    /* Right arrow indicator */
-    .card-arrow {
-      grid-column: 3;
-      grid-row: 1 / span 2;
-      display: flex;
+    /* ── Browse all button ────────────────────────────────────────────────── */
+    .browse-all-wrap {
+      text-align: center;
+      margin-top: 28px;
+    }
+    .browse-all-btn {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      color: #cbd5e1;
-      align-self: center;
-      transition: color 0.2s, transform 0.2s;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      background: transparent;
+      border: 2px solid var(--gold);
+      padding: 12px 30px;
+      border-radius: 8px;
+      letter-spacing: 0.01em;
+      transition: background 0.15s, color 0.15s, transform 0.12s;
     }
-    .card:hover .card-arrow {
-      color: #0b2a6f;
-      transform: translateX(2px);
+    .browse-all-btn:hover {
+      background: var(--gold);
+      color: var(--white);
+      transform: translateY(-1px);
     }
 
-    /* ── Empty state ─────────────────────────────────────────────────── */
+    /* ── Empty state ──────────────────────────────────────────────────────── */
     .empty {
       text-align: center;
       padding: 60px 24px;
-      background: #fff;
-      border: 1px solid #e2e8f0;
+      background: var(--white);
+      border: 1px solid var(--border);
       border-radius: 14px;
     }
-    .empty p { color: #64748b; font-size: 15px; margin-bottom: 8px; }
-    .empty a { color: #0b2a6f; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+    .empty p { color: var(--text-mid); font-size: 15px; margin-bottom: 8px; }
+    .empty a { color: var(--gold); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 
-    /* ── FAQ ─────────────────────────────────────────────────────────── */
-    .faq { margin-top: 48px; }
-    .faq__head {
+    /* ── Bottom sections wrapper ──────────────────────────────────────────── */
+    .bottom-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 64px;
+    }
+
+    /* ── FAQ ──────────────────────────────────────────────────────────────── */
+    .faq { margin-bottom: 52px; }
+    .faq__heading {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
       gap: 14px;
-      margin-bottom: 16px;
     }
-    .faq__head h2 {
-      font-size: 20px;
-      font-weight: 700;
-      color: #0b2a6f;
-      white-space: nowrap;
-    }
-    .faq__head-line { flex: 1; height: 1px; background: #e2e8f0; }
+    .faq__heading-line { flex: 1; height: 1px; background: var(--border); }
 
     .faq-item {
-      border-bottom: 1px solid #e2e8f0;
-      background: #fff;
+      border-bottom: 1px solid var(--border);
+      background: var(--white);
     }
     .faq-item:first-of-type {
-      border-top: 1px solid #e2e8f0;
-      border-radius: 14px 14px 0 0;
+      border-top: 1px solid var(--border);
+      border-radius: 12px 12px 0 0;
     }
-    .faq-item:last-of-type { border-radius: 0 0 14px 14px; }
+    .faq-item:last-of-type { border-radius: 0 0 12px 12px; }
     .faq-trigger {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      padding: 16px 20px;
+      padding: 17px 22px;
       background: none;
       border: none;
       cursor: pointer;
@@ -654,22 +827,23 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     .faq-trigger h3 {
       font-size: 15px;
       font-weight: 600;
-      color: #1e293b;
+      color: var(--navy);
       line-height: 1.4;
-      transition: color 0.2s;
+      transition: color 0.15s;
+      font-family: 'Source Sans 3', sans-serif;
     }
-    .faq-trigger:hover h3 { color: #0b2a6f; }
+    .faq-trigger:hover h3 { color: var(--gold); }
     .faq-chevron {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: #94a3b8;
-      transition: color 0.2s, transform 0.25s ease;
+      color: var(--gold);
+      transition: transform 0.25s ease;
     }
-    .faq-item.open .faq-chevron { color: #0b2a6f; transform: rotate(180deg); }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
     .faq-answer {
       display: grid;
       grid-template-rows: 0fr;
@@ -678,45 +852,44 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     .faq-item.open .faq-answer { grid-template-rows: 1fr; }
     .faq-answer-inner { overflow: hidden; }
     .faq-answer-inner p {
-      font-size: 14px;
-      color: #475569;
-      line-height: 1.75;
-      padding: 0 20px 18px;
+      font-size: 14.5px;
+      color: var(--text-mid);
+      line-height: 1.78;
+      padding: 0 22px 20px;
     }
 
-    /* ── Related pages ───────────────────────────────────────────────── */
-    .related { margin-top: 48px; }
+    /* ── Related pages ────────────────────────────────────────────────────── */
+    .related { margin-bottom: 52px; }
     .related__label {
       font-size: 10px;
       font-weight: 700;
-      color: #94a3b8;
+      color: var(--text-light);
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .related__grid { display: flex; flex-wrap: wrap; gap: 8px; }
     .related__link {
       font-size: 13px;
       font-weight: 500;
-      color: #475569;
+      color: var(--text-mid);
       padding: 8px 16px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border);
       border-radius: 8px;
-      background: #fff;
-      transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
+      background: var(--white);
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
     }
     .related__link:hover {
-      color: #0b2a6f;
-      border-color: #cbd5e1;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      color: var(--navy);
+      border-color: var(--gold);
+      background: var(--gold-pale);
     }
 
-    /* ── CTA banner ──────────────────────────────────────────────────── */
+    /* ── CTA banner ───────────────────────────────────────────────────────── */
     .cta {
-      margin-top: 48px;
-      padding: 48px 40px;
-      background: linear-gradient(135deg, #0b2a6f, #081a45);
+      background: var(--navy);
       border-radius: 14px;
+      padding: 52px 48px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -725,126 +898,143 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       content: '';
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 1px);
-      background-size: 22px 22px;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+    .cta::after {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      right: -40px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(184,148,79,0.15), transparent 70%);
       pointer-events: none;
     }
     .cta__inner { position: relative; z-index: 1; }
     .cta__tag {
-      font-size: 10px;
+      display: inline-block;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: #00b7a8;
+      color: var(--gold-light);
       margin-bottom: 14px;
     }
     .cta h2 {
-      font-size: clamp(1.4rem, 3vw, 1.9rem);
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 10px;
-      letter-spacing: -0.01em;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
     }
     .cta p {
-      font-size: 14px;
-      color: rgba(255,255,255,0.55);
+      font-size: 15px;
+      color: rgba(255,255,255,0.58);
       line-height: 1.65;
       max-width: 420px;
-      margin: 0 auto 28px;
+      margin: 0 auto 30px;
     }
     .cta__actions {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 14px;
       flex-wrap: wrap;
     }
     .cta__primary {
       font-size: 14px;
       font-weight: 700;
-      color: #0b2a6f;
-      background: #fff;
-      padding: 12px 30px;
+      color: var(--navy);
+      background: var(--gold-light);
+      padding: 13px 32px;
       border-radius: 8px;
       letter-spacing: 0.01em;
       transition: background 0.15s, transform 0.12s;
     }
-    .cta__primary:hover { background: #dbe8ff; transform: translateY(-1px); }
+    .cta__primary:hover { background: #d4a94a; transform: translateY(-1px); }
     .cta__secondary {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
-      color: rgba(255,255,255,0.6);
-      border: 1px solid rgba(255,255,255,0.18);
-      padding: 12px 24px;
+      color: rgba(255,255,255,0.65);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      padding: 12px 26px;
       border-radius: 8px;
       transition: color 0.15s, border-color 0.15s;
     }
-    .cta__secondary:hover { color: rgba(255,255,255,0.9); border-color: rgba(255,255,255,0.35); }
+    .cta__secondary:hover { color: var(--white); border-color: rgba(255,255,255,0.45); }
 
-    /* ── Footer ──────────────────────────────────────────────────────── */
+    /* ── Footer ───────────────────────────────────────────────────────────── */
     .footer {
       text-align: center;
-      padding: 28px 32px;
-      border-top: 1px solid #e2e8f0;
-      background: #fff;
-      margin-top: 0;
+      padding: 28px 40px;
+      border-top: 1px solid var(--border);
+      background: var(--white);
     }
     .footer p {
-      font-size: 12px;
-      color: #94a3b8;
+      font-size: 12.5px;
+      color: var(--text-light);
       letter-spacing: 0.02em;
     }
-    .footer a { color: #64748b; transition: color 0.15s; }
-    .footer a:hover { color: #0b2a6f; }
-    .footer__dot { margin: 0 10px; opacity: 0.4; }
+    .footer a { color: var(--text-mid); transition: color 0.15s; }
+    .footer a:hover { color: var(--navy); }
+    .footer__dot { margin: 0 10px; opacity: 0.35; }
 
-    /* ── Responsive ──────────────────────────────────────────────────── */
+    /* ── Responsive ───────────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .content-section {
+        grid-template-columns: 1fr;
+        gap: 36px;
+        padding: 44px 28px;
+      }
+      .search-card { max-width: 480px; }
+      .world-map-wrap { display: none; }
+    }
     @media (max-width: 768px) {
-      .nav { padding: 0 16px; height: 52px; }
-      .nav__links a:not(.nav__cta) { display: none; }
-      .hero { padding: 40px 20px 36px; }
+      .nav { padding: 0 20px; height: 56px; }
+      .nav__links a:not(.nav__signup):not(.nav__login) { display: none; }
+      .hero__content { padding: 48px 24px; }
+      .hero { min-height: 360px; }
+      .hero__overlay {
+        background: linear-gradient(180deg, rgba(17,28,53,0.92) 0%, rgba(26,39,68,0.80) 60%, rgba(26,39,68,0.6) 100%);
+      }
       .stats-bar { grid-template-columns: repeat(2, 1fr); }
       .stats-bar__item:nth-child(2) { border-right: none; }
-      .stats-bar__item:nth-child(3) { border-top: 1px solid #e2e8f0; }
-      .stats-bar__item:nth-child(4) { border-top: 1px solid #e2e8f0; border-right: none; }
-      .main { padding: 28px 14px 48px; }
-      .intro { padding: 18px 20px; }
-      .card {
-        grid-template-columns: 80px minmax(0, 1fr) 30px;
-        padding: 14px 14px;
-        gap: 5px 10px;
-      }
-      .company-logo { width: 80px; height: 80px; font-size: 20px; }
-      .job-title { font-size: 14px; }
-      .cta { padding: 36px 20px; }
+      .stats-bar__item:nth-child(3) { border-top: 1px solid rgba(255,255,255,0.2); }
+      .stats-bar__item:nth-child(4) { border-top: 1px solid rgba(255,255,255,0.2); border-right: none; }
+      .content-section { padding: 36px 20px; }
+      .jobs-section { padding: 0 20px 44px; }
+      .bottom-section { padding: 0 20px 44px; }
+      .cta { padding: 36px 24px; }
+      .footer { padding: 24px 20px; }
+      .card-logo { width: 64px; }
+      .logo-wrap { width: 42px; height: 42px; }
+      .logo-letter { font-size: 18px; }
     }
     @media (max-width: 480px) {
-      .hero h1 { font-size: 1.6rem; }
-      .hero__sub { font-size: 14px; }
-      .hero__count { padding: 8px 14px; font-size: 13px; }
-      .hero__btn { padding: 8px 18px; font-size: 13px; }
-      .stats-bar__num { font-size: 22px; }
-      .card {
-        grid-template-columns: 66px minmax(0, 1fr) 26px;
-        padding: 12px 12px;
-        gap: 4px 8px;
-      }
-      .company-logo { width: 66px; height: 66px; font-size: 18px; }
-      .job-title { font-size: 13px; }
-      .airline-name { font-size: 11px; }
-      .attr-pill { font-size: 10px; padding: 2px 6px; }
+      .hero h1 { font-size: 1.7rem; }
+      .hero__sub { font-size: 14.5px; }
+      .hero__btn { padding: 11px 22px; font-size: 14px; }
+      .stats-bar__value { font-size: 19px; }
+      .card-logo { width: 56px; }
+      .logo-wrap { width: 36px; height: 36px; }
+      .job-title { font-size: 14px; }
+      .card-body { padding: 12px 14px; }
+      .card-cta { display: none; }
       .stats-row { gap: 14px; }
       .stat-value { font-size: 13px; }
     }
   </style>
 </head>
 <body>
+
   <!-- ── Nav ── -->
   <nav class="nav">
     <a href="/" class="nav__brand">
-      <div class="nav__logo">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      <div class="nav__logo-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c8a44e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19.5 2.5S18 2 16.5 3.5L13 7 4.8 5.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
         </svg>
       </div>
       AeroScout
@@ -853,23 +1043,27 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       <a href="/Jobs.html">Browse Jobs</a>
       <a href="/about.html">About</a>
       <a href="/pricing.html">Pricing</a>
-      <a href="/login.html">Login</a>
-      <a href="/signup.html" class="nav__cta">Sign Up Free</a>
+      <a href="/login.html" class="nav__login">Login &rsaquo;</a>
+      <a href="/signup.html" class="nav__signup">Sign Up For Free</a>
     </div>
   </nav>
 
   <!-- ── Hero ── -->
   <section class="hero">
-    <div class="hero__inner">
-      <div class="hero__tag">
-        <span class="hero__tag-dot"></span>
-        Live Aviation Opportunities
-      </div>
-      <h1>${escapeHtml(pageData.h1 || pageData.page_title)}</h1>
-      <p class="hero__sub">Updated daily from 850+ airlines and operators worldwide. Find your next ${isCabinCrew ? 'cabin crew' : 'cockpit'} role in minutes.</p>
-      <div class="hero__actions">
-        <span class="hero__count"><strong>${jobCount}</strong>&nbsp;open position${jobCount !== 1 ? 's' : ''}</span>
-        <a href="/Jobs.html" class="hero__btn">Browse all jobs &rarr;</a>
+    <div class="hero__bg"></div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <div class="hero__left">
+        <div class="hero__eyebrow">
+          <span class="hero__eyebrow-dot"></span>
+          Live Aviation Opportunities
+        </div>
+        <h1>${escapeHtml(pageData.h1 || pageData.page_title)}</h1>
+        <p class="hero__sub">Updated daily from ${airlines.size}+ airlines and operators worldwide. Find your next ${isCabinCrew ? 'cabin crew' : 'cockpit'} role in minutes.</p>
+        <a href="/Jobs.html" class="hero__btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Browse ${jobCount} Jobs
+        </a>
       </div>
     </div>
   </section>
@@ -877,52 +1071,151 @@ function buildLandingPage(pageData, jobs, relatedPages) {
   <!-- ── Stats bar ── -->
   <div class="stats-bar">
     <div class="stats-bar__item">
-      <div class="stats-bar__num">${jobCount}<span class="stats-bar__unit">jobs</span></div>
+      <div class="stats-bar__icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </div>
+      <div class="stats-bar__value">${jobCount}</div>
       <div class="stats-bar__label">Open Positions</div>
     </div>
     <div class="stats-bar__item">
-      <div class="stats-bar__num">${airlines.size}<span class="stats-bar__unit">orgs</span></div>
+      <div class="stats-bar__icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div class="stats-bar__value">${airlines.size}</div>
       <div class="stats-bar__label">Airlines &amp; Operators</div>
     </div>
     <div class="stats-bar__item">
-      <div class="stats-bar__num">${visaCount}<span class="stats-bar__unit">roles</span></div>
-      <div class="stats-bar__label">Visa Sponsored</div>
+      <div class="stats-bar__icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="stats-bar__value">24hr</div>
+      <div class="stats-bar__label">Update Cycle</div>
     </div>
     <div class="stats-bar__item">
-      <div class="stats-bar__num">24<span class="stats-bar__unit">hrs</span></div>
-      <div class="stats-bar__label">Update Cycle</div>
+      <div class="stats-bar__icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="stats-bar__value">Global</div>
+      <div class="stats-bar__label">${visaCount > 0 ? `${visaCount} Visa Sponsored` : 'Worldwide Opportunities'}</div>
     </div>
   </div>
 
-  <!-- ── Main content ── -->
-  <main class="main">
-    ${pageData.intro_text ? `<section class="intro">${pageData.intro_text}</section>` : ''}
-
-    <div class="sec-head">
-      <h2>${escapeHtml(pageData.h1 || 'Jobs')} Available Now</h2>
-      <div class="sec-head__line"></div>
-      <span class="sec-head__badge">${jobCount} result${jobCount !== 1 ? 's' : ''}</span>
+  <!-- ── Two-column content ── -->
+  <section class="content-section">
+    <!-- Left column: intro text -->
+    <div class="intro-col">
+      <h2 class="intro-col__heading">Elevate Your Career to New Heights.</h2>
+      ${introParagraphs
+        ? `<div class="intro-col__body">${introParagraphs}</div>`
+        : `<div class="intro-col__body"><p>Discover the latest ${escapeHtml(categoryLabel)} positions from airlines and operators around the world. Our listings are verified and updated every 24 hours, giving you access to the most current opportunities available.</p></div>`
+      }
+      <ul class="intro-checklist">
+        <li>
+          <span class="check-icon">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          Active job postings from ${airlines.size}+ airlines worldwide
+        </li>
+        <li>
+          <span class="check-icon">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          Visa sponsorship options for select roles
+        </li>
+        <li>
+          <span class="check-icon">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          Detailed listings with pay, type rating requirements &amp; benefits
+        </li>
+      </ul>
     </div>
 
-    <div class="cards">
+    <!-- Right column: search card -->
+    <div class="search-col">
+      <div class="search-card">
+        <div class="search-card__title">Search ${escapeHtml(categoryLabel)} Jobs</div>
+        <div class="search-field">
+          <label>Position</label>
+          <select>
+            <option>Any Position</option>
+            ${isCabinCrew
+              ? '<option>Flight Attendant</option><option>Senior Cabin Crew</option><option>Purser</option>'
+              : '<option>Captain</option><option>First Officer</option><option>Senior First Officer</option><option>Cadet</option>'
+            }
+          </select>
+        </div>
+        <div class="search-field">
+          <label>${isCabinCrew ? 'Contract Type' : 'Aircraft Type'}</label>
+          <select>
+            ${isCabinCrew
+              ? '<option>Any Contract Type</option><option>Permanent</option><option>Contract</option><option>Seasonal</option>'
+              : '<option>Any Aircraft Type</option><option>Boeing 737</option><option>Boeing 777</option><option>Airbus A320</option><option>Airbus A330</option><option>Airbus A350</option>'
+            }
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Location</label>
+          <select>
+            <option>Any Location</option>
+            <option>Europe</option>
+            <option>Middle East</option>
+            <option>Asia Pacific</option>
+            <option>North America</option>
+            <option>Africa</option>
+          </select>
+        </div>
+        <a href="/Jobs.html" class="search-card__btn">Search Jobs</a>
+        <div class="search-card__divider"></div>
+        <div style="font-size:12px;color:var(--text-light);text-align:center;">
+          ${jobCount} open position${jobCount !== 1 ? 's' : ''} &middot; Updated today
+        </div>
+      </div>
+      <div class="world-map-wrap">
+        <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=600&q=70" alt="World aviation routes map" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Job cards ── -->
+  <section class="jobs-section">
+    <h2 class="section-heading">
+      Latest ${escapeHtml(pageData.h1 || 'Jobs')}
+      <span class="section-heading__line"></span>
+      <span class="section-heading__count">${jobCount} result${jobCount !== 1 ? 's' : ''}</span>
+    </h2>
+
+    <div class="cards-list">
       ${jobs.length > 0
         ? jobs.map((j, i) => renderJobCard(j, isCabinCrew, i)).join('\n')
         : `<div class="empty"><p>No positions currently available in this category.</p><p><a href="/Jobs.html">Browse all jobs</a> or check back soon &mdash; we update daily.</p></div>`
       }
     </div>
 
+    ${jobs.length > 0 ? `
+    <div class="browse-all-wrap">
+      <a href="/Jobs.html" class="browse-all-btn">
+        Browse All Jobs
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>` : ''}
+  </section>
+
+  <!-- ── Bottom sections: FAQ, Related, CTA ── -->
+  <div class="bottom-section">
+
     ${faqs.length > 0 ? `
     <section class="faq">
-      <div class="faq__head">
-        <h2>Frequently Asked Questions</h2>
-        <div class="faq__head-line"></div>
-      </div>
+      <h2 class="faq__heading">
+        Frequently Asked Questions
+        <span class="faq__heading-line"></span>
+      </h2>
       ${faqs.map((f, i) => `
       <div class="faq-item" id="faq-${i}">
         <button class="faq-trigger" onclick="toggleFaq(${i})" aria-expanded="false" aria-controls="faq-ans-${i}">
           <h3>${escapeHtml(f.q)}</h3>
           <span class="faq-chevron">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </span>
         </button>
         <div class="faq-answer" id="faq-ans-${i}" role="region">
@@ -943,14 +1236,15 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       <div class="cta__inner">
         <div class="cta__tag">Job Alerts &middot; Free to Use</div>
         <h2>Never Miss a ${isCabinCrew ? 'Cabin Crew' : 'Pilot'} Job Again</h2>
-        <p>Get instant alerts for new positions matching your qualifications, aircraft type and location.</p>
+        <p>Get instant alerts for new positions matching your qualifications, aircraft type and location preferences.</p>
         <div class="cta__actions">
           <a href="/signup.html" class="cta__primary">Create Free Account</a>
-          <a href="/Jobs.html" class="cta__secondary">Browse all ${jobCount} jobs</a>
+          <a href="/Jobs.html" class="cta__secondary">Browse All ${jobCount} Jobs</a>
         </div>
       </div>
     </div>
-  </main>
+
+  </div>
 
   <footer class="footer">
     <p>&copy; ${new Date().getFullYear()} AeroScout<span class="footer__dot">&middot;</span><a href="/terms.html">Terms</a><span class="footer__dot">&middot;</span><a href="/privacy.html">Privacy</a><span class="footer__dot">&middot;</span><a href="/about.html">About</a></p>
@@ -974,6 +1268,7 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     var f0 = document.getElementById('faq-0');
     if (f0) toggleFaq(0);
   </script>
+
 </body>
 </html>`;
 }

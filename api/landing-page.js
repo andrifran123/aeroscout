@@ -402,11 +402,19 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       color: rgba(255,255,255,0.85);
     }
 
-    /* ── Content section ───────────────────────────────────────── */
+    /* ── Two-column content section ───────────────────────────── */
     .content-section {
-      max-width: 900px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 64px 40px;
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 56px;
+      align-items: start;
+    }
+    .map-col {
+      position: sticky;
+      top: 24px;
     }
 
     /* Left: intro text */
@@ -913,7 +921,8 @@ function buildLandingPage(pageData, jobs, relatedPages) {
 
     /* ── Responsive: Tablet landscape (1024px) ──────────────────────────── */
     @media (max-width: 1024px) {
-      .content-section { padding: 48px 32px; }
+      .content-section { padding: 48px 32px; grid-template-columns: 1fr; gap: 32px; }
+      .map-col { position: static; max-width: 500px; }
       .card { grid-template-columns: 90px minmax(0, 1fr) 130px; }
       .company-logo { width: 90px; height: 90px; }
     }
@@ -1192,7 +1201,10 @@ function buildLandingPage(pageData, jobs, relatedPages) {
           Detailed listings with pay, type rating requirements &amp; benefits
         </li>
       </ul>
+    </div>
 
+    <!-- Right column: map -->
+    <div class="map-col">
       <div class="job-map">
         <img src="/images/job-locations-map.png" alt="AeroScout job locations worldwide - ${jobCount} positions across ${airlines.size}+ airlines" loading="lazy" width="900" height="600">
       </div>

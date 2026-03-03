@@ -1,9 +1,15 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const supabase = createClient(
-  process.env.SUPABASE_URL || 'https://ziboktbmbyjbhifsdypa.supabase.co',
-  process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY'
-);
+let _supabase;
+function getSupabase() {
+  if (!_supabase) {
+    _supabase = createClient(
+      process.env.SUPABASE_URL || 'https://ziboktbmbyjbhifsdypa.supabase.co',
+      process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
+    );
+  }
+  return _supabase;
+}
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -1491,13 +1497,13 @@ module.exports = async (req, res) => {
   if (!slug) { res.setHeader('Content-Type','text/html; charset=utf-8'); return res.status(404).send(build404()); }
 
   try {
-    const { data: pageData, error: pageError } = await supabase
+    const { data: pageData, error: pageError } = await getSupabase()
       .from('seo_landing_pages').select('*').eq('slug', slug).eq('is_active', true).single();
     if (pageError || !pageData) { res.setHeader('Content-Type','text/html; charset=utf-8'); return res.status(404).send(build404()); }
 
     const isCabinCrew = pageData.filter_table === 'verified_cabin_crew_jobs';
     const table = isCabinCrew ? 'public_verified_cabin_crew_jobs' : 'public_verified_jobs';
-    let query = supabase.from(table).select('*').order('verified_at', { ascending: false }).limit(100);
+    let query = getSupabase().from(table).select('*').order('verified_at', { ascending: false }).limit(100);
 
     if (pageData.filter_column && pageData.filter_value && pageData.filter_column !== '_all') {
       if (pageData.filter_value === 'true') query = query.eq(pageData.filter_column, true);
@@ -1517,7 +1523,7 @@ module.exports = async (req, res) => {
     try { relatedSlugs = typeof pageData.related_slugs === 'string' ? JSON.parse(pageData.related_slugs) : (pageData.related_slugs || []); } catch(e) { relatedSlugs=[]; }
     let relatedPages = [];
     if (relatedSlugs.length > 0) {
-      const { data: rp } = await supabase.from('seo_landing_pages').select('slug, h1').in('slug', relatedSlugs).eq('is_active', true);
+      const { data: rp } = await getSupabase().from('seo_landing_pages').select('slug, h1').in('slug', relatedSlugs).eq('is_active', true);
       relatedPages = rp || [];
     }
 

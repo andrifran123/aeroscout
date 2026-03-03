@@ -16,10 +16,16 @@
 const crypto = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
 
-const supabase = createClient(
-  process.env.SUPABASE_URL || 'https://ziboktbmbyjbhifsdypa.supabase.co',
-  process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY'
-);
+let _supabase;
+function getSupabase() {
+  if (!_supabase) {
+    _supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_KEY
+    );
+  }
+  return _supabase;
+}
 
 // Disable body parsing - we need raw body for signature verification
 module.exports.config = {
@@ -98,7 +104,7 @@ module.exports = async (req, res) => {
       const customerEmail = data.customer?.email;
 
       if (userId) {
-        const { error } = await supabase
+        const { error } = await getSupabase()
           .from('profiles')
           .upsert({
             id: userId,
@@ -126,14 +132,14 @@ module.exports = async (req, res) => {
       const subscriptionId = data.id;
 
       // Find user by subscription ID and remove premium
-      const { data: profile } = await supabase
+      const { data: profile } = await getSupabase()
         .from('profiles')
         .select('id')
         .eq('paddle_subscription_id', subscriptionId)
         .single();
 
       if (profile) {
-        await supabase
+        await getSupabase()
           .from('profiles')
           .update({
             is_premium: false,
@@ -153,14 +159,14 @@ module.exports = async (req, res) => {
       const status = data.status;
 
       if (status === 'active') {
-        const { data: profile } = await supabase
+        const { data: profile } = await getSupabase()
           .from('profiles')
           .select('id')
           .eq('paddle_subscription_id', subscriptionId)
           .single();
 
         if (profile) {
-          await supabase
+          await getSupabase()
             .from('profiles')
             .update({ is_premium: true })
             .eq('id', profile.id);
@@ -179,7 +185,7 @@ module.exports = async (req, res) => {
 
       if (userId) {
         // Update user to premium
-        await supabase
+        await getSupabase()
           .from('profiles')
           .upsert({
             id: userId,

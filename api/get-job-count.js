@@ -11,11 +11,17 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL || 'https://ziboktbmbyjbhifsdypa.supabase.co',
-  process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY'
-);
+// Initialize Supabase client lazily to avoid crashing at module load time
+let _supabase;
+function getSupabase() {
+  if (!_supabase) {
+    _supabase = createClient(
+      process.env.SUPABASE_URL || 'https://ziboktbmbyjbhifsdypa.supabase.co',
+      process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
+    );
+  }
+  return _supabase;
+}
 
 module.exports = async (req, res) => {
   // Set CORS headers
@@ -39,7 +45,7 @@ module.exports = async (req, res) => {
     const tableName = jobType === 'cabin_crew' ? 'public_verified_cabin_crew_jobs' : 'public_verified_jobs';
 
     // Get count of all jobs in the appropriate table
-    const { count, error } = await supabase
+    const { count, error } = await getSupabase()
       .from(tableName)
       .select('*', { count: 'exact', head: true });
 

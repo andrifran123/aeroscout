@@ -1,9 +1,15 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const supabase = createClient(
-  process.env.SUPABASE_URL || 'https://ziboktbmbyjbhifsdypa.supabase.co',
-  process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY'
-);
+let _supabase;
+function getSupabase() {
+  if (!_supabase) {
+    _supabase = createClient(
+      process.env.SUPABASE_URL || 'https://ziboktbmbyjbhifsdypa.supabase.co',
+      process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
+    );
+  }
+  return _supabase;
+}
 
 // ── Slug helper ──────────────────────────────────────────────────────────────
 
@@ -869,7 +875,7 @@ module.exports = async (req, res) => {
     const primaryTable = isCabinCrew ? 'public_verified_cabin_crew_jobs' : 'public_verified_jobs';
     const fallbackTable = isCabinCrew ? 'public_verified_jobs' : 'public_verified_cabin_crew_jobs';
 
-    let { data, error } = await supabase
+    let { data, error } = await getSupabase()
       .from(primaryTable)
       .select('*')
       .eq('id', jobId)
@@ -879,7 +885,7 @@ module.exports = async (req, res) => {
 
     // If not found in primary table, try fallback
     if (error || !data) {
-      const fallback = await supabase
+      const fallback = await getSupabase()
         .from(fallbackTable)
         .select('*')
         .eq('id', jobId)

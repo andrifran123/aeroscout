@@ -15,10 +15,16 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
-const supabase = createClient(
-  process.env.SUPABASE_URL || 'https://ziboktbmbyjbhifsdypa.supabase.co',
-  process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY'
-);
+let _supabase;
+function getSupabase() {
+  if (!_supabase) {
+    _supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_KEY
+    );
+  }
+  return _supabase;
+}
 
 module.exports = async (req, res) => {
   // Gumroad sends webhooks as POST with form-urlencoded data
@@ -61,7 +67,7 @@ module.exports = async (req, res) => {
         const subscriptionId = data.subscription_id || data.sale_id;
 
         // Find user by email
-        const { data: users, error: userError } = await supabase
+        const { data: users, error: userError } = await getSupabase()
           .from('profiles')
           .select('id')
           .eq('email', customerEmail);
@@ -69,7 +75,7 @@ module.exports = async (req, res) => {
         let userId = users && users.length > 0 ? users[0].id : null;
 
         if (!userId) {
-          const { data: authData } = await supabase.auth.admin.listUsers();
+          const { data: authData } = await getSupabase().auth.admin.listUsers();
           const authUser = authData?.users?.find(u => u.email === customerEmail);
           userId = authUser?.id;
         }
@@ -91,7 +97,7 @@ module.exports = async (req, res) => {
         };
 
         if (userId) {
-          const { error } = await supabase
+          const { error } = await getSupabase()
             .from('profiles')
             .upsert({ id: userId, ...updatePayload }, { onConflict: 'id' });
 
@@ -103,7 +109,7 @@ module.exports = async (req, res) => {
           }
         } else {
           console.log(`No user found for email ${customerEmail}, storing for later`);
-          const { error } = await supabase
+          const { error } = await getSupabase()
             .from('profiles')
             .upsert({
               email: customerEmail,
@@ -125,7 +131,7 @@ module.exports = async (req, res) => {
       case 'subscription_ended': {
         const subscriptionId = data.subscription_id;
 
-        let query = supabase.from('profiles').select('id');
+        let query = getSupabase().from('profiles').select('id');
         if (subscriptionId) {
           query = query.eq('gumroad_subscription_id', subscriptionId);
         } else {
@@ -135,7 +141,7 @@ module.exports = async (req, res) => {
         const { data: profile } = await query.single();
 
         if (profile) {
-          await supabase
+          await getSupabase()
             .from('profiles')
             .update({
               is_premium: false,
@@ -155,14 +161,14 @@ module.exports = async (req, res) => {
       case 'subscription_restarted': {
         const subscriptionId = data.subscription_id;
 
-        const { data: profile } = await supabase
+        const { data: profile } = await getSupabase()
           .from('profiles')
           .select('id')
           .eq('gumroad_subscription_id', subscriptionId)
           .single();
 
         if (profile) {
-          await supabase
+          await getSupabase()
             .from('profiles')
             .update({
               is_premium: true,

@@ -328,27 +328,6 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     .hero__left {
       max-width: 520px;
     }
-    .hero__eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--gold-light);
-      background: rgba(184,148,79,0.12);
-      border: 1px solid rgba(184,148,79,0.3);
-      padding: 5px 12px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-    }
-    .hero__eyebrow-dot {
-      width: 5px;
-      height: 5px;
-      background: var(--gold-light);
-      border-radius: 50%;
-    }
     .hero h1 {
       font-family: 'Playfair Display', Georgia, serif;
       font-size: clamp(1.9rem, 4vw, 3rem);
@@ -423,15 +402,11 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       color: rgba(255,255,255,0.85);
     }
 
-    /* ── Two-column content section ───────────────────────────────────────── */
+    /* ── Content section ───────────────────────────────────────── */
     .content-section {
-      max-width: 1100px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 64px 40px;
-      display: grid;
-      grid-template-columns: 3fr 2fr;
-      gap: 56px;
-      align-items: start;
     }
 
     /* Left: intro text */
@@ -479,79 +454,8 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       color: var(--green);
     }
 
-    /* Right: search card */
-    .search-card {
-      background: var(--white);
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      padding: 28px 28px 24px;
-      box-shadow: var(--shadow-md);
-    }
-    .search-card__title {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 20px;
-    }
-    .search-field {
-      margin-bottom: 12px;
-    }
-    .search-field label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-light);
-      margin-bottom: 6px;
-    }
-    .search-field select {
-      width: 100%;
-      appearance: none;
-      -webkit-appearance: none;
-      background: var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 36px 10px 14px;
-      font-size: 14px;
-      font-family: 'Source Sans 3', sans-serif;
-      color: var(--text-dark);
-      cursor: pointer;
-      transition: border-color 0.15s;
-    }
-    .search-field select:focus { outline: none; border-color: var(--gold); }
-    .search-card__btn {
-      display: block;
-      width: 100%;
-      margin-top: 18px;
-      background: var(--navy);
-      color: var(--white);
-      font-size: 14px;
-      font-weight: 700;
-      font-family: 'Source Sans 3', sans-serif;
-      text-align: center;
-      padding: 13px 20px;
-      border-radius: 8px;
-      letter-spacing: 0.02em;
-      transition: background 0.15s, transform 0.12s;
-      border: none;
-      cursor: pointer;
-    }
-    .search-card__btn:hover { background: var(--gold); color: var(--navy); transform: translateY(-1px); }
-    .search-card__divider {
-      height: 1px;
-      background: var(--border-light);
-      margin: 22px 0;
-    }
-    .world-map-wrap {
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      margin-top: 20px;
-    }
-    .world-map-wrap img {
-      width: 100%;
+    .placeholder-remove {
+      display: none;
       height: 130px;
       object-fit: cover;
       display: block;
@@ -1003,12 +907,7 @@ function buildLandingPage(pageData, jobs, relatedPages) {
 
     /* ── Responsive: Tablet landscape (1024px) ──────────────────────────── */
     @media (max-width: 1024px) {
-      .content-section {
-        grid-template-columns: 1fr;
-        gap: 36px;
-        padding: 48px 32px;
-      }
-      .search-card { max-width: 480px; }
+      .content-section { padding: 48px 32px; }
       .card { grid-template-columns: 90px minmax(0, 1fr) 130px; }
       .company-logo { width: 90px; height: 90px; }
     }
@@ -1029,7 +928,6 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       .content-section { padding: 36px 20px; }
       .jobs-section { padding: 0 20px 44px; }
       .bottom-section { padding: 0 20px 44px; }
-      .world-map-wrap { display: none; }
       .card {
         grid-template-columns: 80px minmax(0, 1fr) 110px;
         padding: 14px 16px;
@@ -1157,7 +1055,6 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       .hero__content { padding: 36px 14px; }
       .hero h1 { font-size: 1.35rem; }
       .hero__sub { font-size: 13px; margin-bottom: 24px; }
-      .hero__eyebrow { font-size: 10px; padding: 4px 10px; }
       .hero__btn { padding: 10px 18px; font-size: 13px; }
       .stats-bar__value { font-size: 17px; }
       .stats-bar__label { font-size: 9px; }
@@ -1168,8 +1065,6 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       .intro-col__heading { font-size: 1.2rem; }
       .intro-col__body { font-size: 14px; }
       .intro-checklist li { font-size: 13.5px; gap: 8px; }
-      .search-card { padding: 18px 14px 14px; }
-      .search-card__title { font-size: 1rem; }
       .section-heading { font-size: 1.15rem; }
       .card { padding: 10px; }
       .company-logo {
@@ -1220,10 +1115,6 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     <div class="hero__overlay"></div>
     <div class="hero__content">
       <div class="hero__left">
-        <div class="hero__eyebrow">
-          <span class="hero__eyebrow-dot"></span>
-          Live Aviation Opportunities
-        </div>
         <h1>${escapeHtml(pageData.h1 || pageData.page_title)}</h1>
         <p class="hero__sub">Updated daily from ${airlines.size}+ airlines and operators worldwide. Find your next ${isCabinCrew ? 'cabin crew' : 'cockpit'} role in minutes.</p>
         <a href="/Jobs.html" class="hero__btn">
@@ -1297,50 +1188,6 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       </ul>
     </div>
 
-    <!-- Right column: search card -->
-    <div class="search-col">
-      <div class="search-card">
-        <div class="search-card__title">Search ${escapeHtml(categoryLabel)} Jobs</div>
-        <div class="search-field">
-          <label>Position</label>
-          <select>
-            <option>Any Position</option>
-            ${isCabinCrew
-              ? '<option>Flight Attendant</option><option>Senior Cabin Crew</option><option>Purser</option>'
-              : '<option>Captain</option><option>First Officer</option><option>Senior First Officer</option><option>Cadet</option>'
-            }
-          </select>
-        </div>
-        <div class="search-field">
-          <label>${isCabinCrew ? 'Contract Type' : 'Aircraft Type'}</label>
-          <select>
-            ${isCabinCrew
-              ? '<option>Any Contract Type</option><option>Permanent</option><option>Contract</option><option>Seasonal</option>'
-              : '<option>Any Aircraft Type</option><option>Boeing 737</option><option>Boeing 777</option><option>Airbus A320</option><option>Airbus A330</option><option>Airbus A350</option>'
-            }
-          </select>
-        </div>
-        <div class="search-field">
-          <label>Location</label>
-          <select>
-            <option>Any Location</option>
-            <option>Europe</option>
-            <option>Middle East</option>
-            <option>Asia Pacific</option>
-            <option>North America</option>
-            <option>Africa</option>
-          </select>
-        </div>
-        <a href="/Jobs.html" class="search-card__btn">Search Jobs</a>
-        <div class="search-card__divider"></div>
-        <div style="font-size:12px;color:var(--text-light);text-align:center;">
-          ${jobCount} open position${jobCount !== 1 ? 's' : ''} &middot; Updated today
-        </div>
-      </div>
-      <div class="world-map-wrap">
-        <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=600&q=70" alt="World aviation routes map" loading="lazy">
-      </div>
-    </div>
   </section>
 
   <!-- ── Job cards ── -->

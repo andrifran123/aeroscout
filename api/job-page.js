@@ -738,6 +738,7 @@ ${schemaJson}
     <a href="/" class="nav-logo">AEROSCOUT</a>
     <div class="nav-links">
       <a href="/Jobs.html">Browse Jobs</a>
+      <a href="/blog">Blog</a>
       <a href="/about.html">About</a>
       <a href="/pricing.html">Pricing</a>
       <a href="/login.html">Login</a>

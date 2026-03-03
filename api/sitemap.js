@@ -15,6 +15,7 @@ function getSupabase() {
 const STATIC_PAGES = [
   { loc: '/', changefreq: 'daily', priority: '1.0' },
   { loc: '/Jobs.html', changefreq: 'daily', priority: '0.9' },
+  { loc: '/blog', changefreq: 'daily', priority: '0.8' },
   { loc: '/about.html', changefreq: 'monthly', priority: '0.7' },
   { loc: '/pricing.html', changefreq: 'monthly', priority: '0.7' },
   { loc: '/signup.html', changefreq: 'monthly', priority: '0.6' },
@@ -69,8 +70,8 @@ module.exports = async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
 
-    // Fetch all job IDs from both tables + landing pages
-    const [pilotJobs, cabinJobs, landingPages] = await Promise.all([
+    // Fetch all job IDs from both tables + landing pages + blog posts
+    const [pilotJobs, cabinJobs, landingPages, blogPosts] = await Promise.all([
       fetchJobs('public_verified_jobs'),
       fetchJobs('public_verified_cabin_crew_jobs'),
       getSupabase()
@@ -78,6 +79,11 @@ module.exports = async (req, res) => {
         .select('slug, updated_at')
         .eq('is_active', true)
         .order('display_order', { ascending: true })
+        .then(r => r.data || []),
+      getSupabase()
+        .from('public_blog_posts')
+        .select('slug, published_at')
+        .order('published_at', { ascending: false })
         .then(r => r.data || []),
     ]);
 
@@ -91,6 +97,17 @@ module.exports = async (req, res) => {
       xml += `    <lastmod>${today}</lastmod>\n`;
       xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
       xml += `    <priority>${page.priority}</priority>\n`;
+      xml += '  </url>\n';
+    }
+
+    // Blog posts
+    for (const post of blogPosts) {
+      const lastmod = post.published_at ? post.published_at.split('T')[0] : today;
+      xml += '  <url>\n';
+      xml += `    <loc>https://www.aeroscout.net/blog/${post.slug}</loc>\n`;
+      xml += `    <lastmod>${lastmod}</lastmod>\n`;
+      xml += '    <changefreq>monthly</changefreq>\n';
+      xml += '    <priority>0.7</priority>\n';
       xml += '  </url>\n';
     }
 

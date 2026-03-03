@@ -118,6 +118,7 @@ function renderJobCard(job, isCabinCrew, idx) {
   <div class="attributes">${attrs}</div>
   ${statsHtml}
   ${timeBadgeHtml}
+  <span class="view-details-mobile">View Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
 </a>`;
 }
 
@@ -677,6 +678,11 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     }
     .card:hover .view-details { color: var(--gold); }
 
+    /* Mobile-only View Details link – hidden on desktop, shown at 600px */
+    .view-details-mobile {
+      display: none;
+    }
+
     /* Attributes row – matches Jobs.html */
     .attributes {
       grid-column: 2;
@@ -1071,8 +1077,23 @@ function buildLandingPage(pageData, jobs, relatedPages) {
         padding: 0;
         color: var(--text-light);
       }
-      /* Hide View Details on mobile – entire card is clickable */
+      /* Hide desktop View Details, show mobile version at bottom */
       .apply-col { display: none; }
+      .view-details-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 12px;
+        padding: 8px 0;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--navy);
+        background: var(--cream);
+        border: 1.5px solid var(--border);
+        border-radius: 7px;
+        clear: both;
+      }
       .attributes {
         clear: both;
         display: flex;

@@ -13,64 +13,36 @@ function getSupabase() {
 
 function escapeHtml(str) {
   if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
-
 function stripHtml(html) {
   if (!html) return '';
   return String(html).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 }
-
-function truncate(str, maxLen = 160) {
+function truncate(str, maxLen) {
   if (!str) return '';
   const clean = stripHtml(str);
-  if (clean.length <= maxLen) return clean;
-  return clean.substring(0, maxLen - 3) + '...';
+  return clean.length <= maxLen ? clean : clean.substring(0, maxLen - 3) + '...';
 }
-
 function formatDate(dateStr) {
   if (!dateStr) return '';
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
-
 function readingTime(html) {
-  const text = stripHtml(html);
-  const words = text.split(/\s+/).length;
-  const minutes = Math.max(1, Math.ceil(words / 200));
-  return `${minutes} min read`;
+  const words = stripHtml(html).split(/\s+/).length;
+  return Math.max(1, Math.ceil(words / 200)) + ' min read';
 }
 
-function buildArticleSchema(post, canonicalUrl) {
+function buildArticleSchema(post, url) {
   return {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    'headline': post.title,
-    'description': post.meta_description || truncate(post.content, 160),
-    'url': canonicalUrl,
-    'datePublished': post.published_at,
-    'dateModified': post.published_at,
-    'author': {
-      '@type': 'Organization',
-      'name': post.author || 'AeroScout',
-      'url': 'https://www.aeroscout.net',
-    },
-    'publisher': {
-      '@type': 'Organization',
-      'name': 'AeroScout',
-      'url': 'https://www.aeroscout.net',
-      'logo': {
-        '@type': 'ImageObject',
-        'url': 'https://www.aeroscout.net/images/og-homepage.png',
-      },
-    },
+    '@context': 'https://schema.org', '@type': 'Article',
+    headline: post.title,
+    description: post.meta_description || truncate(post.content, 160),
+    url, datePublished: post.published_at, dateModified: post.published_at,
+    author: { '@type': 'Organization', name: post.author || 'AeroScout', url: 'https://www.aeroscout.net' },
+    publisher: { '@type': 'Organization', name: 'AeroScout', url: 'https://www.aeroscout.net', logo: { '@type': 'ImageObject', url: 'https://www.aeroscout.net/images/og-homepage.png' } },
     ...(post.cover_image_url ? { image: post.cover_image_url } : {}),
-    'mainEntityOfPage': { '@type': 'WebPage', '@id': canonicalUrl },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
   };
 }
 
@@ -78,11 +50,8 @@ function buildPage(post) {
   const canonicalUrl = `https://www.aeroscout.net/blog/${escapeHtml(post.slug)}`;
   const pageTitle = escapeHtml((post.meta_title || post.title) + ' | AeroScout');
   const metaDesc = escapeHtml(post.meta_description || truncate(post.content, 160));
-  const ogImage = post.cover_image_url
-    ? escapeHtml(post.cover_image_url)
-    : 'https://www.aeroscout.net/images/og-homepage.png';
+  const ogImage = post.cover_image_url ? escapeHtml(post.cover_image_url) : 'https://www.aeroscout.net/images/og-homepage.png';
   const schema = buildArticleSchema(post, canonicalUrl);
-  const schemaJson = JSON.stringify(schema, null, 2);
   const tags = (post.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
   const categoryLabel = (post.category || 'article').replace(/-/g, ' ');
 
@@ -90,19 +59,13 @@ function buildPage(post) {
 <html lang="en">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17913572733"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'AW-17913572733');
-  </script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','AW-17913572733');</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${pageTitle}</title>
   <meta name="description" content="${metaDesc}">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="${canonicalUrl}">
-
   <meta property="og:title" content="${pageTitle}">
   <meta property="og:description" content="${metaDesc}">
   <meta property="og:url" content="${canonicalUrl}">
@@ -111,196 +74,171 @@ function buildPage(post) {
   <meta property="og:image" content="${ogImage}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${pageTitle}">
   <meta name="twitter:description" content="${metaDesc}">
   <meta name="twitter:image" content="${ogImage}">
-
-  <script type="application/ld+json">
-${schemaJson}
-  </script>
-
+  <script type="application/ld+json">${JSON.stringify(schema, null, 2)}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f8fafc;
-      color: #1e293b;
-      min-height: 100vh;
+    :root {
+      --navy: #1a2744; --navy-deep: #111c35; --gold: #b8944f; --gold-light: #c8a44e;
+      --gold-pale: #f5eed9; --cream: #faf9f6; --cream-dark: #f2efe8; --white: #ffffff;
+      --text-dark: #1a2744; --text-mid: #4a5568; --text-light: #718096;
+      --border: #e8e3d8; --border-light: #f0ece3; --green: #4caf50; --green-pale: #f0faf0;
+      --shadow-md: 0 4px 12px rgba(26,39,68,0.1), 0 2px 4px rgba(26,39,68,0.06);
     }
+    body { font-family: 'Source Sans 3', system-ui, sans-serif; background: var(--cream); color: var(--text-dark); min-height: 100vh; -webkit-font-smoothing: antialiased; }
     a { text-decoration: none; color: inherit; }
 
-    /* ── Navbar ─────────────────────────────────────── */
-    .nav {
-      background: #0b1426;
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .nav-logo {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 800;
-      font-size: 18px;
-      color: #fff;
-      letter-spacing: 2px;
-    }
-    .nav-links { display: flex; gap: 20px; }
-    .nav-links a {
-      color: rgba(255,255,255,0.8);
-      font-size: 13px;
-      font-weight: 500;
-      transition: color 0.15s;
-    }
-    .nav-links a:hover { color: #fff; }
+    /* ── Nav ────────────────────────────────────────── */
+    .nav { position: sticky; top: 0; z-index: 200; background: rgba(11,28,62,0.95); backdrop-filter: blur(15px); height: 62px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .nav__brand { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.5rem; color: #fff; letter-spacing: -0.5px; }
+    .nav__links { display: flex; gap: 2px; align-items: center; }
+    .nav__links a { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.8); padding: 8px 14px; border-radius: 6px; transition: color 0.15s, background 0.15s; }
+    .nav__links a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .nav__signup { border: 1.5px solid var(--gold) !important; color: #fff !important; font-weight: 600 !important; border-radius: 7px !important; margin-left: 4px !important; }
+    .nav__signup:hover { background: var(--gold) !important; color: var(--navy) !important; }
+    .nav__login { border: 1.5px solid rgba(255,255,255,0.3) !important; color: #fff !important; font-weight: 600 !important; border-radius: 7px !important; }
+    .nav__login:hover { border-color: #fff !important; background: rgba(255,255,255,0.1) !important; }
 
-    /* ── Article header ─────────────────────────────── */
+    /* ── Article hero ───────────────────────────────── */
     .article-hero {
-      background: linear-gradient(135deg, #0b1426 0%, #0b2a6f 100%);
-      padding: 60px 24px 48px;
-      color: #fff;
+      position: relative;
+      overflow: hidden;
+      padding: 64px 40px 52px;
     }
-    .article-hero-inner {
+    .article-hero__bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=1600&q=80');
+      background-size: cover;
+      background-position: center right;
+      z-index: 0;
+    }
+    .article-hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(100deg, rgba(17,28,53,0.97) 0%, rgba(26,39,68,0.93) 50%, rgba(26,39,68,0.6) 80%, rgba(26,39,68,0.4) 100%);
+      z-index: 1;
+    }
+    .article-hero__inner {
+      position: relative;
+      z-index: 2;
       max-width: 780px;
       margin: 0 auto;
     }
     .category-badge {
       display: inline-block;
-      background: rgba(0,194,255,0.15);
-      color: #00C2FF;
+      background: rgba(200,164,78,0.2);
+      color: var(--gold-light);
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      padding: 4px 12px;
+      padding: 4px 14px;
       border-radius: 4px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
     .article-hero h1 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 36px;
-      font-weight: 800;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: #fff;
       line-height: 1.2;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .article-subtitle {
-      font-size: 18px;
-      color: rgba(255,255,255,0.7);
-      font-weight: 300;
-      line-height: 1.5;
-      margin-bottom: 20px;
+      font-size: 17px;
+      color: rgba(255,255,255,0.65);
+      font-weight: 400;
+      line-height: 1.6;
+      margin-bottom: 22px;
+      max-width: 560px;
     }
     .article-meta {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       font-size: 13px;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.45);
     }
-    .article-meta span { display: flex; align-items: center; gap: 4px; }
-    .meta-dot { color: rgba(255,255,255,0.3); }
+    .meta-dot { color: rgba(255,255,255,0.25); }
 
-    /* ── Cover image ────────────────────────────────── */
-    .cover-image-wrap {
-      max-width: 780px;
-      margin: -24px auto 0;
-      padding: 0 24px;
-    }
-    .cover-image-wrap img {
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    }
+    /* ── Stats bar ──────────────────────────────────── */
+    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); background: linear-gradient(90deg, var(--gold-light) 0%, var(--gold) 100%); }
+    .stats-bar__item { padding: 14px 20px; text-align: center; border-right: 1px solid rgba(255,255,255,0.2); display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .stats-bar__item:last-child { border-right: none; }
+    .stats-bar__icon { margin-bottom: 2px; color: rgba(255,255,255,0.85); }
+    .stats-bar__value { font-size: 20px; font-weight: 700; color: #fff; line-height: 1; }
+    .stats-bar__label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.82); text-transform: uppercase; letter-spacing: 0.1em; }
 
     /* ── Article body ───────────────────────────────── */
     .article-container {
       max-width: 780px;
       margin: 0 auto;
-      padding: 40px 24px 60px;
+      padding: 48px 40px 64px;
     }
     .article-content {
-      font-size: 16px;
-      line-height: 1.8;
-      color: #334155;
+      font-size: 16.5px;
+      line-height: 1.85;
+      color: var(--text-mid);
     }
     .article-content h2 {
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Playfair Display', Georgia, serif;
       font-size: 26px;
       font-weight: 700;
-      color: #0f172a;
-      margin: 40px 0 16px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid #e2e8f0;
+      color: var(--navy);
+      margin: 44px 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
     }
     .article-content h3 {
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Playfair Display', Georgia, serif;
       font-size: 20px;
       font-weight: 600;
-      color: #1e293b;
-      margin: 32px 0 12px;
+      color: var(--text-dark);
+      margin: 36px 0 12px;
     }
     .article-content p { margin-bottom: 20px; }
-    .article-content ul, .article-content ol {
-      margin: 0 0 20px 24px;
-    }
-    .article-content li {
-      margin-bottom: 8px;
-      line-height: 1.7;
-    }
+    .article-content ul, .article-content ol { margin: 0 0 20px 24px; }
+    .article-content li { margin-bottom: 8px; line-height: 1.75; }
     .article-content blockquote {
-      border-left: 4px solid #0b2a6f;
-      background: #f1f5f9;
-      padding: 16px 20px;
-      margin: 24px 0;
-      border-radius: 0 8px 8px 0;
+      border-left: 4px solid var(--gold);
+      background: var(--gold-pale);
+      padding: 18px 22px;
+      margin: 28px 0;
+      border-radius: 0 10px 10px 0;
       font-style: italic;
-      color: #475569;
+      color: var(--text-mid);
     }
-    .article-content strong { color: #0f172a; }
-    .article-content a {
-      color: #0b2a6f;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-    .article-content a:hover { color: #1b66ff; }
-    .article-content table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 24px 0;
-      font-size: 14px;
-    }
-    .article-content table th {
-      background: #0b1426;
-      color: #fff;
-      padding: 10px 14px;
-      text-align: left;
-      font-weight: 600;
-    }
-    .article-content table td {
-      padding: 10px 14px;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    .article-content table tr:nth-child(even) { background: #f8fafc; }
+    .article-content strong { color: var(--text-dark); }
+    .article-content a { color: var(--navy); text-decoration: underline; text-underline-offset: 2px; }
+    .article-content a:hover { color: var(--gold); }
+    .article-content table { width: 100%; border-collapse: collapse; margin: 28px 0; font-size: 14.5px; }
+    .article-content table th { background: var(--navy); color: #fff; padding: 11px 16px; text-align: left; font-weight: 600; }
+    .article-content table th:first-child { border-radius: 8px 0 0 0; }
+    .article-content table th:last-child { border-radius: 0 8px 0 0; }
+    .article-content table td { padding: 11px 16px; border-bottom: 1px solid var(--border); }
+    .article-content table tr:nth-child(even) { background: var(--cream); }
 
-    /* ── Tags ────────────────────────────────────────── */
+    /* ── Tags ─────────────────────────────────────── */
     .tags-section {
-      margin-top: 40px;
+      margin-top: 44px;
       padding-top: 24px;
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid var(--border);
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
     .tag {
-      background: #e3f2fd;
-      color: #1565c0;
-      padding: 4px 12px;
+      background: var(--gold-pale);
+      color: var(--gold);
+      padding: 4px 14px;
       border-radius: 20px;
       font-size: 12px;
       font-weight: 600;
@@ -308,73 +246,83 @@ ${schemaJson}
 
     /* ── CTA Banner ──────────────────────────────────── */
     .cta-banner {
-      background: #0b1426;
+      background: var(--navy);
       border-radius: 12px;
-      padding: 32px 28px;
-      margin-top: 40px;
+      padding: 36px 32px;
+      margin-top: 48px;
       text-align: center;
     }
     .cta-banner h2 {
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Playfair Display', Georgia, serif;
       color: #fff;
-      font-size: 22px;
-      margin-bottom: 8px;
+      font-size: 24px;
+      margin-bottom: 10px;
     }
     .cta-banner p {
-      color: rgba(255,255,255,0.7);
-      font-size: 14px;
-      margin-bottom: 20px;
+      color: rgba(255,255,255,0.6);
+      font-size: 15px;
+      margin-bottom: 22px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
     }
     .cta-btn {
-      display: inline-block;
-      background: #2563eb;
-      color: #fff;
-      padding: 12px 28px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 14px;
-      transition: background 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--gold-light);
+      color: var(--navy);
+      padding: 13px 30px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      transition: background 0.18s, transform 0.14s;
+      box-shadow: 0 4px 16px rgba(184,148,79,0.35);
     }
-    .cta-btn:hover { background: #1d4ed8; }
+    .cta-btn:hover { background: #d4a94a; transform: translateY(-2px); }
 
-    /* ── Footer ──────────────────────────────────────── */
-    .footer {
-      text-align: center;
-      padding: 24px;
-      color: #94a3b8;
-      font-size: 12px;
-    }
-    .footer a { color: #64748b; }
-    .footer a:hover { color: #1e293b; }
+    /* ── Footer ───────────────────────────────────── */
+    .footer { border-top: 1px solid var(--border); text-align: center; padding: 28px 40px; color: var(--text-light); font-size: 13px; }
+    .footer a { color: var(--text-mid); }
+    .footer a:hover { color: var(--navy); }
 
-    /* ── Responsive ──────────────────────────────────── */
+    /* ── Responsive ───────────────────────────────── */
     @media (max-width: 768px) {
-      .article-hero { padding: 32px 16px 28px; }
-      .article-hero h1 { font-size: 24px; }
-      .article-subtitle { font-size: 15px; }
+      .nav { padding: 0 16px; height: 54px; }
+      .nav__brand { font-size: 1.25rem; }
+      .nav__links a { font-size: 12px; padding: 6px 8px; }
+      .nav__signup, .nav__login { display: none !important; }
+      .article-hero { padding: 36px 20px 32px; }
+      .article-hero h1 { font-size: 1.5rem; }
+      .article-subtitle { font-size: 14px; }
       .article-meta { flex-wrap: wrap; gap: 8px; font-size: 12px; }
-      .article-container { padding: 24px 16px 40px; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .article-container { padding: 28px 16px 40px; }
       .article-content { font-size: 15px; }
-      .article-content h2 { font-size: 22px; margin: 32px 0 12px; }
-      .article-content h3 { font-size: 18px; margin: 24px 0 10px; }
-      .cover-image-wrap { padding: 0 16px; margin-top: -16px; }
+      .article-content h2 { font-size: 22px; margin: 32px 0 14px; }
+      .article-content h3 { font-size: 18px; }
+      .footer { padding: 20px 16px; }
     }
   </style>
 </head>
 <body>
   <nav class="nav">
-    <a href="/" class="nav-logo">AEROSCOUT</a>
-    <div class="nav-links">
+    <a href="/" class="nav__brand">AEROSCOUT</a>
+    <div class="nav__links">
       <a href="/Jobs.html">Browse Jobs</a>
       <a href="/blog">Blog</a>
       <a href="/about.html">About</a>
       <a href="/pricing.html">Pricing</a>
-      <a href="/login.html">Login</a>
+      <a href="/login.html" class="nav__login">Login &rsaquo;</a>
+      <a href="/signup.html" class="nav__signup">Sign Up For Free</a>
     </div>
   </nav>
 
   <div class="article-hero">
-    <div class="article-hero-inner">
+    <div class="article-hero__bg"></div>
+    <div class="article-hero__overlay"></div>
+    <div class="article-hero__inner">
       <span class="category-badge">${escapeHtml(categoryLabel)}</span>
       <h1>${escapeHtml(post.title)}</h1>
       ${post.subtitle ? `<p class="article-subtitle">${escapeHtml(post.subtitle)}</p>` : ''}
@@ -388,10 +336,28 @@ ${schemaJson}
     </div>
   </div>
 
-  ${post.cover_image_url ? `
-  <div class="cover-image-wrap">
-    <img src="${escapeHtml(post.cover_image_url)}" alt="${escapeHtml(post.title)}">
-  </div>` : ''}
+  <div class="stats-bar">
+    <div class="stats-bar__item">
+      <div class="stats-bar__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <div class="stats-bar__value">Report</div>
+      <div class="stats-bar__label">${escapeHtml(categoryLabel)}</div>
+    </div>
+    <div class="stats-bar__item">
+      <div class="stats-bar__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+      <div class="stats-bar__value">850</div>
+      <div class="stats-bar__label">Airlines & Operators</div>
+    </div>
+    <div class="stats-bar__item">
+      <div class="stats-bar__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div class="stats-bar__value">24hr</div>
+      <div class="stats-bar__label">Data Refresh</div>
+    </div>
+    <div class="stats-bar__item">
+      <div class="stats-bar__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+      <div class="stats-bar__value">Global</div>
+      <div class="stats-bar__label">Coverage</div>
+    </div>
+  </div>
 
   <main class="article-container">
     <div class="article-content">
@@ -403,12 +369,15 @@ ${schemaJson}
     <div class="cta-banner">
       <h2>Find Your Next Aviation Role</h2>
       <p>Browse the largest pilot and cabin crew job database with real-time listings from 850+ airlines worldwide.</p>
-      <a href="/Jobs.html" class="cta-btn">Browse All Jobs</a>
+      <a href="/Jobs.html" class="cta-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Browse All Jobs
+      </a>
     </div>
   </main>
 
   <footer class="footer">
-    <p>&copy; ${new Date().getFullYear()} AeroScout. <a href="/terms.html">Terms</a> &middot; <a href="/privacy.html">Privacy</a></p>
+    <p>&copy; ${new Date().getFullYear()} AeroScout. <a href="/terms.html">Terms</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/refund.html">Refund</a></p>
   </footer>
 
   <script defer src="/_vercel/insights/script.js"></script>
@@ -424,13 +393,13 @@ function build404() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Post Not Found | AeroScout</title>
   <meta name="robots" content="noindex">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; color: #1e293b; }
-    h1 { font-family: 'Outfit', sans-serif; font-size: 28px; margin-bottom: 8px; }
-    p { color: #64748b; margin-bottom: 20px; }
-    a { background: #0b2a6f; color: white; padding: 10px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; }
-    a:hover { background: #081a45; }
+    body { font-family: 'Source Sans 3', sans-serif; background: #faf9f6; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; color: #1a2744; }
+    h1 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 8px; }
+    p { color: #718096; margin-bottom: 24px; }
+    a { display: inline-flex; align-items: center; gap: 8px; background: #c8a44e; color: #1a2744; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 15px; transition: background 0.15s; box-shadow: 0 4px 16px rgba(184,148,79,0.3); }
+    a:hover { background: #d4a94a; }
   </style>
 </head>
 <body>
@@ -442,12 +411,9 @@ function build404() {
 }
 
 module.exports = async (req, res) => {
-  if (req.method !== 'GET') {
-    return res.status(405).end();
-  }
+  if (req.method !== 'GET') return res.status(405).end();
 
   const { slug } = req.query;
-
   if (!slug) {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.status(404).send(build404());
@@ -466,11 +432,9 @@ module.exports = async (req, res) => {
       return res.status(404).send(build404());
     }
 
-    const html = buildPage(data);
-
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
-    return res.status(200).send(html);
+    return res.status(200).send(buildPage(data));
   } catch (err) {
     console.error('blog-post error:', err);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');

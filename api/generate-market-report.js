@@ -128,10 +128,10 @@ async function gatherMarketData(region) {
   };
 }
 
-// ── Generate draft with Gemini 2.5 Flash ───────────────────────────────────────
+// ── Generate draft with Gemini 2.5 Flash via OpenRouter ─────────────────────────
 
 async function generateWithGemini(marketData, region, reportType) {
-  const apiKey = process.env.GEMINI_API_KEY || 'YOUR_GEMINI_API_KEY_HERE';
+  const apiKey = process.env.OPENROUTER_API_KEY || 'YOUR_OPENROUTER_API_KEY_HERE';
 
   const regionLabel = region && region !== 'global' ? region : 'Global';
   const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -183,28 +183,31 @@ Use semantic HTML: <h2>, <h3>, <p>, <ul>, <li>, <strong>, <table>, <blockquote>.
 
 Do NOT use markdown. Output clean HTML only.`;
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: 8192 },
-      }),
-    }
-  );
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+      'HTTP-Referer': 'https://www.aeroscout.net',
+      'X-Title': 'AeroScout Market Reports',
+    },
+    body: JSON.stringify({
+      model: 'google/gemini-2.5-flash',
+      max_tokens: 8192,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Gemini API error ${response.status}: ${errorText}`);
+    throw new Error(`OpenRouter API error ${response.status}: ${errorText}`);
   }
 
   const result = await response.json();
-  const content = result.candidates?.[0]?.content?.parts?.[0]?.text;
+  const content = result.choices?.[0]?.message?.content;
 
   if (!content) {
-    throw new Error('Gemini returned empty content');
+    throw new Error('OpenRouter returned empty content');
   }
 
   // Strip any accidental markdown code fences

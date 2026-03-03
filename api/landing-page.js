@@ -194,7 +194,7 @@ function buildLandingPage(pageData, jobs, relatedPages) {
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -234,34 +234,24 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       position: sticky;
       top: 0;
       z-index: 200;
-      background: var(--white);
+      background: rgba(11, 28, 62, 0.95);
+      backdrop-filter: blur(15px);
       height: 62px;
       padding: 0 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 1px 4px rgba(26,39,68,0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     .nav__brand {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-weight: 700;
-      font-size: 1.3rem;
-      color: var(--navy);
-      letter-spacing: 0.01em;
+      font-family: 'Outfit', 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      text-decoration: none;
       display: flex;
       align-items: center;
-      gap: 10px;
-    }
-    .nav__logo-icon {
-      width: 34px;
-      height: 34px;
-      background: var(--navy);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
     }
     .nav__links {
       display: flex;
@@ -271,27 +261,27 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     .nav__links a {
       font-size: 14px;
       font-weight: 500;
-      color: var(--text-mid);
+      color: rgba(255, 255, 255, 0.8);
       padding: 8px 14px;
       border-radius: 6px;
       transition: color 0.15s, background 0.15s;
     }
-    .nav__links a:hover { color: var(--navy); background: var(--cream-dark); }
+    .nav__links a:hover { color: #ffffff; background: rgba(255, 255, 255, 0.1); }
     .nav__signup {
       border: 1.5px solid var(--gold) !important;
-      color: var(--navy) !important;
+      color: #ffffff !important;
       font-weight: 600 !important;
       border-radius: 7px !important;
       margin-left: 4px !important;
     }
-    .nav__signup:hover { background: var(--gold-pale) !important; color: var(--navy) !important; }
+    .nav__signup:hover { background: var(--gold) !important; color: var(--navy) !important; }
     .nav__login {
-      border: 1.5px solid var(--border) !important;
-      color: var(--navy) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+      color: #ffffff !important;
       font-weight: 600 !important;
       border-radius: 7px !important;
     }
-    .nav__login:hover { border-color: var(--navy) !important; background: transparent !important; }
+    .nav__login:hover { border-color: #ffffff !important; background: rgba(255, 255, 255, 0.1) !important; }
 
     /* ── Hero ──────────────────────────────────────────────────────────────── */
     .hero {
@@ -956,7 +946,7 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     /* ── Responsive: Large mobile (600px) ─────────────────────────────────── */
     /* Matches Jobs.html 768px: switches from grid to block + float layout */
     @media (max-width: 600px) {
-      .nav__signup, .nav__login { font-size: 12px !important; padding: 6px 10px !important; }
+      .nav__signup, .nav__login { font-size: 12px !important; padding: 6px 10px !important; color: #ffffff !important; }
       .hero h1 { font-size: 1.7rem; }
       .hero__sub { font-size: 14.5px; max-width: 320px; }
       .hero__btn { padding: 11px 22px; font-size: 14px; }
@@ -1062,8 +1052,7 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     /* ── Responsive: Extra small mobile (380px) ────────────────────────────── */
     @media (max-width: 380px) {
       .nav { padding: 0 12px; }
-      .nav__brand { font-size: 1.1rem; gap: 8px; }
-      .nav__logo-icon { width: 30px; height: 30px; }
+      .nav__brand { font-size: 1.1rem; }
       .nav__signup { display: none !important; }
       .hero { min-height: 300px; }
       .hero__content { padding: 36px 14px; }
@@ -1106,14 +1095,7 @@ function buildLandingPage(pageData, jobs, relatedPages) {
 
   <!-- ── Nav ── -->
   <nav class="nav">
-    <a href="/" class="nav__brand">
-      <div class="nav__logo-icon">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c8a44e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19.5 2.5S18 2 16.5 3.5L13 7 4.8 5.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
-        </svg>
-      </div>
-      AeroScout
-    </a>
+    <a href="/" class="nav__brand">AEROSCOUT</a>
     <div class="nav__links">
       <a href="/Jobs.html">Browse Jobs</a>
       <a href="/blog">Blog</a>

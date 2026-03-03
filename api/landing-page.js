@@ -472,16 +472,21 @@ function buildLandingPage(pageData, jobs, relatedPages) {
     }
     .slideshow__track {
       position: relative;
+      aspect-ratio: 4 / 3;
+      background: #0d1b2a;
     }
     .slideshow__slide {
       display: none;
+      position: absolute;
+      inset: 0;
     }
     .slideshow__slide.active {
       display: block;
     }
     .slideshow__slide img {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
       display: block;
     }
     .slideshow__dots {

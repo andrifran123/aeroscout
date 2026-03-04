@@ -1256,7 +1256,7 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
         <p>Get instant alerts for new positions matching your qualifications, aircraft type and location preferences.</p>
         <div class="cta__actions">
           <a href="/signup.html" class="cta__primary">Create Free Account</a>
-          <a href="/Jobs.html" class="cta__secondary">Browse All ${jobCount} Jobs</a>
+          <a href="/Jobs.html" class="cta__secondary">Browse All ${jobCount} ${escapeHtml(pageData.h1 || 'Jobs')}</a>
         </div>
       </div>
     </div>

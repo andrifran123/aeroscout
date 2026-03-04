@@ -140,9 +140,9 @@ function buildItemListSchema(jobs, isCabinCrew) {
 
 // ── Landing page HTML ────────────────────────────────────────────────────────
 
-function buildLandingPage(pageData, jobs, relatedPages) {
+function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
   const isCabinCrew = pageData.filter_table === 'verified_cabin_crew_jobs';
-  const jobCount = jobs.length;
+  const jobCount = totalJobCount || jobs.length;
   let faqs = [];
   try { faqs = typeof pageData.faq_json === 'string' ? JSON.parse(pageData.faq_json) : (pageData.faq_json || []); } catch(e) { faqs=[]; }
 
@@ -1209,10 +1209,10 @@ function buildLandingPage(pageData, jobs, relatedPages) {
       }
     </div>
 
-    ${jobs.length > 0 ? `
+    ${jobs.length > 0 && jobCount > jobs.length ? `
     <div class="browse-all-wrap">
       <a href="/Jobs.html" class="browse-all-btn">
-        Browse All Jobs
+        View All ${jobCount} ${escapeHtml(pageData.h1 || 'Jobs')}
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
     </div>` : ''}
@@ -1355,7 +1355,22 @@ module.exports = async (req, res) => {
 
     const isCabinCrew = pageData.filter_table === 'verified_cabin_crew_jobs';
     const table = isCabinCrew ? 'public_verified_cabin_crew_jobs' : 'public_verified_jobs';
-    let query = getSupabase().from(table).select('*').order('verified_at', { ascending: false }).limit(1000);
+    // Get total count for stats/SEO
+    let countQuery = getSupabase().from(table).select('*', { count: 'exact', head: true });
+    if (pageData.filter_column && pageData.filter_value && pageData.filter_column !== '_all') {
+      if (pageData.filter_value === 'true') countQuery = countQuery.eq(pageData.filter_column, true);
+      else if (pageData.filter_value === 'false') countQuery = countQuery.eq(pageData.filter_column, false);
+      else countQuery = countQuery.eq(pageData.filter_column, pageData.filter_value);
+    }
+    if (pageData.filter_column2 && pageData.filter_value2) {
+      if (pageData.filter_value2 === 'true') countQuery = countQuery.eq(pageData.filter_column2, true);
+      else if (pageData.filter_value2 === 'false') countQuery = countQuery.eq(pageData.filter_column2, false);
+      else countQuery = countQuery.eq(pageData.filter_column2, pageData.filter_value2);
+    }
+    const { count: totalJobCount } = await countQuery;
+
+    // Get preview jobs (20 most recent) for card display
+    let query = getSupabase().from(table).select('*').order('verified_at', { ascending: false }).limit(20);
 
     if (pageData.filter_column && pageData.filter_value && pageData.filter_column !== '_all') {
       if (pageData.filter_value === 'true') query = query.eq(pageData.filter_column, true);
@@ -1379,7 +1394,7 @@ module.exports = async (req, res) => {
       relatedPages = rp || [];
     }
 
-    const html = buildLandingPage(pageData, jobs || [], relatedPages);
+    const html = buildLandingPage(pageData, jobs || [], relatedPages, totalJobCount || 0);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).send(html);

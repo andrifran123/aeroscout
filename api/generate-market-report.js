@@ -41,27 +41,43 @@ async function gatherMarketData(region) {
   const totalPilotJobs = pilotCountRes.count || 0;
   const totalCabinJobs = cabinCountRes.count || 0;
 
-  // Fetch sample of jobs for detailed stats (aircraft, salary, etc.)
-  let pilotQuery = supabase
-    .from('public_verified_jobs')
-    .select('title, airline, location, aircraft, rank, salary_usd, visa_sponsor, direct_entry, type_rated, verified_at');
-
-  if (region && region !== 'global') {
-    pilotQuery = pilotQuery.ilike('location', `%${region}%`);
+  // Fetch ALL jobs for accurate stats (paginate to bypass Supabase 1000-row default)
+  async function fetchAll(baseQuery) {
+    const all = [];
+    let page = 0;
+    const pageSize = 1000;
+    while (true) {
+      const { data } = await baseQuery.range(page * pageSize, (page + 1) * pageSize - 1);
+      if (!data || data.length === 0) break;
+      all.push(...data);
+      if (data.length < pageSize) break;
+      page++;
+    }
+    return all;
   }
 
-  const { data: pilotJobs } = await pilotQuery.order('verified_at', { ascending: false }).limit(1000);
+  let pilotBaseQuery = supabase
+    .from('public_verified_jobs')
+    .select('title, airline, location, aircraft, rank, salary_usd, visa_sponsor, direct_entry, type_rated, verified_at')
+    .order('verified_at', { ascending: false });
+
+  if (region && region !== 'global') {
+    pilotBaseQuery = pilotBaseQuery.ilike('location', `%${region}%`);
+  }
+
+  const pilotJobs = await fetchAll(pilotBaseQuery);
 
   // Fetch cabin crew jobs
-  let cabinQuery = supabase
+  let cabinBaseQuery = supabase
     .from('public_verified_cabin_crew_jobs')
-    .select('title, airline, location, position, salary_usd, visa_sponsor, contract_type, verified_at');
+    .select('title, airline, location, position, salary_usd, visa_sponsor, contract_type, verified_at')
+    .order('verified_at', { ascending: false });
 
   if (region && region !== 'global') {
-    cabinQuery = cabinQuery.ilike('location', `%${region}%`);
+    cabinBaseQuery = cabinBaseQuery.ilike('location', `%${region}%`);
   }
 
-  const { data: cabinJobs } = await cabinQuery.order('verified_at', { ascending: false }).limit(1000);
+  const cabinJobs = await fetchAll(cabinBaseQuery);
 
   // Compute stats
   const pilots = pilotJobs || [];

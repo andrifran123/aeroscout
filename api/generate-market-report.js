@@ -28,7 +28,20 @@ function slugify(str) {
 async function gatherMarketData(region) {
   const supabase = getSupabase();
 
-  // Fetch pilot jobs
+  // Get actual total counts first
+  let pilotCountQuery = supabase.from('public_verified_jobs').select('*', { count: 'exact', head: true });
+  let cabinCountQuery = supabase.from('public_verified_cabin_crew_jobs').select('*', { count: 'exact', head: true });
+
+  if (region && region !== 'global') {
+    pilotCountQuery = pilotCountQuery.ilike('location', `%${region}%`);
+    cabinCountQuery = cabinCountQuery.ilike('location', `%${region}%`);
+  }
+
+  const [pilotCountRes, cabinCountRes] = await Promise.all([pilotCountQuery, cabinCountQuery]);
+  const totalPilotJobs = pilotCountRes.count || 0;
+  const totalCabinJobs = cabinCountRes.count || 0;
+
+  // Fetch sample of jobs for detailed stats (aircraft, salary, etc.)
   let pilotQuery = supabase
     .from('public_verified_jobs')
     .select('title, airline, location, aircraft, rank, salary_usd, visa_sponsor, direct_entry, type_rated, verified_at');
@@ -37,7 +50,7 @@ async function gatherMarketData(region) {
     pilotQuery = pilotQuery.ilike('location', `%${region}%`);
   }
 
-  const { data: pilotJobs } = await pilotQuery.order('verified_at', { ascending: false }).limit(500);
+  const { data: pilotJobs } = await pilotQuery.order('verified_at', { ascending: false }).limit(1000);
 
   // Fetch cabin crew jobs
   let cabinQuery = supabase
@@ -48,13 +61,13 @@ async function gatherMarketData(region) {
     cabinQuery = cabinQuery.ilike('location', `%${region}%`);
   }
 
-  const { data: cabinJobs } = await cabinQuery.order('verified_at', { ascending: false }).limit(500);
+  const { data: cabinJobs } = await cabinQuery.order('verified_at', { ascending: false }).limit(1000);
 
   // Compute stats
   const pilots = pilotJobs || [];
   const cabin = cabinJobs || [];
 
-  const totalJobs = pilots.length + cabin.length;
+  const totalJobs = totalPilotJobs + totalCabinJobs;
 
   // Airlines hiring
   const airlines = new Set();
@@ -111,8 +124,8 @@ async function gatherMarketData(region) {
   const directPercent = pilots.length > 0 ? Math.round((directCount / pilots.length) * 100) : 0;
 
   return {
-    totalPilotJobs: pilots.length,
-    totalCabinJobs: cabin.length,
+    totalPilotJobs,
+    totalCabinJobs,
     totalJobs,
     airlinesHiring: airlines.size,
     topAircraft,

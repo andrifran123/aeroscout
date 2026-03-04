@@ -1355,7 +1355,7 @@ module.exports = async (req, res) => {
 
     const isCabinCrew = pageData.filter_table === 'verified_cabin_crew_jobs';
     const table = isCabinCrew ? 'public_verified_cabin_crew_jobs' : 'public_verified_jobs';
-    let query = getSupabase().from(table).select('*').order('verified_at', { ascending: false }).limit(100);
+    let query = getSupabase().from(table).select('*').order('verified_at', { ascending: false }).limit(1000);
 
     if (pageData.filter_column && pageData.filter_value && pageData.filter_column !== '_all') {
       if (pageData.filter_value === 'true') query = query.eq(pageData.filter_column, true);

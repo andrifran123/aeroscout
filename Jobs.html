@@ -4390,7 +4390,7 @@
     // Fetch job count from API endpoint
     async function fetchJobCount(jobType = 'pilot') {
       try {
-        const response = await fetch(`/api/get-job-count?type=${jobType}`);
+        const response = await fetch(`/api/jobs-listing?action=count&type=${jobType}`);
         if (!response.ok) {
           console.error('Failed to fetch job count:', response.statusText);
           return null;

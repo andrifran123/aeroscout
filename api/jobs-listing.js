@@ -218,6 +218,29 @@ module.exports = async (req, res) => {
     return res.status(405).end();
   }
 
+  // Job count endpoint: /api/jobs-listing?action=count&type=pilot|cabin_crew
+  if (req.query.action === 'count') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    try {
+      const jobType = req.query.type || 'pilot';
+      const tableName = jobType === 'cabin_crew' ? 'public_verified_cabin_crew_jobs' : 'public_verified_jobs';
+      const { count, error } = await getSupabase()
+        .from(tableName)
+        .select('*', { count: 'exact', head: true });
+      if (error) return res.status(500).json({ error: 'Failed to fetch job count' });
+      const now = new Date();
+      return res.status(200).json({
+        count: count || 0,
+        gmtTime: now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'GMT' }) + ' GMT',
+        timestamp: now.toISOString(),
+        jobType
+      });
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
   try {
     const [pilotJobs, cabinCrewJobs] = await Promise.all([
       fetchAllJobs('public_verified_jobs', 'id, title, airline, location, aircraft, rank, verified_at, logo_url, salary_usd'),

@@ -2,6 +2,10 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/blog",
+      "destination": "/api/blog-listing"
+    },
+    {
       "source": "/blog/:slug",
       "destination": "/api/blog-post?slug=:slug"
     },

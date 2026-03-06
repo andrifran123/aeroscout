@@ -3265,6 +3265,7 @@
                 <option value="">Any location</option>
                 <option>United States</option>
                 <option>Europe</option>
+                <option>United Kingdom</option>
                 <option>Middle East</option>
                 <option>Asia</option>
                 <option>Oceania</option>
@@ -3342,7 +3343,7 @@
               <!-- Profile Summary Card -->
               <div class="profile-summary">
                 <span class="profile-label">Your Experience</span>
-                <span class="profile-val" id="profileDisplay">1,200h Total · CPL · A320</span>
+                <span class="profile-val" id="profileDisplay">Set up your profile to see eligibility</span>
                 <div class="eligible-toggle">
                   <input type="checkbox" id="eligibleOnly">
                   <label for="eligibleOnly">Show eligible only <span class="premium-tag" id="eligibleProTag" style="background:#3b82f6;color:#fff;padding:1px 5px;border-radius:6px;font-size:8px;margin-left:2px;vertical-align:middle;">Pro</span></label>
@@ -3395,16 +3396,16 @@
               <!-- Type Preference (Pilot only) -->
               <div class="section-title pilot-filter" id="typePrefTitle">Type Preference</div>
               <div class="tile-group pilot-filter" id="typePrefGroup">
-                <div class="filter-tile" data-filter="ntr" id="ntrTile">NTR</div>
-                <div class="filter-tile" data-filter="typed" id="typedTile">Type-Rated</div>
+                <div class="filter-tile pilot-filter" data-filter="ntr" id="ntrTile">NTR</div>
+                <div class="filter-tile pilot-filter" data-filter="typed" id="typedTile">Type-Rated</div>
               </div>
 
               <!-- License (Pilot only) -->
               <div class="section-title pilot-filter" id="licenseTitle">License</div>
               <div class="tile-group pilot-filter" id="licenseGroup">
-                <div class="filter-tile" data-filter="atpl" id="atplTile">ATPL</div>
-                <div class="filter-tile" data-filter="cpl" id="cplTile">CPL</div>
-                <div class="filter-tile" data-filter="fatpl" id="fatplTile">fATPL</div>
+                <div class="filter-tile pilot-filter" data-filter="atpl" id="atplTile">ATPL</div>
+                <div class="filter-tile pilot-filter" data-filter="cpl" id="cplTile">CPL</div>
+                <div class="filter-tile pilot-filter" data-filter="fatpl" id="fatplTile">fATPL</div>
               </div>
 
               <!-- Operator Type -->
@@ -4101,15 +4102,16 @@
     let currentFilteredJobs = [];
 
     // Pilot's profile (loaded from Supabase when logged in)
+    // Defaults to empty/zero so eligibility shows "Set up your profile" instead of fake data
     let PILOT_PROFILE = {
-      totalHours: 1200,
-      picHours: 400,
+      totalHours: 0,
+      picHours: 0,
       jetTime: 0,
       multiEngineTime: 0,
-      typeRatings: ['A320'],  // Aircraft types the pilot is rated on
-      typeTime: { 'A320': 200 },  // Hours on each type
-      license: 'CPL',  // Current license: PPL < CPL < ATPL
-      workRights: ['EU', 'USA']  // Countries where pilot can legally work
+      typeRatings: [],
+      typeTime: {},
+      license: '',
+      workRights: []
     };
 
     // License hierarchy (higher = more senior)
@@ -4128,15 +4130,22 @@
         'Denmark', 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Italy',
         'Kosovo', 'Latvia', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Malta', 'Moldova', 'Monaco', 'Montenegro',
         'Netherlands', 'North Macedonia', 'Norway', 'Poland', 'Portugal', 'Romania', 'Russia', 'San Marino', 'Serbia',
-        'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland', 'Turkey', 'Ukraine', 'United Kingdom', 'UK', 'Britain',
-        'Vatican', 'Amsterdam', 'Athens', 'Barcelona', 'Berlin', 'Brussels', 'Budapest', 'Copenhagen', 'Dublin', 'Edinburgh',
-        'Frankfurt', 'Geneva', 'Hamburg', 'Helsinki', 'Lisbon', 'London', 'Madrid', 'Milan', 'Munich', 'Oslo', 'Paris',
-        'Prague', 'Rome', 'Stockholm', 'Vienna', 'Warsaw', 'Zurich', 'Manchester', 'Birmingham', 'Glasgow', 'Leeds',
-        'Liverpool', 'Newcastle', 'Bristol', 'Cardiff', 'Belfast', 'Lyon', 'Marseille', 'Nice', 'Toulouse', 'Cologne',
+        'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland', 'Turkey', 'Ukraine',
+        'Vatican', 'Amsterdam', 'Athens', 'Barcelona', 'Berlin', 'Brussels', 'Budapest', 'Copenhagen', 'Dublin',
+        'Frankfurt', 'Geneva', 'Hamburg', 'Helsinki', 'Lisbon', 'Madrid', 'Milan', 'Munich', 'Oslo', 'Paris',
+        'Prague', 'Rome', 'Stockholm', 'Vienna', 'Warsaw', 'Zurich', 'Lyon', 'Marseille', 'Nice', 'Toulouse', 'Cologne',
         'Dusseldorf', 'Stuttgart', 'Hannover', 'Dresden', 'Leipzig', 'Nuremberg', 'Palma', 'Malaga', 'Seville', 'Valencia',
         'Bilbao', 'Alicante', 'Tenerife', 'Gran Canaria', 'Faro', 'Porto', 'Naples', 'Venice', 'Florence', 'Turin', 'Bologna',
         'Gothenburg', 'Malmo', 'Stavanger', 'Bergen', 'Reykjavik', 'Riga', 'Tallinn', 'Vilnius', 'Krakow', 'Gdansk',
         'Bucharest', 'Sofia', 'Zagreb', 'Ljubljana', 'Belgrade', 'Thessaloniki', 'Heraklion', 'Rhodes', 'Corfu'
+      ],
+      'United Kingdom': [
+        'United Kingdom', 'UK', 'Britain', 'England', 'Scotland', 'Wales', 'Northern Ireland',
+        'London', 'Manchester', 'Birmingham', 'Glasgow', 'Edinburgh', 'Leeds', 'Liverpool', 'Newcastle',
+        'Bristol', 'Cardiff', 'Belfast', 'Luton', 'Stansted', 'Gatwick', 'Heathrow', 'East Midlands',
+        'Aberdeen', 'Southampton', 'Nottingham', 'Sheffield', 'Leicester', 'Coventry', 'Derby', 'Exeter',
+        'Norwich', 'Cambridge', 'Oxford', 'Brighton', 'Bournemouth', 'Doncaster', 'Jersey', 'Guernsey',
+        'Isle of Man'
       ],
       'Middle East': [
         'United Arab Emirates', 'UAE', 'Dubai', 'Abu Dhabi', 'Sharjah', 'Saudi Arabia', 'Riyadh', 'Jeddah', 'Dammam',
@@ -4205,7 +4214,8 @@
 
     // Map region names to location_bucket prefixes
     const BUCKET_REGION_MAP = {
-      'Europe': /^(GB|FR|DE|IT|ES|NL|BE|CH|AT|PT|SE|NO|DK|FI|IS|PL|CZ|HU|RO|BG|HR|RS|SI|SK|EE|LV|LT|CY|MT|LU|GR|IE|AL|BA|ME|MK|XK|MD|TR|UA|EUROPE|EU)(_|$)/,
+      'Europe': /^(FR|DE|IT|ES|NL|BE|CH|AT|PT|SE|NO|DK|FI|IS|PL|CZ|HU|RO|BG|HR|RS|SI|SK|EE|LV|LT|CY|MT|LU|GR|IE|AL|BA|ME|MK|XK|MD|TR|UA|EUROPE|EU)(_|$)/,
+      'United Kingdom': /^(GB|UK)(_|$)/,
       'Middle East': /^(AE|SA|QA|BH|OM|KW|JO|LB|IL|IQ|IR|SY|YE|PS|MIDDLE_EAST)(_|$)/,
       'Asia': /^(JP|KR|CN|HK|TW|IN|ID|TH|VN|MY|SG|PH|PK|BD|LK|NP|MM|KH|LA|MN|BN|MV|BT|KZ|UZ|TM|KG|TJ|AF|ASIA)(_|$)/,
       'Oceania': /^(AU|NZ|PG|FJ|SB|VU|WS|TO|KI|FM|PW|MH|NR|TV|GU|NC|PF|OCEANIA)(_|$)/,
@@ -4219,7 +4229,7 @@
     const WORK_RIGHTS_TO_REGION = {
       'EU': 'Europe',
       'USA': 'United States',
-      'UK': 'Europe',          // UK is included in Europe region mapping
+      'UK': 'United Kingdom',   // Post-Brexit: UK work rights only match UK-based jobs
       'Middle East': 'Middle East',
       'Asia': 'Asia',
       'Africa': 'Africa',
@@ -5292,6 +5302,11 @@
         return '';
       }
 
+      // If profile is empty, don't show misleading eligibility data
+      if (isProfileEmpty()) {
+        return '';
+      }
+
       const delta = calculateDelta(job);
 
       // Determine tooltip title based on status
@@ -5819,9 +5834,12 @@
         const jobMaxHours = Math.max(j.flightTime || 0, j.pic || 0, j.jetTime || 0, j.multiEngine || 0);
         if (jobMaxHours < f.minFT || jobMaxHours > f.maxFT) return false;
 
+        // Calculate delta once if needed by any eligibility filter
+        const needsDelta = f.eligibleOnly || (isPremium && f.deltaEnabled);
+        const delta = needsDelta ? calculateDelta(j) : null;
+
         // "Eligible only" checkbox - works for ALL users (in black profile box)
-        if (f.eligibleOnly) {
-          const delta = calculateDelta(j);
+        if (f.eligibleOnly && delta) {
           if (!delta.isEligible) return false;
         }
 
@@ -5837,9 +5855,7 @@
         }
 
         // Delta/Eligibility filter - premium features (golden box)
-        if (isPremium && f.deltaEnabled) {
-          const delta = calculateDelta(j);
-
+        if (isPremium && f.deltaEnabled && delta) {
           // Delta slider - "show jobs within X hours"
           if (f.maxDelta < 3000) { // Only filter if slider is not at max
 
@@ -6585,6 +6601,23 @@
         pilotFilters.forEach(elem => {
           if (elem) elem.style.display = 'none';
         });
+
+        // Reset pilot-only filter states so they don't silently filter cabin crew jobs
+        ['atpl','cpl','fatpl','typed','ntr','op-government','op-medical','op-instructor','direct'].forEach(key => {
+          tileFilters[key] = false;
+        });
+        // Reset pilot-only tile UI (deactivate tiles inside pilot-filter sections)
+        document.querySelectorAll('.filter-tile.pilot-filter.active').forEach(t => t.classList.remove('active'));
+        // Reset premium eligibility checkboxes
+        eligibleOnlyCheckbox.checked = false;
+        if (el("myTypeOnly")) el("myTypeOnly").checked = false;
+        // Reset delta slider to max (no filtering)
+        deltaSlider.value = 3000;
+        syncDelta();
+        // Reset flight time slider to full range
+        ftSliderMin.value = 0;
+        ftSliderMax.value = 10000;
+        syncFT();
       } else {
         // Show pilot filters
         pilotFilters.forEach(elem => {
@@ -6848,12 +6881,22 @@
     });
 
     // Update profile display string
+    function isProfileEmpty() {
+      return PILOT_PROFILE.totalHours === 0 && PILOT_PROFILE.picHours === 0 &&
+             !PILOT_PROFILE.license && PILOT_PROFILE.typeRatings.length === 0 &&
+             PILOT_PROFILE.workRights.length === 0;
+    }
+
     function updateProfileDisplay() {
-      const totalHrs = PILOT_PROFILE.totalHours.toLocaleString();
-      const license = PILOT_PROFILE.license;
-      const hasTypes = PILOT_PROFILE.typeRatings.length > 0;
-      const types = hasTypes ? PILOT_PROFILE.typeRatings.join(', ') : 'No type';
-      el("profileDisplay").textContent = `${totalHrs}h Total · ${license} · ${types}`;
+      if (isProfileEmpty()) {
+        el("profileDisplay").textContent = 'Set up your profile to see eligibility';
+      } else {
+        const totalHrs = PILOT_PROFILE.totalHours.toLocaleString();
+        const license = PILOT_PROFILE.license || 'No license';
+        const hasTypes = PILOT_PROFILE.typeRatings.length > 0;
+        const types = hasTypes ? PILOT_PROFILE.typeRatings.join(', ') : 'No type';
+        el("profileDisplay").textContent = `${totalHrs}h Total · ${license} · ${types}`;
+      }
 
       // Update "Show only my type jobs" label and visibility
       const myTypeLabel = document.querySelector('label[for="myTypeOnly"]');
@@ -6988,12 +7031,13 @@
           const saved = localStorage.getItem('pilotProfile');
           if (saved) {
             PILOT_PROFILE = JSON.parse(saved);
-            updateProfileDisplay();
           }
         }
       } catch (err) {
         console.error('Error loading profile:', err);
       }
+      // Always update display (shows "set up profile" prompt if empty)
+      updateProfileDisplay();
     }
 
     // ============================================

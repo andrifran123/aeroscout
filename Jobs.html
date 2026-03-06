@@ -5882,7 +5882,7 @@
           const ok =
             (f.license.atpl && jobLicenses.some(l => l === "ATPL" || l === "ATP" || l === "fATPL")) ||
             (f.license.cpl && jobLicenses.some(l => l === "CPL")) ||
-            (f.license.fatpl && jobLicenses.some(l => l === "fATPL" || l === "CPL"));
+            (f.license.fatpl && jobLicenses.some(l => l === "fATPL" || l === "CPL" || l === "ATPL" || l === "ATP"));
           if (!ok) return false;
         }
 

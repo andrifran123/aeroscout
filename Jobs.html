@@ -5819,7 +5819,7 @@
         JOBS.forEach(j => searchScores.set(j.id, searchScore(j, f.q)));
       }
 
-      return JOBS.filter(j => {
+      let filtered = JOBS.filter(j => {
         // Saved jobs filter
         if (showingSavedOnly) {
           const key = `${j.jobType || 'pilot'}_${j.id}`;
@@ -5941,6 +5941,20 @@
         }
         return 0; // No sorting, keep original order
       });
+
+      // Cap Solairus Aviation to 4 jobs when salary sorting is active
+      if (sortBySalary && isPremium) {
+        let solairusCount = 0;
+        filtered = filtered.filter(j => {
+          if ((j.org || '').toLowerCase() === 'solairus aviation') {
+            solairusCount++;
+            return solairusCount <= 4;
+          }
+          return true;
+        });
+      }
+
+      return filtered;
     }
 
     function apply(){

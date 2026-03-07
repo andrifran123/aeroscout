@@ -2097,6 +2097,11 @@
       color: #1565c0;
       background: #e3f2fd;
     }
+    .time-ago-mobile.open-application {
+      color: #92400e;
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+    }
 
     .stats-row {
       grid-column: 2;
@@ -4528,7 +4533,8 @@
             latitude: job.latitude || null,
             longitude: job.longitude || null,
             locationBucket: job.location_bucket || '',
-            verifiedAt: job.verified_at || ''
+            verifiedAt: job.verified_at || '',
+            isOpenApplication: job.is_open_application || false
           };
         });
       } catch (err) {
@@ -4604,7 +4610,8 @@
             latitude: job.latitude || null,
             longitude: job.longitude || null,
             locationBucket: job.location_bucket || '',
-            verifiedAt: job.verified_at || ''
+            verifiedAt: job.verified_at || '',
+            isOpenApplication: job.is_open_application || false
           };
         });
       } catch (err) {
@@ -5625,7 +5632,11 @@
             ` : ''}
             ${!j.description && !j.requirements ? `<div class="job-description-content"></div>` : ''}
           </div>
-          ${timeAgo(j.verifiedAt) ? `<span class="time-ago-mobile ${timeAgoClass(j.verifiedAt)}">${timeAgo(j.verifiedAt)}</span>` : ''}
+          ${timeAgo(j.verifiedAt)
+            ? `<span class="time-ago-mobile ${timeAgoClass(j.verifiedAt)}">${timeAgo(j.verifiedAt)}</span>`
+            : j.isOpenApplication
+              ? `<span class="time-ago-mobile open-application">Open Application</span>`
+              : ''}
         </article>
       `).join("");
 
@@ -7483,7 +7494,11 @@
               ${renderRequirements(job.requirements)}
             ` : ''}
           </div>
-          ${timeAgo(job.verifiedAt) ? `<span class="time-ago-mobile ${timeAgoClass(job.verifiedAt)}">${timeAgo(job.verifiedAt)}</span>` : ''}
+          ${timeAgo(job.verifiedAt)
+            ? `<span class="time-ago-mobile ${timeAgoClass(job.verifiedAt)}">${timeAgo(job.verifiedAt)}</span>`
+            : job.isOpenApplication
+              ? `<span class="time-ago-mobile open-application">Open Application</span>`
+              : ''}
         </article>
       `;
 
@@ -7952,7 +7967,11 @@
             ` : ''}
             ${!j.description && !j.requirements ? `<div class="job-description-content">No description available.</div>` : ''}
           </div>
-          ${timeAgo(j.verifiedAt) ? `<span class="time-ago-mobile ${timeAgoClass(j.verifiedAt)}">${timeAgo(j.verifiedAt)}</span>` : ''}
+          ${timeAgo(j.verifiedAt)
+            ? `<span class="time-ago-mobile ${timeAgoClass(j.verifiedAt)}">${timeAgo(j.verifiedAt)}</span>`
+            : j.isOpenApplication
+              ? `<span class="time-ago-mobile open-application">Open Application</span>`
+              : ''}
         </article>
       `;
 

@@ -5453,7 +5453,7 @@
         `;
       } else {
         return `
-          <span class="attr-item"><b>Aircraft:</b> <span class="attr-pill">${j.chips[0] || 'N/A'}</span></span>
+          <span class="attr-item"><b>Aircraft:</b> <span class="attr-pill">${j.aircraft || 'N/A'}</span></span>
           <span class="attr-item"><b>Location:</b> <span class="attr-pill">${j.location || 'Not specified'}</span></span>
           ${j.type === "typed" ? '<span class="attr-pill">Type-rated</span>' : '<span class="attr-pill green">Non-type rated</span>'}
           ${j.visa ? '<span class="attr-pill green"><b>Visa sponsor</b></span>' : ''}

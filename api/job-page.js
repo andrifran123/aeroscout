@@ -63,6 +63,26 @@ function stripHtml(html) {
   return String(html).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+function sanitizeHtml(html) {
+  if (!html) return '';
+  const str = String(html);
+  const allowedTags = /^(p|br|ul|ol|li|b|strong|i|em|a|h[1-6]|div|span|table|thead|tbody|tr|td|th)$/i;
+  return str
+    // Remove script/style/iframe tags and their content
+    .replace(/<(script|style|iframe|object|embed|form|input|textarea|button)[^>]*>[\s\S]*?<\/\1>/gi, '')
+    .replace(/<(script|style|iframe|object|embed|form|input|textarea|button)[^>]*\/?>/gi, '')
+    // Remove event handlers (onclick, onerror, onload, etc.)
+    .replace(/\s+on\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi, '')
+    // Remove javascript: URLs
+    .replace(/href\s*=\s*["']?\s*javascript:/gi, 'href="')
+    // Remove data: URLs (can contain scripts)
+    .replace(/src\s*=\s*["']?\s*data:/gi, 'src="')
+    // Strip tags not in allowlist
+    .replace(/<\/?([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>/g, (match, tag) => {
+      return allowedTags.test(tag) ? match : '';
+    });
+}
+
 function truncate(str, maxLen = 160) {
   if (!str) return '';
   const clean = stripHtml(str);
@@ -171,7 +191,7 @@ function renderAttributes(j) {
     return html;
   } else {
     let html = '';
-    html += `<span class="attr-item"><b>Aircraft:</b> <span class="attr-pill">${escapeHtml(j.chips[0] || 'N/A')}</span></span>`;
+    html += `<span class="attr-item"><b>Aircraft:</b> <span class="attr-pill">${escapeHtml(j.aircraft || 'N/A')}</span></span>`;
     html += `<span class="attr-item"><b>Location:</b> <span class="attr-pill">${escapeHtml(j.location || 'Not specified')}</span></span>`;
     html += j.type === 'typed'
       ? '<span class="attr-pill">Type-rated</span>'
@@ -349,7 +369,7 @@ function buildPage(j, jobType) {
     : iconLetter(j.org);
 
   const descriptionHtml = j.description
-    ? `<div class="job-description-content">${j.description}</div>`
+    ? `<div class="job-description-content">${sanitizeHtml(j.description)}</div>`
     : '<div class="job-description-content"></div>';
 
   const requirementsHtml = j.requirements

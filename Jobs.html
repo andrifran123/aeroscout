@@ -6914,12 +6914,13 @@
     }
 
     function updateProfileDisplay() {
+      const hasTypes = PILOT_PROFILE.typeRatings.length > 0;
+
       if (isProfileEmpty()) {
         el("profileDisplay").textContent = 'Set up your profile to see eligibility';
       } else {
         const totalHrs = PILOT_PROFILE.totalHours.toLocaleString();
         const license = PILOT_PROFILE.license || 'No license';
-        const hasTypes = PILOT_PROFILE.typeRatings.length > 0;
         const types = hasTypes ? PILOT_PROFILE.typeRatings.join(', ') : 'No type';
         el("profileDisplay").textContent = `${totalHrs}h Total · ${license} · ${types}`;
       }

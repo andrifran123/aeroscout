@@ -662,6 +662,14 @@
             alertBox.style.display = 'block';
         }
 
+        // Handle OAuth callback and existing sessions
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                showAlert('Account ready! Redirecting...', 'success');
+                setTimeout(() => { window.location.href = 'Jobs.html'; }, 500);
+            }
+        });
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;

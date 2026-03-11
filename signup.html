@@ -662,13 +662,15 @@
             alertBox.style.display = 'block';
         }
 
-        // Handle OAuth callback and existing sessions
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' && session) {
-                showAlert('Account ready! Redirecting...', 'success');
-                setTimeout(() => { window.location.href = 'Jobs.html'; }, 500);
-            }
-        });
+        // Handle OAuth callback — only redirect if returning from Google OAuth
+        const hasOAuthTokens = window.location.hash.includes('access_token');
+        if (hasOAuthTokens) {
+            supabaseClient.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN' && session) {
+                    window.location.href = 'Jobs.html';
+                }
+            });
+        }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();

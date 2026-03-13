@@ -5856,8 +5856,8 @@
           if (!jobAircraft || !pilotHasTypeForJob(PILOT_PROFILE.typeRatings, jobAircraft)) return false;
         }
 
-        // "I don't have a type rating" - only show NTR jobs
-        if (f.noTypeRating) {
+        // "I don't have a type rating" + "Show eligible only" — only then hide type-rated jobs
+        if (f.noTypeRating && f.eligibleOnly) {
           if (j.typeRated === true) return false;
         }
 

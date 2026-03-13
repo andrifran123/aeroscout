@@ -3270,7 +3270,6 @@
                 <option value="">Any location</option>
                 <option>United States</option>
                 <option>Europe</option>
-                <option>United Kingdom</option>
                 <option>Middle East</option>
                 <option>Asia</option>
                 <option>Oceania</option>
@@ -4142,9 +4141,7 @@
         'Dusseldorf', 'Stuttgart', 'Hannover', 'Dresden', 'Leipzig', 'Nuremberg', 'Palma', 'Malaga', 'Seville', 'Valencia',
         'Bilbao', 'Alicante', 'Tenerife', 'Gran Canaria', 'Faro', 'Porto', 'Naples', 'Venice', 'Florence', 'Turin', 'Bologna',
         'Gothenburg', 'Malmo', 'Stavanger', 'Bergen', 'Reykjavik', 'Riga', 'Tallinn', 'Vilnius', 'Krakow', 'Gdansk',
-        'Bucharest', 'Sofia', 'Zagreb', 'Ljubljana', 'Belgrade', 'Thessaloniki', 'Heraklion', 'Rhodes', 'Corfu'
-      ],
-      'United Kingdom': [
+        'Bucharest', 'Sofia', 'Zagreb', 'Ljubljana', 'Belgrade', 'Thessaloniki', 'Heraklion', 'Rhodes', 'Corfu',
         'United Kingdom', 'UK', 'Britain', 'England', 'Scotland', 'Wales', 'Northern Ireland',
         'London', 'Manchester', 'Birmingham', 'Glasgow', 'Edinburgh', 'Leeds', 'Liverpool', 'Newcastle',
         'Bristol', 'Cardiff', 'Belfast', 'Luton', 'Stansted', 'Gatwick', 'Heathrow', 'East Midlands',
@@ -4219,8 +4216,7 @@
 
     // Map region names to location_bucket prefixes
     const BUCKET_REGION_MAP = {
-      'Europe': /^(FR|DE|IT|ES|NL|BE|CH|AT|PT|SE|NO|DK|FI|IS|PL|CZ|HU|RO|BG|HR|RS|SI|SK|EE|LV|LT|CY|MT|LU|GR|IE|AL|BA|ME|MK|XK|MD|TR|UA|EUROPE|EU)(_|$)/,
-      'United Kingdom': /^(GB|UK)(_|$)/,
+      'Europe': /^(FR|DE|IT|ES|NL|BE|CH|AT|PT|SE|NO|DK|FI|IS|PL|CZ|HU|RO|BG|HR|RS|SI|SK|EE|LV|LT|CY|MT|LU|GR|IE|AL|BA|ME|MK|XK|MD|TR|UA|GB|UK|EUROPE|EU)(_|$)/,
       'Middle East': /^(AE|SA|QA|BH|OM|KW|JO|LB|IL|IQ|IR|SY|YE|PS|MIDDLE_EAST)(_|$)/,
       'Asia': /^(JP|KR|CN|HK|TW|IN|ID|TH|VN|MY|SG|PH|PK|BD|LK|NP|MM|KH|LA|MN|BN|MV|BT|KZ|UZ|TM|KG|TJ|AF|ASIA)(_|$)/,
       'Oceania': /^(AU|NZ|PG|FJ|SB|VU|WS|TO|KI|FM|PW|MH|NR|TV|GU|NC|PF|OCEANIA)(_|$)/,
@@ -5750,7 +5746,7 @@
       const eligibleOnly = eligibleOnlyCheckbox.checked;
       const includeBlockers = includeBlockersCheckbox.checked;
       const myTypeOnly = el("myTypeOnly").checked;
-      const noTypeRating = PILOT_PROFILE.typeRatings.length === 0;
+      const noTypeRating = el("noTypeRating").checked;
 
       return { q, loc, perks, license, type, operatorType, minFT, maxFT, maxDelta, deltaEnabled, eligibleOnly, includeBlockers, myTypeOnly, noTypeRating };
     }
@@ -6805,11 +6801,10 @@
       editingTypeRatings = [...PILOT_PROFILE.typeRatings];
       renderTypeRatings();
 
-      // "No type rating" checkbox state
-      const hasNoType = PILOT_PROFILE.typeRatings.length === 0;
-      el("noTypeRating").checked = hasNoType;
-      typeRatingFields.style.opacity = hasNoType ? '0.3' : '';
-      typeRatingFields.style.pointerEvents = hasNoType ? 'none' : '';
+      // "No type rating" checkbox — default unchecked so all jobs show
+      el("noTypeRating").checked = false;
+      typeRatingFields.style.opacity = '';
+      typeRatingFields.style.pointerEvents = '';
 
       // Work rights checkboxes
       document.querySelectorAll('.work-right-cb').forEach(cb => {

@@ -293,7 +293,7 @@ D.flow=(D.flow||[]).filter(r=>r.date>=MIN_DATE);
 if(D.trends){if(D.trends.global)D.trends.global=D.trends.global.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.aircraft)D.trends.aircraft=D.trends.aircraft.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.all_aircraft)D.trends.all_aircraft=D.trends.all_aircraft.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.all_locations)D.trends.all_locations=D.trends.all_locations.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.ranks)D.trends.ranks=D.trends.ranks.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.airlines)D.trends.airlines=D.trends.airlines.filter(r=>r.snapshot_date>=MIN_DATE);}
 D.total_days=D.flow.length;
 const g=D.global.current,cc=D.global.cabin_crew;
-document.getElementById('upd').textContent=`Updated ${D.updated_at} · ${D.total_days} days of data`;
+document.getElementById('upd').textContent=`Updated ${D.updated_at}`;
 const tot=(g?.active_jobs||0)+(cc?.active_jobs||0);
 document.getElementById('kpi').innerHTML=`<div class="k"><div class="kl">Active Positions</div><div class="kv">${fmt(tot)}</div><div class="kc nu">Pilot + Cabin Crew</div></div><div class="k"><div class="kl">Pilot Jobs</div><div class="kv">${fmt(g?.active_jobs)}</div><div class="kc nu">${fmt(g?.new_jobs)} new today</div></div><div class="k"><div class="kl">Cabin Crew</div><div class="kv">${fmt(cc?.active_jobs)}</div><div class="kc nu">${fmt(cc?.new_jobs)} new today</div></div><div class="k"><div class="kl">Airlines Hiring</div><div class="kv">${fmt(g?.unique_airlines)}</div><div class="kc nu">${fmt(g?.unique_locations)} locations</div></div><div class="k"><div class="kl">Avg Pilot Salary</div><div class="kv">${$(g?.avg_salary_usd)}</div><div class="kc nu">${g?.jobs_with_salary} with data</div></div>`;
 

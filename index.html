@@ -2786,7 +2786,7 @@ if (ratingCard) barObs.observe(ratingCard);
     if (!sorted.length) return;
 
     var max = sorted[0].active_jobs;
-    var total = ac.reduce(function(s, a) { return s + a.active_jobs; }, 0);
+    var total = ac.reduce(function(s, a) { return s + (a.type_rated_count || 0); }, 0);
 
     var html = '';
     sorted.forEach(function(d, i) {

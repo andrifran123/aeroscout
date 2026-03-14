@@ -70,7 +70,7 @@ function renderJobCard(job, isCabinCrew, idx) {
 
   // Logo – matches Jobs.html
   const logoHtml = job.logo_url
-    ? `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(job.airline)}" loading="${idx < 6 ? 'eager' : 'lazy'}" onerror="this.parentElement.textContent='${fl}'">`
+    ? `<img src="${escapeHtml(job.logo_url)}" alt="${escapeHtml(job.airline)}" loading="${idx < 6 ? 'eager' : 'lazy'}" onerror="this.parentElement.textContent='${fl}'">`
     : `<span style="font-size:24px;font-weight:700;color:var(--navy);">${fl}</span>`;
 
   // Attributes – matches Jobs.html renderAttributes() exactly

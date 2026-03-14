@@ -225,7 +225,7 @@
         if (hasOAuthTokens) {
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (event === 'SIGNED_IN' && session) {
-                    window.location.href = 'Jobs.html';
+                    window.location.href = '/jobs';
                 }
             });
         }
@@ -253,7 +253,7 @@
 
                 // Redirect to Jobs page after successful login
                 setTimeout(() => {
-                    window.location.href = 'Jobs.html';
+                    window.location.href = '/jobs';
                 }, 1000);
 
             } catch (error) {

@@ -667,7 +667,7 @@
         if (hasOAuthTokens) {
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (event === 'SIGNED_IN' && session) {
-                    window.location.href = 'Jobs.html';
+                    window.location.href = '/jobs';
                 }
             });
         }

@@ -6,6 +6,7 @@
 <title>AeroScout — Aviation Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#F5F8FC;--text:#1A2744;--pr:#2563EB;--se:#60A5FA;--body:#2e3e56;--sec:#516680;--dim:#8298b0;--wh:#fff;--bd:rgba(26,39,68,.07);--gn:#16a34a;--rd:#dc2626;--sh:0 1px 3px rgba(26,39,68,.04);--nav-bg:rgba(255,255,255,.92);--ban-bg:#1A2744;--ban-text:#fff;--chart-grid:rgba(26,39,68,.05);--chart-text:#8298b0}
@@ -183,17 +184,29 @@ footer a{font-size:.65rem}
 <body>
 <nav><a href="/" class="logo">AERO<span>SCOUT</span></a><div class="nav-r"><ul class="nv"><li><a href="/jobs">Jobs</a></li><li><a href="/signup" class="cta">Sign Up Free</a></li></ul><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"><svg id="sunIcon" style="display:none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg id="moonIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button></div></nav>
 <div class="app-layout">
-<div class="sidebar" id="sidebar"></div>
+<div class="sidebar" id="sidebar" style="display:none"></div>
 <div class="app-main">
-<div class="hdr"><div class="hdr-top"><h1>Aviation Hiring <em>Intelligence</em></h1><div class="upd"><div class="dot"></div><span id="upd">Loading...</span></div></div><p>Real-time hiring analytics across 850+ airlines — data no one else publishes.</p></div>
+<div id="loadingAuth" class="ld" style="text-align:center;padding:80px 20px"><div class="sp"></div>Loading...</div>
+<div id="authPrompt" style="display:none;text-align:center;padding:80px 20px">
+<h2 style="font-family:'Newsreader',serif;font-size:1.5rem;font-weight:400;color:var(--text);margin:0 0 8px">Aviation Hiring <em>Intelligence</em></h2>
+<p style="font-size:.88rem;color:var(--sec);margin:0 0 24px">Sign in to access real-time hiring analytics across 1,100+ airlines.</p>
+<a href="/login" style="padding:.65rem 1.5rem;background:var(--pr);color:#fff;font-family:'Barlow';font-size:.8rem;font-weight:500;text-decoration:none;border-radius:7px;display:inline-block">Log In</a>
+<p style="margin-top:12px;font-size:.75rem;color:var(--dim)">Don't have an account? <a href="/signup" style="color:var(--pr);text-decoration:none">Sign up free</a></p>
+</div>
+<div id="dashContent" style="display:none">
+<div class="hdr"><div class="hdr-top"><h1>Aviation Hiring <em>Intelligence</em></h1><div class="upd"><div class="dot"></div><span id="upd">Loading...</span></div></div><p>Real-time hiring analytics across 1,100+ airlines — data no one else publishes.</p></div>
 <div class="kr" id="kpi"><div class="ld" style="grid-column:1/-1"><div class="sp"></div>Loading...</div></div>
 <div class="mobile-tabs" id="mobileTabs"></div>
 <div id="panels"></div>
 </div>
 </div>
+</div>
 <footer><span>© 2026 AeroScout</span><div class="fl"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/contact">Contact</a></div></footer>
 
 <script>
+const SUPABASE_URL='https://ziboktbmbyjbhifsdypa.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY3NjMwODUsImV4cCI6MjA4MjMzOTA4NX0.eayvAsTuezEJZ-SIvEjZmrYaUxmJtntV8pK8fyUBnbY';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const API='https://ziboktbmbyjbhifsdypa.supabase.co/functions/v1/dashboard-data';
 const C=['#2563EB','#60A5FA','#a78bfa','#f59e0b','#10b981','#f43f5e','#8b5cf6','#06b6d4','#ec4899','#14b8a6','#84cc16','#f97316','#6366f1','#0ea5e9','#e11d48'];
 const B='#2563EB',BL='#60A5FA';
@@ -457,7 +470,15 @@ const ins=rk.find(r=>r.dimension_value==='INSTRUCTOR'),cad=rk.find(r=>r.dimensio
 chart('ov5',{...bo(),legend:{data:['Total Hours','PIC Hours'],bottom:0,textStyle:{fontSize:10,color:DIMH()}},grid:{...bo().grid,bottom:30},xAxis:{type:'category',data:['Captain','FO','Instructor','Cadet'],axisLabel:{fontSize:11,color:TH(),fontWeight:500}},yAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH(),formatter:v=>fmt(v)+'h'},splitLine:{lineStyle:{color:GRD()}}},series:[{name:'Total Hours',type:'bar',data:[cap?.avg_total_hours||0,fo?.avg_total_hours||0,ins?.avg_total_hours||0,cad?.avg_total_hours||0],barWidth:22,itemStyle:{color:B,borderRadius:[4,4,0,0]}},{name:'PIC Hours',type:'bar',data:[cap?.avg_pic_hours||0,fo?.avg_pic_hours||0,ins?.avg_pic_hours||0,cad?.avg_pic_hours||0],barWidth:22,itemStyle:{color:BL,borderRadius:[4,4,0,0]}}]});
 }
 
+async function checkAuth(){
+const{data:{session}}=await sb.auth.getSession();
+document.getElementById('loadingAuth').style.display='none';
+if(!session){document.getElementById('authPrompt').style.display='';return}
+document.getElementById('sidebar').style.display='';
+document.getElementById('dashContent').style.display='';
 load().catch(e=>{console.error(e);document.getElementById('kpi').innerHTML=`<div class="ld" style="grid-column:1/-1;color:var(--rd)">Failed: ${e.message}</div>`});
+}
+checkAuth();
 </script>
 </body>
 </html>

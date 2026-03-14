@@ -7733,11 +7733,24 @@
 
         mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-        mapInstance.on('load', () => {
+        const onMapReady = () => {
+          if (mapInitialized) return;
           updateMapData();
           el('mapLoading').classList.add('hidden');
           mapInitialized = true;
+        };
+
+        mapInstance.on('load', onMapReady);
+
+        // Fallback: style sometimes loads visually but 'load' event never fires
+        mapInstance.on('idle', () => {
+          if (!mapInitialized) onMapReady();
         });
+
+        // Final fallback: force data after 4 seconds regardless
+        setTimeout(() => {
+          if (!mapInitialized) onMapReady();
+        }, 4000);
 
       } catch (error) {
         console.error('Map initialization failed:', error);

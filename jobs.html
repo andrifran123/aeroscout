@@ -7654,23 +7654,84 @@
     // Map instance
     let mapInstance = null;
     let mapInitialized = false;
+    let mapMarkers = [];
+    let mapClusterIndex = null;
+    let mapJobFeatures = [];
+    let mapLocationCount = 0;
 
-    // Build GeoJSON from pre-stored coordinates (one feature per job)
-    function buildGeoJSON() {
+    // Simple grid-based clustering (no external dependency)
+    function createClusterIndex(features) {
+      return {
+        features: features,
+        getClusters: function(bbox, zoom) {
+          const radius = 60 / (Math.pow(2, zoom)); // cluster radius in degrees
+          const clusters = [];
+          const used = new Set();
+
+          for (let i = 0; i < this.features.length; i++) {
+            if (used.has(i)) continue;
+            const f = this.features[i];
+            const [lng, lat] = f.geometry.coordinates;
+
+            // Skip features outside bbox
+            if (lng < bbox[0] || lng > bbox[2] || lat < bbox[1] || lat > bbox[3]) continue;
+
+            const clusterJobs = [f];
+            used.add(i);
+
+            for (let j = i + 1; j < this.features.length; j++) {
+              if (used.has(j)) continue;
+              const f2 = this.features[j];
+              const [lng2, lat2] = f2.geometry.coordinates;
+              if (Math.abs(lng2 - lng) < radius && Math.abs(lat2 - lat) < radius) {
+                clusterJobs.push(f2);
+                used.add(j);
+              }
+            }
+
+            if (clusterJobs.length === 1) {
+              clusters.push({
+                type: 'Feature',
+                geometry: f.geometry,
+                properties: { ...f.properties, cluster: false }
+              });
+            } else {
+              // Average position
+              let sumLng = 0, sumLat = 0;
+              clusterJobs.forEach(cf => {
+                sumLng += cf.geometry.coordinates[0];
+                sumLat += cf.geometry.coordinates[1];
+              });
+              clusters.push({
+                type: 'Feature',
+                geometry: { type: 'Point', coordinates: [sumLng / clusterJobs.length, sumLat / clusterJobs.length] },
+                properties: {
+                  cluster: true,
+                  point_count: clusterJobs.length,
+                  jobs: clusterJobs.map(cf => JSON.parse(cf.properties.jobs)[0]),
+                  location: clusterJobs[0].properties.location
+                }
+              });
+            }
+          }
+          return clusters;
+        }
+      };
+    }
+
+    // Build features from JOBS array
+    function buildMapFeatures() {
       const features = [];
       const locationSet = new Set();
 
-      // Create one feature per job with a small random offset so same-city jobs spread out
       JOBS.forEach(job => {
         if (job.latitude && job.longitude) {
           locationSet.add(`${job.latitude.toFixed(4)},${job.longitude.toFixed(4)}`);
-          const offsetLat = (Math.random() - 0.5) * 0.2;
-          const offsetLng = (Math.random() - 0.5) * 0.2;
           features.push({
             type: 'Feature',
             geometry: {
               type: 'Point',
-              coordinates: [job.longitude + offsetLng, job.latitude + offsetLat]
+              coordinates: [job.longitude, job.latitude]
             },
             properties: {
               location: job.location,
@@ -7686,18 +7747,93 @@
         }
       });
 
-      el('mapStats').innerHTML = `<strong>${features.length}</strong> jobs across <strong>${locationSet.size}</strong> locations`;
+      mapLocationCount = locationSet.size;
+      return features;
+    }
 
-      return {
-        type: 'FeatureCollection',
-        features
-      };
+    // Create a DOM marker element for a cluster or single point
+    function createMarkerElement(feature) {
+      const props = feature.properties;
+      const isCluster = props.cluster;
+      const count = props.point_count || 1;
+
+      const el = document.createElement('div');
+      el.style.cursor = 'pointer';
+
+      if (isCluster) {
+        // Cluster bubble
+        const size = count < 10 ? 32 : count < 50 ? 38 : count < 100 ? 44 : 50;
+        const color = count < 10 ? '#00b7ff' : count < 50 ? '#00cc88' : '#00b7ff';
+        el.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;background:${color};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);cursor:pointer;`;
+        el.textContent = count;
+        el.addEventListener('click', () => {
+          mapInstance.easeTo({
+            center: feature.geometry.coordinates,
+            zoom: mapInstance.getZoom() + 2
+          });
+        });
+      } else {
+        // Single job pin
+        el.style.cssText = 'width:12px;height:12px;border-radius:50%;background:#00b7ff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.3);cursor:pointer;';
+        el.addEventListener('click', () => {
+          const jobs = typeof props.jobs === 'string' ? JSON.parse(props.jobs) : props.jobs;
+          window.currentMapJobs = jobs;
+          window.currentMapLocation = props.location;
+
+          const jobListHTML = jobs.slice(0, 5).map((j, idx) => `
+            <div class="job-popup-item" style="cursor:pointer;" onclick="showJobPreview(${idx})">
+              <div class="job-popup-title">${j.title}</div>
+              <div class="job-popup-airline">${j.org}</div>
+            </div>
+          `).join('');
+
+          new mapboxgl.Popup({ offset: 15, maxWidth: '320px' })
+            .setLngLat(feature.geometry.coordinates)
+            .setHTML(`
+              <div class="job-popup">
+                <div class="job-popup-header">
+                  <div class="job-popup-location">${props.location}</div>
+                  <div class="job-popup-count">1 job available</div>
+                </div>
+                <div class="job-popup-body">${jobListHTML}</div>
+                <div class="job-popup-footer">
+                  <button class="job-popup-view-btn" onclick="showJobPreview(0)">View Job</button>
+                </div>
+              </div>
+            `)
+            .addTo(mapInstance);
+        });
+      }
+      return el;
+    }
+
+    // Update DOM markers based on current map view
+    function updateMarkers() {
+      // Remove old markers
+      mapMarkers.forEach(m => m.remove());
+      mapMarkers = [];
+
+      if (!mapClusterIndex || !mapInstance) return;
+
+      const bounds = mapInstance.getBounds();
+      const bbox = [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()];
+      const zoom = Math.floor(mapInstance.getZoom());
+
+      const clusters = mapClusterIndex.getClusters(bbox, zoom);
+
+      clusters.forEach(feature => {
+        const markerEl = createMarkerElement(feature);
+        const marker = new mapboxgl.Marker({ element: markerEl })
+          .setLngLat(feature.geometry.coordinates)
+          .addTo(mapInstance);
+        mapMarkers.push(marker);
+      });
     }
 
     // Initialize Mapbox map
     async function initMap() {
       if (MAPBOX_TOKEN === 'YOUR_MAPBOX_ACCESS_TOKEN_HERE') {
-        el('mapLoading').innerHTML = `
+        document.getElementById('mapLoading').innerHTML = `
           <div style="text-align: center; padding: 20px;">
             <div style="font-size: 48px; margin-bottom: 16px;">🗺️</div>
             <h3 style="margin: 0 0 8px; color: #0e1830;">Mapbox Token Required</h3>
@@ -7712,14 +7848,12 @@
       }
 
       if (mapInitialized && mapInstance) {
-        // Map already exists, just update data
         updateMapData();
-        el('mapLoading').classList.add('hidden');
+        document.getElementById('mapLoading').classList.add('hidden');
         return;
       }
 
       try {
-        // Lazy-load Mapbox GL JS on first use
         await loadMapbox();
         mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -7736,25 +7870,17 @@
         const onMapReady = () => {
           if (mapInitialized) return;
           updateMapData();
-          el('mapLoading').classList.add('hidden');
+          document.getElementById('mapLoading').classList.add('hidden');
           mapInitialized = true;
         };
 
         mapInstance.on('load', onMapReady);
-
-        // Fallback: style sometimes loads visually but 'load' event never fires
-        mapInstance.on('idle', () => {
-          if (!mapInitialized) onMapReady();
-        });
-
-        // Final fallback: force data after 4 seconds regardless
-        setTimeout(() => {
-          if (!mapInitialized) onMapReady();
-        }, 4000);
+        mapInstance.on('idle', () => { if (!mapInitialized) onMapReady(); });
+        setTimeout(() => { if (!mapInitialized) onMapReady(); }, 4000);
 
       } catch (error) {
         console.error('Map initialization failed:', error);
-        el('mapLoading').innerHTML = `
+        document.getElementById('mapLoading').innerHTML = `
           <div style="text-align: center; padding: 20px;">
             <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
             <h3 style="margin: 0 0 8px; color: #0e1830;">Map Failed to Load</h3>
@@ -7764,159 +7890,17 @@
       }
     }
 
-    // Update map data (used for initial load and refresh)
+    // Update map data using DOM markers (works on all GPUs)
     function updateMapData() {
-      const geojson = buildGeoJSON();
+      mapJobFeatures = buildMapFeatures();
+      mapClusterIndex = createClusterIndex(mapJobFeatures);
 
-      // Remove existing source and layers if they exist
-      if (mapInstance.getSource('jobs')) {
-        mapInstance.removeLayer('clusters');
-        mapInstance.removeLayer('cluster-count');
-        mapInstance.removeLayer('unclustered-point');
-        mapInstance.removeSource('jobs');
-      }
+      document.getElementById('mapStats').innerHTML = `<strong>${mapJobFeatures.length}</strong> jobs across <strong>${mapLocationCount}</strong> locations`;
 
-      // Add clustered source (small radius = many small clusters)
-      mapInstance.addSource('jobs', {
-        type: 'geojson',
-        data: geojson,
-        cluster: true,
-        clusterMaxZoom: 14,
-        clusterRadius: 30,
-        clusterMinPoints: 2
-      });
-
-      // Cluster circles - alternating blue and green
-      mapInstance.addLayer({
-        id: 'clusters',
-        type: 'circle',
-        source: 'jobs',
-        filter: ['has', 'point_count'],
-        paint: {
-          'circle-color': [
-            'step',
-            ['get', 'point_count'],
-            '#00b7ff',      // Blue for small clusters
-            10, '#00cc88',  // Green for medium clusters
-            20, '#00b7ff',  // Blue for larger clusters
-            40, '#00cc88'   // Green for large clusters
-          ],
-          'circle-radius': [
-            'step',
-            ['get', 'point_count'],
-            14,
-            6, 16,
-            10, 18,
-            15, 20,
-            20, 22
-          ],
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#ffffff',
-          'circle-opacity': 0.9
-        }
-      });
-
-      // Cluster count labels
-      mapInstance.addLayer({
-        id: 'cluster-count',
-        type: 'symbol',
-        source: 'jobs',
-        filter: ['has', 'point_count'],
-        layout: {
-          'text-field': ['get', 'point_count_abbreviated'],
-          'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
-          'text-size': 13
-        },
-        paint: {
-          'text-color': '#ffffff'
-        }
-      });
-
-      // Individual job pins
-      mapInstance.addLayer({
-        id: 'unclustered-point',
-        type: 'circle',
-        source: 'jobs',
-        filter: ['!', ['has', 'point_count']],
-        paint: {
-          'circle-color': '#00b7ff',
-          'circle-radius': 5,
-          'circle-stroke-width': 1.5,
-          'circle-stroke-color': '#ffffff',
-          'circle-opacity': 0.85
-        }
-      });
-
-      // Click on cluster to zoom in
-      mapInstance.on('click', 'clusters', (e) => {
-        const features = mapInstance.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-        const clusterId = features[0].properties.cluster_id;
-        mapInstance.getSource('jobs').getClusterExpansionZoom(clusterId, (err, zoom) => {
-          if (err) return;
-          mapInstance.easeTo({
-            center: features[0].geometry.coordinates,
-            zoom: zoom
-          });
-        });
-      });
-
-      // Click on individual point to show popup
-      mapInstance.on('click', 'unclustered-point', (e) => {
-        const coordinates = e.features[0].geometry.coordinates.slice();
-        const props = e.features[0].properties;
-        const location = props.location;
-        const jobs = typeof props.jobs === 'string' ? JSON.parse(props.jobs) : props.jobs;
-        const jobCount = props.jobCount || jobs.length;
-
-        // Store jobs for this location globally for click handler
-        window.currentMapJobs = jobs;
-        window.currentMapLocation = location;
-
-        // Build popup HTML with clickable job items
-        const jobListHTML = jobs.slice(0, 5).map((j, idx) => `
-          <div class="job-popup-item" style="cursor:pointer;" onclick="showJobPreview(${idx})">
-            <div class="job-popup-title">${j.title}</div>
-            <div class="job-popup-airline">${j.org}</div>
-          </div>
-        `).join('');
-
-        const moreText = jobCount > 5 ? `<div style="padding:8px 16px;font-size:11px;color:#6b7890;">+ ${jobCount - 5} more jobs</div>` : '';
-
-        new mapboxgl.Popup({ offset: 15, maxWidth: '320px' })
-          .setLngLat(coordinates)
-          .setHTML(`
-            <div class="job-popup">
-              <div class="job-popup-header">
-                <div class="job-popup-location">${location}</div>
-                <div class="job-popup-count">${jobCount} job${jobCount > 1 ? 's' : ''} available</div>
-              </div>
-              <div class="job-popup-body">
-                ${jobListHTML}
-                ${moreText}
-              </div>
-              <div class="job-popup-footer">
-                <button class="job-popup-view-btn" onclick="showJobPreview(0)">
-                  View ${jobCount > 1 ? 'Jobs' : 'Job'}
-                </button>
-              </div>
-            </div>
-          `)
-          .addTo(mapInstance);
-      });
-
-      // Change cursor on hover
-      mapInstance.on('mouseenter', 'clusters', () => {
-        mapInstance.getCanvas().style.cursor = 'pointer';
-      });
-      mapInstance.on('mouseleave', 'clusters', () => {
-        mapInstance.getCanvas().style.cursor = '';
-      });
-      mapInstance.on('mouseenter', 'unclustered-point', () => {
-        mapInstance.getCanvas().style.cursor = 'pointer';
-      });
-      mapInstance.on('mouseleave', 'unclustered-point', () => {
-        mapInstance.getCanvas().style.cursor = '';
-      });
+      // Update markers now and on every map move
+      updateMarkers();
+      mapInstance.on('moveend', updateMarkers);
+      mapInstance.on('zoomend', updateMarkers);
     }
 
     // Show job preview panel at bottom of map

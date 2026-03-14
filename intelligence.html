@@ -185,7 +185,7 @@ footer a{font-size:.65rem}
 <div class="app-layout">
 <div class="sidebar" id="sidebar"></div>
 <div class="app-main">
-<div class="hdr"><div class="hdr-top"><h1>Aviation Hiring <em>Intelligence</em></h1><div class="upd"><div class="dot"></div><span id="upd">Loading...</span></div></div><p>Real-time hiring analytics across 1,100+ airlines — data no one else publishes.</p></div>
+<div class="hdr"><div class="hdr-top"><h1>Aviation Hiring <em>Intelligence</em></h1><div class="upd"><div class="dot"></div><span id="upd">Loading...</span></div></div><p>Real-time hiring analytics across 850+ airlines — data no one else publishes.</p></div>
 <div class="kr" id="kpi"><div class="ld" style="grid-column:1/-1"><div class="sp"></div>Loading...</div></div>
 <div class="mobile-tabs" id="mobileTabs"></div>
 <div id="panels"></div>
@@ -208,8 +208,7 @@ function TTBG(){return isDark()?'#1e293b':'#fff'}
 function TTBD(){return isDark()?'rgba(255,255,255,.1)':'rgba(26,39,68,.1)'}
 function chart(id,o){if(EC[id]){EC[id].dispose();delete EC[id]}const el=document.getElementById(id);if(!el)return null;const c=echarts.init(el,isDark()?'dark':null);if(isDark()){o.backgroundColor='transparent'}c.setOption(o);EC[id]=c;return c}
 function bo(){return{textStyle:{fontFamily:'Barlow',color:DIMH()},grid:{left:10,right:20,top:25,bottom:20,containLabel:true},tooltip:{trigger:'axis',backgroundColor:TTBG(),borderColor:TTBD(),borderWidth:1,textStyle:{color:TH(),fontFamily:'Barlow',fontSize:11}},backgroundColor:'transparent'}}
-const MIN_DATE='2026-02-13';
-function grp(arr,vk='active_jobs'){const m={};const ds=new Set();(arr||[]).filter(r=>r.snapshot_date>=MIN_DATE).forEach(r=>{if(!m[r.dimension_value])m[r.dimension_value]={};m[r.dimension_value][r.snapshot_date]=r[vk];ds.add(r.snapshot_date)});const sd=[...ds].sort();const s={};Object.entries(m).forEach(([n,dm])=>{s[n]=sd.map(d=>dm[d]!=null?dm[d]:null)});return{dates:sd,series:s}}
+function grp(arr,vk='active_jobs'){const m={};const ds=new Set();(arr||[]).forEach(r=>{if(!m[r.dimension_value])m[r.dimension_value]={};m[r.dimension_value][r.snapshot_date]=r[vk];ds.add(r.snapshot_date)});const sd=[...ds].sort();const s={};Object.entries(m).forEach(([n,dm])=>{s[n]=sd.map(d=>dm[d]!=null?dm[d]:null)});return{dates:sd,series:s}}
 
 // ===== THEME TOGGLE =====
 function applyTheme(dark){
@@ -288,12 +287,8 @@ function wrapTables(){document.querySelectorAll('.dt:not(.wrapped)').forEach(t=>
 
 async function load(){
 const r=await fetch(API);D=await r.json();if(D.error)throw new Error(D.error);
-// Filter all trend data to start from MIN_DATE
-D.flow=(D.flow||[]).filter(r=>r.date>=MIN_DATE);
-if(D.trends){if(D.trends.global)D.trends.global=D.trends.global.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.aircraft)D.trends.aircraft=D.trends.aircraft.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.all_aircraft)D.trends.all_aircraft=D.trends.all_aircraft.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.all_locations)D.trends.all_locations=D.trends.all_locations.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.ranks)D.trends.ranks=D.trends.ranks.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.airlines)D.trends.airlines=D.trends.airlines.filter(r=>r.snapshot_date>=MIN_DATE);}
-D.total_days=D.flow.length;
 const g=D.global.current,cc=D.global.cabin_crew;
-document.getElementById('upd').textContent=`Updated ${D.updated_at}`;
+document.getElementById('upd').textContent=`Updated ${D.updated_at} · ${D.total_days} days of data`;
 const tot=(g?.active_jobs||0)+(cc?.active_jobs||0);
 document.getElementById('kpi').innerHTML=`<div class="k"><div class="kl">Active Positions</div><div class="kv">${fmt(tot)}</div><div class="kc nu">Pilot + Cabin Crew</div></div><div class="k"><div class="kl">Pilot Jobs</div><div class="kv">${fmt(g?.active_jobs)}</div><div class="kc nu">${fmt(g?.new_jobs)} new today</div></div><div class="k"><div class="kl">Cabin Crew</div><div class="kv">${fmt(cc?.active_jobs)}</div><div class="kc nu">${fmt(cc?.new_jobs)} new today</div></div><div class="k"><div class="kl">Airlines Hiring</div><div class="kv">${fmt(g?.unique_airlines)}</div><div class="kc nu">${fmt(g?.unique_locations)} locations</div></div><div class="k"><div class="kl">Avg Pilot Salary</div><div class="kv">${$(g?.avg_salary_usd)}</div><div class="kc nu">${g?.jobs_with_salary} with data</div></div>`;
 

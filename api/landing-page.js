@@ -1113,7 +1113,7 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
     <div class="hero__content">
       <div class="hero__left">
         <h1>${escapeHtml(pageData.h1 || pageData.page_title)}</h1>
-        <p class="hero__sub">Updated daily from 1,100+ airlines and operators worldwide. Find your next ${isCabinCrew ? 'cabin crew' : 'cockpit'} role in minutes.</p>
+        <p class="hero__sub">Updated daily from 850+ airlines and operators worldwide. Find your next ${isCabinCrew ? 'cabin crew' : 'cockpit'} role in minutes.</p>
         <a href="/Jobs.html" class="hero__btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           Browse ${jobCount} Jobs
@@ -1135,7 +1135,7 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
       <div class="stats-bar__icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </div>
-      <div class="stats-bar__value">1,100</div>
+      <div class="stats-bar__value">850</div>
       <div class="stats-bar__label">Airlines &amp; Operators</div>
     </div>
     <div class="stats-bar__item">
@@ -1168,7 +1168,7 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
           <span class="check-icon">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </span>
-          Active job postings from 1,100+ airlines worldwide
+          Active job postings from 850+ airlines worldwide
         </li>
         <li>
           <span class="check-icon">

@@ -793,7 +793,7 @@ ${schemaJson}
 
     <div class="cta-banner">
       <h2>Explore ${isCabinCrew ? 'Cabin Crew' : 'Pilot'} Jobs Worldwide</h2>
-      <p>Search, filter, and get alerts for the latest aviation positions from 1,100+ airlines &amp; operators.</p>
+      <p>Search, filter, and get alerts for the latest aviation positions from 850+ airlines &amp; operators.</p>
       <a href="/Jobs.html${isCabinCrew ? '?type=cabin_crew' : ''}" class="cta-btn">Browse All Jobs</a>
     </div>
   </main>

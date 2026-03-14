@@ -7658,13 +7658,14 @@
     let mapClusterIndex = null;
     let mapJobFeatures = [];
     let mapLocationCount = 0;
+    let mapListenersAttached = false;
 
     // Simple grid-based clustering (no external dependency)
     function createClusterIndex(features) {
       return {
         features: features,
         getClusters: function(bbox, zoom) {
-          const radius = 60 / (Math.pow(2, zoom)); // cluster radius in degrees
+          const radius = 25 / (Math.pow(2, zoom)); // tight cluster radius for more spread
           const clusters = [];
           const used = new Set();
 
@@ -7673,8 +7674,8 @@
             const f = this.features[i];
             const [lng, lat] = f.geometry.coordinates;
 
-            // Skip features outside bbox
-            if (lng < bbox[0] || lng > bbox[2] || lat < bbox[1] || lat > bbox[3]) continue;
+            // Skip features outside bbox with some padding
+            if (lng < bbox[0] - 5 || lng > bbox[2] + 5 || lat < bbox[1] - 5 || lat > bbox[3] + 5) continue;
 
             const clusterJobs = [f];
             used.add(i);
@@ -7756,26 +7757,33 @@
       const props = feature.properties;
       const isCluster = props.cluster;
       const count = props.point_count || 1;
+      const coords = feature.geometry.coordinates;
 
-      const el = document.createElement('div');
-      el.style.cursor = 'pointer';
+      const wrapper = document.createElement('div');
 
       if (isCluster) {
         // Cluster bubble
         const size = count < 10 ? 32 : count < 50 ? 38 : count < 100 ? 44 : 50;
         const color = count < 10 ? '#00b7ff' : count < 50 ? '#00cc88' : '#00b7ff';
-        el.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;background:${color};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);cursor:pointer;`;
-        el.textContent = count;
-        el.addEventListener('click', () => {
-          mapInstance.easeTo({
-            center: feature.geometry.coordinates,
-            zoom: mapInstance.getZoom() + 2
+        wrapper.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;background:${color};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);cursor:pointer;pointer-events:auto;transition:transform 0.15s;`;
+        wrapper.textContent = count;
+        wrapper.onmouseenter = () => { wrapper.style.transform = 'scale(1.15)'; };
+        wrapper.onmouseleave = () => { wrapper.style.transform = 'scale(1)'; };
+        wrapper.onclick = (e) => {
+          e.stopPropagation();
+          mapInstance.flyTo({
+            center: coords,
+            zoom: mapInstance.getZoom() + 2,
+            duration: 500
           });
-        });
+        };
       } else {
         // Single job pin
-        el.style.cssText = 'width:12px;height:12px;border-radius:50%;background:#00b7ff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.3);cursor:pointer;';
-        el.addEventListener('click', () => {
+        wrapper.style.cssText = 'width:14px;height:14px;border-radius:50%;background:#00b7ff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.3);cursor:pointer;pointer-events:auto;transition:transform 0.15s;';
+        wrapper.onmouseenter = () => { wrapper.style.transform = 'scale(1.4)'; };
+        wrapper.onmouseleave = () => { wrapper.style.transform = 'scale(1)'; };
+        wrapper.onclick = (e) => {
+          e.stopPropagation();
           const jobs = typeof props.jobs === 'string' ? JSON.parse(props.jobs) : props.jobs;
           window.currentMapJobs = jobs;
           window.currentMapLocation = props.location;
@@ -7788,7 +7796,7 @@
           `).join('');
 
           new mapboxgl.Popup({ offset: 15, maxWidth: '320px' })
-            .setLngLat(feature.geometry.coordinates)
+            .setLngLat(coords)
             .setHTML(`
               <div class="job-popup">
                 <div class="job-popup-header">
@@ -7802,9 +7810,9 @@
               </div>
             `)
             .addTo(mapInstance);
-        });
+        };
       }
-      return el;
+      return wrapper;
     }
 
     // Update DOM markers based on current map view
@@ -7823,7 +7831,7 @@
 
       clusters.forEach(feature => {
         const markerEl = createMarkerElement(feature);
-        const marker = new mapboxgl.Marker({ element: markerEl })
+        const marker = new mapboxgl.Marker({ element: markerEl, anchor: 'center' })
           .setLngLat(feature.geometry.coordinates)
           .addTo(mapInstance);
         mapMarkers.push(marker);
@@ -7897,10 +7905,12 @@
 
       document.getElementById('mapStats').innerHTML = `<strong>${mapJobFeatures.length}</strong> jobs across <strong>${mapLocationCount}</strong> locations`;
 
-      // Update markers now and on every map move
+      // Update markers now and on every map move (only attach listeners once)
       updateMarkers();
-      mapInstance.on('moveend', updateMarkers);
-      mapInstance.on('zoomend', updateMarkers);
+      if (!mapListenersAttached) {
+        mapInstance.on('moveend', updateMarkers);
+        mapListenersAttached = true;
+      }
     }
 
     // Show job preview panel at bottom of map

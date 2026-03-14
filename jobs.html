@@ -4387,6 +4387,8 @@
 
     // Jobs will be loaded from Supabase
     let JOBS = [];
+    let jobsReadyResolve;
+    let jobsReady = new Promise(resolve => { jobsReadyResolve = resolve; });
 
     // Total job counts from Supabase (for header display)
     let totalPilotJobCount = 0;
@@ -7547,6 +7549,7 @@
         try {
           JOBS = await fetchJobs();
           fetchError = null;
+          jobsReadyResolve();
           break;
         } catch (err) {
           fetchError = err;
@@ -7562,6 +7565,7 @@
       await profilePromise;
 
       if (fetchError) {
+        jobsReadyResolve();
         el("cards").innerHTML = `<div style="padding:40px;text-align:center;color:#6b7890;">
           <div style="margin-bottom:12px;">Unable to load jobs. Please check your internet connection.</div>
           <button onclick="location.reload()" style="padding:10px 28px;border-radius:8px;border:1.5px solid #3d5a80;background:#fff;color:#3d5a80;font-size:15px;cursor:pointer;font-weight:600;">Tap to retry</button>
@@ -7730,7 +7734,46 @@
 
         mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
+        // Handle Mapbox runtime errors (token, WebGL, network)
+        mapInstance.on('error', (e) => {
+          console.error('Mapbox error:', e.error || e);
+          const msg = (e.error && e.error.message) || '';
+          if (msg.includes('access token') || msg.includes('Not Authorized') || e.status === 401) {
+            el('mapLoading').classList.remove('hidden');
+            el('mapLoading').innerHTML = `
+              <div style="text-align: center; padding: 20px;">
+                <h3 style="margin: 0 0 8px; color: #0e1830;">Map Unavailable</h3>
+                <p style="color: #6b7890; margin: 0;">The map service is temporarily unavailable. Please try again later.</p>
+              </div>
+            `;
+          }
+        });
+
+        let mapLoaded = false;
+
+        const loadTimeout = setTimeout(() => {
+          if (!mapLoaded) {
+            console.error('Map load timed out after 15 seconds');
+            if (mapInstance) {
+              try { mapInstance.remove(); } catch(e) {}
+              mapInstance = null;
+            }
+            el('mapLoading').innerHTML = `
+              <div style="text-align: center; padding: 20px;">
+                <h3 style="margin: 0 0 8px; color: #0e1830;">Map Failed to Load</h3>
+                <p style="color: #6b7890; margin: 0; max-width: 400px;">
+                  The map is taking too long to load. This may be due to your browser or network.
+                  Please try again or use the text-based search.
+                </p>
+                <button onclick="closeMap(); setTimeout(openMap, 300);" style="margin-top: 12px; padding: 8px 20px; border-radius: 8px; border: 1.5px solid #3d5a80; background: #fff; color: #3d5a80; font-size: 14px; cursor: pointer; font-weight: 600;">Retry</button>
+              </div>
+            `;
+          }
+        }, 15000);
+
         mapInstance.on('load', () => {
+          mapLoaded = true;
+          clearTimeout(loadTimeout);
           updateMapData();
           el('mapLoading').classList.add('hidden');
           mapInitialized = true;
@@ -8021,13 +8064,24 @@
         <div class="map-loading-text">Loading map...</div>
       `;
 
-      // Initialize or update map
-      setTimeout(() => {
-        initMap();
-        if (mapInstance) {
-          mapInstance.resize();
-        }
-      }, 100);
+      // Wait for jobs to load, then initialize map
+      jobsReady.then(() => {
+        setTimeout(() => {
+          if (JOBS.length === 0) {
+            el('mapLoading').innerHTML = `
+              <div style="text-align: center; padding: 20px;">
+                <h3 style="margin: 0 0 8px; color: #0e1830;">No Jobs Available</h3>
+                <p style="color: #6b7890; margin: 0;">Jobs could not be loaded. Please close the map and try again.</p>
+              </div>
+            `;
+            return;
+          }
+          initMap();
+          if (mapInstance) {
+            mapInstance.resize();
+          }
+        }, 100);
+      });
     }
 
     // Close map overlay
@@ -8035,6 +8089,11 @@
       el('mapOverlay').classList.remove('visible');
       document.body.style.overflow = '';
       hideJobPreview();
+      // If map never fully loaded, clean up for fresh retry
+      if (!mapInitialized && mapInstance) {
+        try { mapInstance.remove(); } catch(e) {}
+        mapInstance = null;
+      }
     }
 
     // Map event listeners

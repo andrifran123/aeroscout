@@ -208,7 +208,8 @@ function TTBG(){return isDark()?'#1e293b':'#fff'}
 function TTBD(){return isDark()?'rgba(255,255,255,.1)':'rgba(26,39,68,.1)'}
 function chart(id,o){if(EC[id]){EC[id].dispose();delete EC[id]}const el=document.getElementById(id);if(!el)return null;const c=echarts.init(el,isDark()?'dark':null);if(isDark()){o.backgroundColor='transparent'}c.setOption(o);EC[id]=c;return c}
 function bo(){return{textStyle:{fontFamily:'Barlow',color:DIMH()},grid:{left:10,right:20,top:25,bottom:20,containLabel:true},tooltip:{trigger:'axis',backgroundColor:TTBG(),borderColor:TTBD(),borderWidth:1,textStyle:{color:TH(),fontFamily:'Barlow',fontSize:11}},backgroundColor:'transparent'}}
-function grp(arr,vk='active_jobs'){const m={};const ds=new Set();(arr||[]).forEach(r=>{if(!m[r.dimension_value])m[r.dimension_value]={};m[r.dimension_value][r.snapshot_date]=r[vk];ds.add(r.snapshot_date)});const sd=[...ds].sort();const s={};Object.entries(m).forEach(([n,dm])=>{s[n]=sd.map(d=>dm[d]!=null?dm[d]:null)});return{dates:sd,series:s}}
+const MIN_DATE='2026-02-13';
+function grp(arr,vk='active_jobs'){const m={};const ds=new Set();(arr||[]).filter(r=>r.snapshot_date>=MIN_DATE).forEach(r=>{if(!m[r.dimension_value])m[r.dimension_value]={};m[r.dimension_value][r.snapshot_date]=r[vk];ds.add(r.snapshot_date)});const sd=[...ds].sort();const s={};Object.entries(m).forEach(([n,dm])=>{s[n]=sd.map(d=>dm[d]!=null?dm[d]:null)});return{dates:sd,series:s}}
 
 // ===== THEME TOGGLE =====
 function applyTheme(dark){
@@ -287,6 +288,10 @@ function wrapTables(){document.querySelectorAll('.dt:not(.wrapped)').forEach(t=>
 
 async function load(){
 const r=await fetch(API);D=await r.json();if(D.error)throw new Error(D.error);
+// Filter all trend data to start from MIN_DATE
+D.flow=(D.flow||[]).filter(r=>r.date>=MIN_DATE);
+if(D.trends){if(D.trends.global)D.trends.global=D.trends.global.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.aircraft)D.trends.aircraft=D.trends.aircraft.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.all_aircraft)D.trends.all_aircraft=D.trends.all_aircraft.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.all_locations)D.trends.all_locations=D.trends.all_locations.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.ranks)D.trends.ranks=D.trends.ranks.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.airlines)D.trends.airlines=D.trends.airlines.filter(r=>r.snapshot_date>=MIN_DATE);}
+D.total_days=D.flow.length;
 const g=D.global.current,cc=D.global.cabin_crew;
 document.getElementById('upd').textContent=`Updated ${D.updated_at} · ${D.total_days} days of data`;
 const tot=(g?.active_jobs||0)+(cc?.active_jobs||0);

@@ -218,7 +218,7 @@ function applyTheme(dark){
   document.getElementById('moonIcon').style.display=dark?'none':'block';
   localStorage.setItem('aeroscout-theme',dark?'dark':'light');
   // Re-render all charts with new colors
-  if(D){Object.keys(EC).forEach(id=>{EC[id].dispose();delete EC[id]});renderPulse();renderVelocity();renderTypeROI();renderSalary();renderLifespan();renderCalendar();renderVisa();renderMatch();renderCompare();renderOverview();wrapTables();}
+  if(D){Object.keys(EC).forEach(id=>{EC[id].dispose();delete EC[id]});renderPulse();renderVelocity();renderTypeROI();renderSalary();renderLifespan();renderCalendar();renderVisa();renderCompare();renderOverview();wrapTables();}
 }
 // Init theme from localStorage or system preference
 (function(){
@@ -236,7 +236,6 @@ const TABS=[
 {id:'lifespan',l:'Job Lifespan',sec:'Tools',icon:'<path d="M3 4h10M3 8h10M3 12h6"/>'},
 {id:'calendar',l:'Hiring Calendar',icon:'<rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 7h12"/><path d="M6 3v11M10 3v11"/>'},
 {id:'visa',l:'Visa & Entry',icon:'<path d="M2 13V6l6-4 6 4v7H2z"/><path d="M6 13V9h4v4"/>'},
-{id:'match',l:'Qualification Match',icon:'<circle cx="8" cy="5" r="3"/><path d="M2 14c0-2.2 2.7-4 6-4s6 1.8 6 4"/>'},
 {id:'compare',l:'Compare Tool',icon:'<circle cx="8" cy="8" r="5.5"/><path d="M5 8h6M8 5v6"/>'},
 {id:'overview',l:'Market Overview',icon:'<rect x="1" y="5" width="3" height="9" rx=".5"/><rect x="5.5" y="3" width="3" height="11" rx=".5"/><rect x="10" y="1" width="3" height="13" rx=".5"/>'}
 ];
@@ -295,7 +294,7 @@ document.getElementById('upd').textContent=`Updated ${D.updated_at}`;
 const tot=(g?.active_jobs||0)+(cc?.active_jobs||0);
 document.getElementById('kpi').innerHTML=`<div class="k"><div class="kl">Active Positions</div><div class="kv">${fmt(tot)}</div><div class="kc nu">Pilot + Cabin Crew</div></div><div class="k"><div class="kl">Pilot Jobs</div><div class="kv">${fmt(g?.active_jobs)}</div><div class="kc nu">${fmt(g?.new_jobs)} new today</div></div><div class="k"><div class="kl">Cabin Crew</div><div class="kv">${fmt(cc?.active_jobs)}</div><div class="kc nu">${fmt(cc?.new_jobs)} new today</div></div><div class="k"><div class="kl">Airlines Hiring</div><div class="kv">${fmt(g?.unique_airlines)}</div><div class="kc nu">${fmt(g?.unique_locations)} locations</div></div><div class="k"><div class="kl">Avg Pilot Salary</div><div class="kv">${$(g?.avg_salary_usd)}</div><div class="kc nu">${g?.jobs_with_salary} with data</div></div>`;
 
-renderPulse();renderVelocity();renderTypeROI();renderSalary();renderLifespan();renderCalendar();renderVisa();renderMatch();renderCompare();renderOverview();
+renderPulse();renderVelocity();renderTypeROI();renderSalary();renderLifespan();renderCalendar();renderVisa();renderCompare();renderOverview();
 wrapTables();
 }
 
@@ -419,42 +418,7 @@ const trAc=ac.filter(a=>a.type_rated_count>0&&a.active_jobs>5).sort((a,b)=>(b.ty
 chart('vi3',{...bo(),grid:{left:10,right:30,top:10,bottom:10,containLabel:true},xAxis:{type:'value',max:100,axisLabel:{fontSize:10,color:DIMH(),formatter:v=>v+'%'},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'category',data:trAc.map(a=>a.dimension_value.replace(/_/g,' ')).reverse(),axisLabel:{fontSize:10,color:TH(),fontWeight:500},axisLine:{show:false},axisTick:{show:false}},series:[{type:'bar',data:trAc.map(a=>Math.round(a.type_rated_count/a.active_jobs*100)).reverse(),barWidth:12,itemStyle:{borderRadius:[0,4,4,0],color:new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:B},{offset:1,color:BL}])},label:{show:true,position:'right',fontSize:9,fontWeight:600,color:TH(),formatter:p=>p.value+'%'}}]});
 }
 
-// ===== 8. QUALIFICATION MATCH =====
-function renderMatch(){
-const jobs=D.qualJobs||[];
-const acList=[...new Set(jobs.map(j=>j.ac).filter(Boolean))].sort();
-const acOpts=acList.map(a=>`<option value="${a}">${a.replace(/_/g,' ')}</option>`).join('');
-document.getElementById('p-match').innerHTML=`<div class="c" style="margin-bottom:1rem"><div class="ch"><div class="ct">Qualification Match Engine</div><div class="cb">See how many jobs you qualify for</div></div><div class="cc"><label>Your hours:</label><input type="number" id="qHours" value="1500" min="0" step="100"><label>PIC hours:</label><input type="number" id="qPic" value="500" min="0" step="100"><label>Type rating:</label><select id="qType"><option value="">None</option>${acOpts}</select></div><div id="matchResult"></div></div><div class="g"><div class="c"><div class="ch"><div class="ct">Positions You Qualify For</div><div class="cb">By aircraft type</div></div><div id="qm1" style="height:300px"></div></div><div class="c"><div class="ch"><div class="ct">What Would Unlock More?</div><div class="cb">Incremental qualifications</div></div><div id="qm2" style="height:300px"></div></div></div>`;
-
-function runMatch(){
-const h=parseInt(document.getElementById('qHours').value)||0;
-const p=parseInt(document.getElementById('qPic').value)||0;
-const tr=document.getElementById('qType').value;
-const qualified=jobs.filter(j=>(j.hours||99999)<=h&&(j.pic||99999)<=p&&(!j.tr||tr===j.ac));
-const total=jobs.length;
-document.getElementById('matchResult').innerHTML=`<div class="match-result match-hi"><span class="match-num">${qualified.length}</span> <span class="match-lbl">of ${total} positions you qualify for today (${Math.round(qualified.length/total*100)}%)</span></div>`;
-
-// By aircraft
-const byAc={};qualified.forEach(j=>{const a=j.ac||'Other';byAc[a]=(byAc[a]||0)+1});
-const acSorted=Object.entries(byAc).sort((a,b)=>b[1]-a[1]).slice(0,10);
-chart('qm1',{...bo(),grid:{left:10,right:30,top:10,bottom:10,containLabel:true},xAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH()},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'category',data:acSorted.map(a=>a[0].replace(/_/g,' ')).reverse(),axisLabel:{fontSize:10,color:TH(),fontWeight:500},axisLine:{show:false},axisTick:{show:false}},series:[{type:'bar',data:acSorted.map(a=>a[1]).reverse(),barWidth:13,itemStyle:{borderRadius:[0,4,4,0],color:B},label:{show:true,position:'right',fontSize:10,fontWeight:600,color:TH()}}]});
-
-// What would unlock more
-const scenarios=[
-{label:'+500h total',match:jobs.filter(j=>(j.hours||99999)<=(h+500)&&(j.pic||99999)<=p).length},
-{label:'+1000h total',match:jobs.filter(j=>(j.hours||99999)<=(h+1000)&&(j.pic||99999)<=p).length},
-{label:'+500h PIC',match:jobs.filter(j=>(j.hours||99999)<=h&&(j.pic||99999)<=(p+500)).length},
-{label:'+A320 rating',match:jobs.filter(j=>(j.hours||99999)<=h&&(j.pic||99999)<=p&&(!j.tr||'A320'===j.ac)).length},
-{label:'+B737 rating',match:jobs.filter(j=>(j.hours||99999)<=h&&(j.pic||99999)<=p&&(!j.tr||'B737'===j.ac)).length},
-].map(s=>({...s,gain:s.match-qualified.length})).sort((a,b)=>b.gain-a.gain);
-chart('qm2',{...bo(),grid:{left:10,right:30,top:10,bottom:10,containLabel:true},xAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH()},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'category',data:scenarios.map(s=>s.label).reverse(),axisLabel:{fontSize:10,color:TH(),fontWeight:500},axisLine:{show:false},axisTick:{show:false}},series:[{type:'bar',data:scenarios.map(s=>s.gain).reverse(),barWidth:18,itemStyle:{borderRadius:[0,4,4,0],color:p=>p.value>0?'#10b981':'#94a3b8'},label:{show:true,position:'right',fontSize:10,fontWeight:600,color:TH(),formatter:p=>'+'+p.value+' jobs'}}]});
-}
-
-['qHours','qPic','qType'].forEach(id=>document.getElementById(id).addEventListener('change',runMatch));
-runMatch();
-}
-
-// ===== 9. COMPARE =====
+// ===== 8. COMPARE =====
 function renderCompare(){
 const allAc=D.trends.all_aircraft||[];
 const acNames=[...new Set(allAc.map(r=>r.dimension_value))].sort();

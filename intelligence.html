@@ -283,7 +283,7 @@ const srcH=document.getElementById(chartId)?.offsetHeight||300;
 const overlay=document.createElement('div');overlay.className='chart-modal-overlay';
 overlay.innerHTML='<div class="chart-modal"><div class="chart-modal-header"><div><div class="ct">'+title+'</div></div><div style="display:flex;align-items:center;gap:8px">'+(badge?'<span class="cb">'+badge+'</span>':'')+'<span class="brand"><span class="brand-aero">AERO</span><span class="brand-scout">SCOUT</span></span><button class="chart-modal-close">&times;</button></div></div><div id="modal-chart" style="height:'+srcH+'px"></div></div>';
 document.body.appendChild(overlay);
-overlay.querySelector('.chart-modal-close').addEventListener('click',closeChartModal);
+overlay.querySelector('.chart-modal-close').addEventListener('click',function(){closeChartModal()});
 overlay.addEventListener('click',function(e){if(e.target===overlay)closeChartModal()});
 const opts=src.getOption();
 const mc=echarts.init(document.getElementById('modal-chart'),isDark()?'dark':null);

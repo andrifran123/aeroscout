@@ -38,22 +38,22 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --navy: #1a2744;
+            --navy: #1A2744;
             --navy-deep: #111c35;
-            --gold: #b8944f;
-            --gold-light: #c8a44e;
-            --gold-pale: #f5eed9;
-            --cream: #faf9f6;
-            --cream-dark: #f2efe8;
+            --gold: #2563EB;
+            --gold-light: #3b82f6;
+            --gold-pale: #dbeafe;
+            --cream: #F5F8FC;
+            --cream-dark: #e8eef6;
             --white: #ffffff;
-            --text-dark: #1a2744;
-            --text-mid: #4a5568;
-            --text-light: #718096;
-            --border: #e8e3d8;
-            --border-light: #f0ece3;
-            --shadow-sm: 0 1px 3px rgba(26,39,68,0.07), 0 1px 2px rgba(26,39,68,0.05);
-            --shadow-md: 0 4px 12px rgba(26,39,68,0.1), 0 2px 4px rgba(26,39,68,0.06);
-            --shadow-lg: 0 10px 28px rgba(26,39,68,0.13), 0 4px 8px rgba(26,39,68,0.06);
+            --text-dark: #1A2744;
+            --text-mid: #516680;
+            --text-light: #8298b0;
+            --border: rgba(26,39,68,0.07);
+            --border-light: rgba(26,39,68,0.04);
+            --shadow-sm: 0 1px 3px rgba(26,39,68,0.04);
+            --shadow-md: 0 4px 12px rgba(26,39,68,0.08);
+            --shadow-lg: 0 10px 28px rgba(26,39,68,0.1);
         }
 
         body {
@@ -67,17 +67,25 @@
 
         /* ── Nav ──────────────────────────────────────────── */
         .nav {
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 200;
-            background: rgba(11, 28, 62, 0.95);
-            backdrop-filter: blur(15px);
+            background: transparent;
             height: 62px;
             padding: 0 40px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.4s;
+        }
+        .nav.scrolled {
+            background: rgba(245, 248, 252, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 16px rgba(26, 39, 68, 0.04);
         }
         .nav__brand {
             font-family: 'Outfit', sans-serif;
@@ -97,6 +105,14 @@
         }
         .nav__links a:hover { color: #fff; background: rgba(255,255,255,0.1); }
         .nav__links a.active { color: #fff; }
+        .nav.scrolled .nav__brand { color: var(--text-dark); }
+        .nav.scrolled .nav__links a { color: var(--text-light); }
+        .nav.scrolled .nav__links a:hover { color: var(--gold); background: rgba(37,99,235,0.06); }
+        .nav.scrolled .nav__links a.active { color: var(--gold); }
+        .nav.scrolled .nav__signup { border-color: var(--gold) !important; color: var(--gold) !important; }
+        .nav.scrolled .nav__signup:hover { background: var(--gold) !important; color: var(--white) !important; }
+        .nav.scrolled .nav__login { border-color: var(--border) !important; color: var(--text-dark) !important; }
+        .nav.scrolled .nav__login:hover { border-color: var(--gold) !important; background: rgba(37,99,235,0.06) !important; }
         .nav__signup {
             border: 1.5px solid var(--gold) !important;
             color: #fff !important;
@@ -104,7 +120,7 @@
             border-radius: 7px !important;
             margin-left: 4px !important;
         }
-        .nav__signup:hover { background: var(--gold) !important; color: var(--navy) !important; }
+        .nav__signup:hover { background: var(--gold) !important; color: var(--white) !important; }
         .nav__login {
             border: 1.5px solid rgba(255,255,255,0.3) !important;
             color: #fff !important;
@@ -132,7 +148,7 @@
         .hero__overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(100deg, rgba(17,28,53,0.96) 0%, rgba(26,39,68,0.90) 45%, rgba(26,39,68,0.4) 70%, transparent 100%);
+            background: linear-gradient(100deg, rgba(26,39,68,0.94) 0%, rgba(26,39,68,0.82) 45%, rgba(26,39,68,0.35) 70%, transparent 100%);
             z-index: 1;
         }
         .hero__content {
@@ -167,7 +183,7 @@
         .stats-bar {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            background: linear-gradient(90deg, var(--gold-light) 0%, var(--gold) 100%);
+            background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
         }
         .stats-bar__item {
             padding: 16px 20px;
@@ -216,11 +232,11 @@
             cursor: pointer;
             transition: all 0.15s;
         }
-        .filter-btn:hover { border-color: var(--navy); color: var(--navy); }
+        .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
         .filter-btn.active {
-            background: var(--navy);
+            background: var(--gold);
             color: var(--white);
-            border-color: var(--navy);
+            border-color: var(--gold);
         }
 
         /* ── Post grid ────────────────────────────────────── */
@@ -329,7 +345,7 @@
             width: 36px;
             height: 36px;
             border: 3px solid var(--border);
-            border-top-color: var(--gold);
+            border-top-color: var(--gold-light);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 0 auto 16px;
@@ -404,7 +420,7 @@
             <div class="stats-bar__icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
             </div>
-            <div class="stats-bar__value">850</div>
+            <div class="stats-bar__value">1,100</div>
             <div class="stats-bar__label">Airlines & Operators</div>
         </div>
         <div class="stats-bar__item">
@@ -447,6 +463,14 @@
         <p>&copy; 2025 AeroScout. <a href="/terms.html">Terms</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/refund.html">Refund</a></p>
     </footer>
 
+    <script>
+        // Nav glass effect on scroll
+        var nav = document.querySelector('.nav');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 40) { nav.classList.add('scrolled'); }
+            else { nav.classList.remove('scrolled'); }
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         var SUPABASE_URL = 'https://ziboktbmbyjbhifsdypa.supabase.co';

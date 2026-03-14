@@ -344,7 +344,7 @@ function buildPage(post) {
     </div>
     <div class="stats-bar__item">
       <div class="stats-bar__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
-      <div class="stats-bar__value">850</div>
+      <div class="stats-bar__value">1,100</div>
       <div class="stats-bar__label">Airlines & Operators</div>
     </div>
     <div class="stats-bar__item">
@@ -368,7 +368,7 @@ function buildPage(post) {
 
     <div class="cta-banner">
       <h2>Find Your Next Aviation Role</h2>
-      <p>Browse the largest pilot and cabin crew job database with real-time listings from 850+ airlines worldwide.</p>
+      <p>Browse the largest pilot and cabin crew job database with real-time listings from 1,100+ airlines worldwide.</p>
       <a href="/Jobs.html" class="cta-btn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         Browse All Jobs

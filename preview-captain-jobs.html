@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Captain Pilot Jobs Worldwide | AeroScout</title>
+  <meta name="description" content="Browse 476 verified captain pilot jobs from airlines and operators worldwide. Updated daily. Filter by aircraft type, location, and type rating requirements.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --slate-950: #0A1628;
+      --slate-800: #1E293B;
+      --slate-700: #334155;
+      --slate-500: #64748B;
+      --slate-400: #8898AA;
+      --slate-200: #E2E8F0;
+      --slate-100: #F1F5F9;
+      --slate-50:  #F6F9FC;
+      --white:     #FFFFFF;
+      --blue:      #635BFF;
+      --blue-hover:#7A73FF;
+      --cyan:      #00D4AA;
+      --green:     #0CBF6E;
+      --green-bg:  #E8FBF0;
+      --ink:       #0A2540;
+      --body:      #425466;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--body);
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── Nav ──────────────────────────────────────────────────────── */
+    .nav {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 64px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav__brand {
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .nav__brand span { opacity: 0.5; }
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav__links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: color 0.15s;
+    }
+    .nav__links a:hover { color: #fff; }
+    .nav__cta {
+      background: rgba(255,255,255,0.12) !important;
+      color: #fff !important;
+      font-weight: 600 !important;
+      border-radius: 20px !important;
+      padding: 8px 18px !important;
+      transition: background 0.15s !important;
+    }
+    .nav__cta:hover { background: rgba(255,255,255,0.2) !important; }
+
+    /* ── Hero ─────────────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      background: var(--slate-950);
+      overflow: hidden;
+      padding: 140px 40px 100px;
+    }
+    /* Layered radial gradient mesh */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 40%, rgba(99,91,255,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 60% at 75% 20%, rgba(0,212,170,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 80% at 50% 90%, rgba(59,130,246,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 85% 70%, rgba(99,91,255,0.08) 0%, transparent 50%);
+    }
+    .hero__inner {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 28px;
+    }
+    .hero__badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .hero__sub {
+      font-size: 17px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.65;
+      max-width: 480px;
+      margin: 0 auto 36px;
+    }
+    .hero__actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--blue);
+      padding: 13px 28px;
+      border-radius: 24px;
+      transition: background 0.15s, transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover { background: var(--blue-hover); }
+    .btn-secondary {
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      padding: 13px 24px;
+      border-radius: 24px;
+      transition: color 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-secondary:hover { color: #fff; }
+
+    /* ── Stats strip ─────────────────────────────────────────────── */
+    .stats {
+      background: var(--white);
+      border-bottom: 1px solid var(--slate-200);
+      padding: 0 40px;
+    }
+    .stats__inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .stats__item {
+      padding: 32px 0;
+      text-align: center;
+    }
+    .stats__item + .stats__item {
+      border-left: 1px solid var(--slate-200);
+    }
+    .stats__val {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stats__label {
+      font-size: 13px;
+      color: var(--slate-500);
+      font-weight: 500;
+    }
+
+    /* ── Content section ─────────────────────────────────────────── */
+    .content {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 72px 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+    .content__heading {
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .content__body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--body);
+    }
+    .content__body p { margin-bottom: 14px; }
+    .content__body p:last-child { margin-bottom: 0; }
+    .content__list {
+      list-style: none;
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .content__list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 15px;
+      color: var(--body);
+      line-height: 1.5;
+    }
+    .content__check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--green-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: var(--green);
+    }
+    .content__map {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(10,37,64,0.06), 0 1px 3px rgba(10,37,64,0.04);
+      border: 1px solid var(--slate-200);
+      position: sticky;
+      top: 80px;
+    }
+    .content__map img { width: 100%; display: block; }
+
+    /* ── Jobs section ────────────────────────────────────────────── */
+    .jobs-section {
+      background: var(--slate-50);
+      padding: 72px 40px 80px;
+    }
+    .jobs-section__inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .section-head__title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .section-head__count {
+      font-size: 14px;
+      color: var(--slate-500);
+      font-weight: 500;
+    }
+
+    /* ── Job cards ────────────────────────────────────────────────── */
+    .cards { display: grid; gap: 10px; }
+
+    .card {
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid var(--slate-200);
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      grid-template-rows: auto auto auto;
+      gap: 4px 18px;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      color: inherit;
+    }
+    .card:hover {
+      border-color: var(--slate-200);
+      box-shadow: 0 6px 20px rgba(10,37,64,0.08), 0 2px 6px rgba(10,37,64,0.04);
+    }
+
+    .card__logo {
+      grid-row: 1 / span 2;
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--slate-50);
+      border-radius: 10px;
+      overflow: hidden;
+      align-self: start;
+    }
+    .card__logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 6px;
+    }
+    .card__logo-letter {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--slate-400);
+    }
+
+    .card__header {
+      grid-column: 2;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      align-self: center;
+      min-width: 0;
+    }
+    .card__title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .card__airline {
+      font-size: 13px;
+      color: var(--slate-500);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .card__action {
+      grid-column: 3;
+      grid-row: 1 / span 2;
+      align-self: center;
+    }
+    .card__view {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--blue);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .card:hover .card__view { opacity: 1; }
+
+    .card__mobile-view { display: none; }
+
+    .card__details {
+      grid-column: 2;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+    .tag {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--body);
+      background: var(--slate-100);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+    .tag--green {
+      color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .card__stats {
+      grid-column: 2 / span 2;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--slate-100);
+      font-size: 13px;
+    }
+    .card__stat-lbl {
+      color: var(--slate-400);
+    }
+    .card__stat-val {
+      font-weight: 600;
+      color: var(--ink);
+      margin-left: 4px;
+    }
+    .card__salary {
+      font-weight: 600;
+      color: var(--green);
+      margin-left: 4px;
+    }
+    .card__time {
+      grid-column: 1;
+      grid-row: 3;
+      font-size: 11px;
+      color: var(--slate-400);
+      align-self: end;
+    }
+
+    .browse-all {
+      text-align: center;
+      margin-top: 28px;
+    }
+    .browse-all a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--blue);
+      padding: 13px 28px;
+      background: var(--white);
+      border: 1px solid var(--slate-200);
+      border-radius: 24px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .browse-all a:hover {
+      border-color: var(--blue);
+      box-shadow: 0 2px 8px rgba(99,91,255,0.12);
+    }
+
+    /* ── FAQ ──────────────────────────────────────────────────────── */
+    .faq-section {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 72px 40px;
+    }
+    .faq-section .section-head { margin-bottom: 16px; }
+    .faq-item { border-bottom: 1px solid var(--slate-200); }
+    .faq-item:first-child { border-top: 1px solid var(--slate-200); }
+    .faq-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 20px 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+    }
+    .faq-trigger h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.4;
+      transition: color 0.15s;
+    }
+    .faq-trigger:hover h3 { color: var(--blue); }
+    .faq-chevron {
+      flex-shrink: 0;
+      color: var(--slate-400);
+      transition: transform 0.2s ease;
+    }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-answer {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.25s ease;
+    }
+    .faq-item.open .faq-answer { grid-template-rows: 1fr; }
+    .faq-answer-inner { overflow: hidden; }
+    .faq-answer-inner p {
+      font-size: 14.5px;
+      color: var(--body);
+      line-height: 1.75;
+      padding-bottom: 20px;
+    }
+
+    /* ── Related ──────────────────────────────────────────────────── */
+    .related {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 40px 72px;
+    }
+    .related__label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--slate-400);
+      margin-bottom: 14px;
+    }
+    .related__grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .related__link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--body);
+      padding: 8px 16px;
+      border: 1px solid var(--slate-200);
+      border-radius: 20px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .related__link:hover {
+      color: var(--blue);
+      border-color: var(--blue);
+    }
+
+    /* ── CTA ──────────────────────────────────────────────────────── */
+    .cta {
+      position: relative;
+      background: var(--slate-950);
+      padding: 80px 40px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 30% 50%, rgba(99,91,255,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 80% 40%, rgba(0,212,170,0.10) 0%, transparent 50%);
+    }
+    .cta__inner {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .cta__label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 16px;
+      letter-spacing: 0.04em;
+    }
+    .cta h2 {
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .cta p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.65;
+      margin-bottom: 32px;
+    }
+    .cta__actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .cta .btn-primary { background: var(--blue); }
+    .cta .btn-primary:hover { background: var(--blue-hover); }
+    .cta .btn-secondary { color: rgba(255,255,255,0.6); }
+    .cta .btn-secondary:hover { color: #fff; }
+
+    /* ── Footer ───────────────────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      padding: 28px 40px;
+      border-top: 1px solid var(--slate-200);
+    }
+    .footer p { font-size: 13px; color: var(--slate-400); }
+    .footer a { transition: color 0.15s; }
+    .footer a:hover { color: var(--ink); }
+    .footer__dot { margin: 0 8px; opacity: 0.4; }
+
+    /* ── Responsive: 900px ─────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .content { grid-template-columns: 1fr; gap: 36px; padding: 56px 28px; }
+      .content__map { position: static; max-width: 420px; }
+      .card { grid-template-columns: 60px 1fr auto; gap: 4px 14px; }
+      .card__logo { width: 60px; height: 60px; }
+    }
+
+    /* ── Responsive: 700px ─────────────────────────────────────── */
+    @media (max-width: 700px) {
+      .nav { padding: 0 20px; height: 56px; }
+      .nav__links a:not(.nav__cta) { display: none; }
+      .hero { padding: 120px 24px 72px; }
+      .hero h1 { font-size: 2rem; }
+      .hero__sub { font-size: 15px; }
+      .stats__inner { grid-template-columns: repeat(2, 1fr); }
+      .stats__item:nth-child(3) { border-left: none; border-top: 1px solid var(--slate-200); }
+      .stats__item:nth-child(4) { border-top: 1px solid var(--slate-200); }
+      .stats__val { font-size: 24px; }
+      .content { padding: 40px 20px; }
+      .content__heading { font-size: 1.4rem; }
+      .jobs-section { padding: 48px 20px 56px; }
+      .card { padding: 16px 18px; }
+      .card__title { font-size: 14px; }
+      .faq-section { padding: 48px 20px; }
+      .related { padding: 0 20px 48px; }
+      .cta { padding: 56px 24px; }
+    }
+
+    /* ── Responsive: 520px ─────────────────────────────────────── */
+    @media (max-width: 520px) {
+      .hero { padding: 100px 20px 56px; }
+      .hero h1 { font-size: 1.7rem; }
+      .hero__sub { font-size: 14px; margin-bottom: 28px; }
+      .btn-primary { font-size: 14px; padding: 12px 22px; }
+      .btn-secondary { font-size: 14px; }
+      .stats__val { font-size: 20px; }
+      .stats__label { font-size: 12px; }
+
+      .card {
+        display: block;
+        padding: 16px;
+      }
+      .card__logo {
+        width: 52px;
+        height: 52px;
+        float: left;
+        margin-right: 12px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+      }
+      .card__header { display: block; }
+      .card__title { font-size: 14px; margin-bottom: 2px; }
+      .card__airline { font-size: 12px; }
+      .card__action { display: none; }
+      .card__mobile-view {
+        display: block;
+        text-align: center;
+        margin-top: 12px;
+        clear: both;
+      }
+      .card__mobile-view a {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--blue);
+        padding: 9px;
+        border: 1px solid var(--slate-200);
+        border-radius: 8px;
+      }
+      .card__details {
+        clear: both;
+        margin-top: 10px;
+      }
+      .tag { font-size: 11px; padding: 2px 8px; }
+      .card__stats { gap: 12px; font-size: 12px; }
+      .card__time { margin-top: 8px; }
+
+      .faq-trigger h3 { font-size: 14px; }
+      .cta h2 { font-size: 1.3rem; }
+      .related__link { font-size: 12px; padding: 6px 12px; }
+      .browse-all a { font-size: 14px; padding: 11px 22px; }
+    }
+
+    /* ── Responsive: 380px ─────────────────────────────────────── */
+    @media (max-width: 380px) {
+      .nav { padding: 0 14px; }
+      .nav__brand { font-size: 16px; }
+      .hero { padding: 90px 16px 48px; }
+      .hero h1 { font-size: 1.5rem; }
+      .hero__badge { font-size: 12px; margin-bottom: 20px; }
+      .stats { padding: 0 16px; }
+      .stats__item { padding: 20px 0; }
+      .stats__val { font-size: 18px; }
+      .content { padding: 32px 16px; }
+      .content__heading { font-size: 1.2rem; }
+      .content__body { font-size: 14px; }
+      .content__list li { font-size: 14px; }
+      .jobs-section { padding: 36px 16px 44px; }
+      .card { padding: 12px; }
+      .card__logo { width: 44px; height: 44px; border-radius: 6px; margin-right: 10px; }
+      .card__title { font-size: 13px; }
+      .card__stats { font-size: 11px; gap: 10px; }
+      .faq-section { padding: 36px 16px; }
+      .related { padding: 0 16px 36px; }
+      .cta { padding: 44px 16px; }
+      .cta .btn-primary { padding: 10px 18px; font-size: 13px; }
+      .footer { padding: 24px 16px; }
+      .footer p { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <a href="#" class="nav__brand">AeroScout</a>
+    <div class="nav__links">
+      <a href="#">Jobs</a>
+      <a href="#">Blog</a>
+      <a href="#">About</a>
+      <a href="#">Pricing</a>
+      <a href="#" class="nav__cta">Sign Up</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__inner">
+      <div class="hero__badge"><span class="hero__badge-dot"></span> 476 Active Positions</div>
+      <h1>Captain pilot jobs worldwide</h1>
+      <p class="hero__sub">Updated daily from 1,100+ airlines and operators. Minimum hours, type ratings, and salary data — all verified.</p>
+      <div class="hero__actions">
+        <a href="#" class="btn-primary">
+          Browse jobs
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#" class="btn-secondary">Create free account &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stats__inner">
+      <div class="stats__item">
+        <div class="stats__val">476</div>
+        <div class="stats__label">Open positions</div>
+      </div>
+      <div class="stats__item">
+        <div class="stats__val">1,100+</div>
+        <div class="stats__label">Airlines &amp; operators</div>
+      </div>
+      <div class="stats__item">
+        <div class="stats__val">24h</div>
+        <div class="stats__label">Update cycle</div>
+      </div>
+      <div class="stats__item">
+        <div class="stats__val">Global</div>
+        <div class="stats__label">Coverage</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <section class="content">
+    <div>
+      <h2 class="content__heading">Elevate your career to new heights</h2>
+      <div class="content__body">
+        <p>Captain pilot jobs are among the most sought-after positions in commercial and business aviation. Whether you're seeking a command role on a narrowbody airliner, a wide-body freighter, or a corporate jet, AeroScout tracks verified openings from hundreds of operators worldwide.</p>
+        <p>Our database is refreshed every 24 hours, pulling directly from airline career portals, charter operators, and recruitment agencies.</p>
+      </div>
+      <ul class="content__list">
+        <li>
+          <span class="content__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          Active job postings from 1,100+ airlines worldwide
+        </li>
+        <li>
+          <span class="content__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          Visa sponsorship options for select roles
+        </li>
+        <li>
+          <span class="content__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          Detailed listings with pay, type rating requirements &amp; benefits
+        </li>
+      </ul>
+    </div>
+    <div class="content__map">
+      <img src="/images/job-locations-map.png" alt="AeroScout job locations worldwide" loading="lazy">
+    </div>
+  </section>
+
+  <!-- Jobs -->
+  <section class="jobs-section">
+    <div class="jobs-section__inner">
+      <div class="section-head">
+        <h2 class="section-head__title">Latest captain pilot jobs</h2>
+        <span class="section-head__count">476 results</span>
+      </div>
+
+      <div class="cards">
+
+        <a href="#" class="card">
+          <div class="card__logo"><img src="https://ziboktbmbyjbhifsdypa.supabase.co/storage/v1/object/public/logos/2Excel_Aviation.png" alt="2Excel Aviation" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=card__logo-letter>2</span>'"></div>
+          <div class="card__header">
+            <span class="card__title">Captain B350</span>
+            <span class="card__airline">2Excel Aviation</span>
+          </div>
+          <div class="card__action"><span class="card__view">View <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+          <div class="card__details">
+            <span class="tag">B350</span>
+            <span class="tag">Prestwick</span>
+            <span class="tag tag--green">Non-type rated</span>
+          </div>
+          <div class="card__stats">
+            <span><span class="card__stat-lbl">TT</span><span class="card__stat-val">1,500</span></span>
+            <span><span class="card__stat-lbl">PIC</span><span class="card__stat-val">750</span></span>
+            <span><span class="card__stat-lbl">Roster</span><span class="card__stat-val">4/4</span></span>
+          </div>
+          <span class="card__time">Today</span>
+          <div class="card__mobile-view"><span>View Details</span></div>
+        </a>
+
+        <a href="#" class="card">
+          <div class="card__logo"><img src="https://www.wingaviation.com/assets/images/theme/logo.png" alt="Wing Aviation" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=card__logo-letter>W</span>'"></div>
+          <div class="card__header">
+            <span class="card__title">Captain - G-V</span>
+            <span class="card__airline">Wing Aviation</span>
+          </div>
+          <div class="card__action"><span class="card__view">View <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+          <div class="card__details">
+            <span class="tag">G-V</span>
+            <span class="tag">Houston</span>
+            <span class="tag">Type-rated</span>
+          </div>
+          <div class="card__stats">
+            <span><span class="card__stat-lbl">TT</span><span class="card__stat-val">3,500</span></span>
+            <span><span class="card__stat-lbl">PIC</span><span class="card__stat-val">500</span></span>
+            <span><span class="card__stat-lbl">Jet</span><span class="card__stat-val">500</span></span>
+            <span><span class="card__stat-lbl">ME</span><span class="card__stat-val">1,500</span></span>
+          </div>
+          <span class="card__time">Today</span>
+          <div class="card__mobile-view"><span>View Details</span></div>
+        </a>
+
+        <a href="#" class="card">
+          <div class="card__logo"><span class="card__logo-letter">D</span></div>
+          <div class="card__header">
+            <span class="card__title">Captain B737 Classic</span>
+            <span class="card__airline">Dynamic Aviation</span>
+          </div>
+          <div class="card__action"><span class="card__view">View <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+          <div class="card__details">
+            <span class="tag">B737-500</span>
+            <span class="tag">Shenandoah, VA</span>
+            <span class="tag">Type-rated</span>
+          </div>
+          <div class="card__stats">
+            <span><span class="card__stat-lbl">TT</span><span class="card__stat-val">2,000</span></span>
+            <span><span class="card__stat-lbl">PIC</span><span class="card__stat-val">1,000</span></span>
+            <span><span class="card__stat-lbl">Jet</span><span class="card__stat-val">1,000</span></span>
+            <span><span class="card__stat-lbl">ME</span><span class="card__stat-val">1,000</span></span>
+          </div>
+          <span class="card__time">Today</span>
+          <div class="card__mobile-view"><span>View Details</span></div>
+        </a>
+
+        <a href="#" class="card">
+          <div class="card__logo"><img src="https://ziboktbmbyjbhifsdypa.supabase.co/storage/v1/object/public/logos/Alerion_Aviation.png" alt="Alerion Aviation" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=card__logo-letter>A</span>'"></div>
+          <div class="card__header">
+            <span class="card__title">Global 5000 - Captain</span>
+            <span class="card__airline">Alerion Aviation</span>
+          </div>
+          <div class="card__action"><span class="card__view">View <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+          <div class="card__details">
+            <span class="tag">Global 5000</span>
+            <span class="tag">Scranton, PA</span>
+            <span class="tag">Type-rated</span>
+          </div>
+          <div class="card__stats">
+            <span><span class="card__stat-lbl">TT</span><span class="card__stat-val">4,000</span></span>
+            <span><span class="card__stat-lbl">PIC</span><span class="card__stat-val">3,000</span></span>
+            <span><span class="card__stat-lbl">ME</span><span class="card__stat-val">3,000</span></span>
+          </div>
+          <span class="card__time">Today</span>
+          <div class="card__mobile-view"><span>View Details</span></div>
+        </a>
+
+        <a href="#" class="card">
+          <div class="card__logo"><span class="card__logo-letter">D</span></div>
+          <div class="card__header">
+            <span class="card__title">CL-604 Challenger Captain</span>
+            <span class="card__airline">DST LLC</span>
+          </div>
+          <div class="card__action"><span class="card__view">View <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+          <div class="card__details">
+            <span class="tag">CL-604</span>
+            <span class="tag">Hagerstown, MD</span>
+            <span class="tag tag--green">Non-type rated</span>
+          </div>
+          <div class="card__stats">
+            <span><span class="card__stat-lbl">TT</span><span class="card__stat-val">2,000</span></span>
+            <span><span class="card__stat-lbl">PIC</span><span class="card__stat-val">0</span></span>
+            <span><span class="card__stat-lbl">Roster</span><span class="card__stat-val">14/14</span></span>
+          </div>
+          <span class="card__time">Today</span>
+          <div class="card__mobile-view"><span>View Details</span></div>
+        </a>
+
+        <a href="#" class="card">
+          <div class="card__logo"><span class="card__logo-letter">S</span></div>
+          <div class="card__header">
+            <span class="card__title">Challenger 650 Captain - NY Metro</span>
+            <span class="card__airline">Solairus Aviation</span>
+          </div>
+          <div class="card__action"><span class="card__view">View <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+          <div class="card__details">
+            <span class="tag">Challenger 650</span>
+            <span class="tag">Ronkonkoma, NY</span>
+            <span class="tag">Type-rated</span>
+          </div>
+          <div class="card__stats">
+            <span><span class="card__stat-lbl">TT</span><span class="card__stat-val">3,000</span></span>
+            <span><span class="card__stat-lbl">PIC</span><span class="card__stat-val">1,500</span></span>
+            <span><span class="card__stat-lbl">Jet</span><span class="card__stat-val">500</span></span>
+            <span><span class="card__stat-lbl">ME</span><span class="card__stat-val">1,500</span></span>
+            <span><span class="card__stat-lbl">Salary</span><span class="card__salary">$50k–$500k</span></span>
+          </div>
+          <span class="card__time">Yesterday</span>
+          <div class="card__mobile-view"><span>View Details</span></div>
+        </a>
+
+        <a href="#" class="card">
+          <div class="card__logo"><img src="https://ziboktbmbyjbhifsdypa.supabase.co/storage/v1/object/public/logos/NAYSA.png" alt="NAYSA" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=card__logo-letter>N</span>'"></div>
+          <div class="card__header">
+            <span class="card__title">Captain ATR 72-600</span>
+            <span class="card__airline">NAYSA</span>
+          </div>
+          <div class="card__action"><span class="card__view">View <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+          <div class="card__details">
+            <span class="tag">ATR 72-600</span>
+            <span class="tag">Fuerteventura</span>
+            <span class="tag">Type-rated</span>
+          </div>
+          <div class="card__stats">
+            <span><span class="card__stat-lbl">TT</span><span class="card__stat-val">1,000</span></span>
+            <span><span class="card__stat-lbl">PIC</span><span class="card__stat-val">1,000</span></span>
+          </div>
+          <span class="card__time">Yesterday</span>
+          <div class="card__mobile-view"><span>View Details</span></div>
+        </a>
+
+        <a href="#" class="card">
+          <div class="card__logo"><img src="https://ziboktbmbyjbhifsdypa.supabase.co/storage/v1/object/public/logos/DHL.png" alt="DHL" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=card__logo-letter>D</span>'"></div>
+          <div class="card__header">
+            <span class="card__title">Captain ATR-42</span>
+            <span class="card__airline">DHL</span>
+          </div>
+          <div class="card__action"><span class="card__view">View <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+          <div class="card__details">
+            <span class="tag">ATR-42</span>
+            <span class="tag">Guatemala City</span>
+            <span class="tag">Type-rated</span>
+          </div>
+          <div class="card__stats">
+            <span><span class="card__stat-lbl">TT</span><span class="card__stat-val">2,500</span></span>
+            <span><span class="card__stat-lbl">PIC</span><span class="card__stat-val">1,000</span></span>
+          </div>
+          <span class="card__time">Yesterday</span>
+          <div class="card__mobile-view"><span>View Details</span></div>
+        </a>
+
+      </div>
+
+      <div class="browse-all">
+        <a href="#">
+          Browse all 476 captain pilot jobs
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <div class="section-head">
+      <h2 class="section-head__title">Frequently asked questions</h2>
+    </div>
+
+    <div class="faq-item" id="faq-0">
+      <button class="faq-trigger" onclick="toggleFaq(0)" aria-expanded="false">
+        <h3>What are the minimum flight hours required?</h3>
+        <span class="faq-chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner"><p>Requirements vary by operator and aircraft type. Commercial airline captain positions typically require 1,500–5,000 total hours with substantial PIC time. Business aviation roles often require 3,000–5,000 TT. Regional and turboprop captain positions can start from 1,000 TT.</p></div>
+      </div>
+    </div>
+
+    <div class="faq-item" id="faq-1">
+      <button class="faq-trigger" onclick="toggleFaq(1)" aria-expanded="false">
+        <h3>Do I need a type rating to apply?</h3>
+        <span class="faq-chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner"><p>Not always. Many positions — particularly in business aviation and turboprop operations — are advertised as "non-type rated," meaning the operator provides training. These are highlighted with a green badge. Airline and charter positions more commonly require an existing type rating.</p></div>
+      </div>
+    </div>
+
+    <div class="faq-item" id="faq-2">
+      <button class="faq-trigger" onclick="toggleFaq(2)" aria-expanded="false">
+        <h3>How often are listings updated?</h3>
+        <span class="faq-chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner"><p>Every 24 hours. Each posting is verified directly against the source. Inactive listings are removed promptly. Sign up for a free account to receive email alerts when new captain jobs matching your preferences are posted.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related -->
+  <section class="related">
+    <div class="related__label">Related searches</div>
+    <div class="related__grid">
+      <a href="#" class="related__link">First Officer Jobs</a>
+      <a href="#" class="related__link">B737 Captain</a>
+      <a href="#" class="related__link">A320 Captain</a>
+      <a href="#" class="related__link">Business Jet Captain</a>
+      <a href="#" class="related__link">Captain Jobs Europe</a>
+      <a href="#" class="related__link">Captain Jobs Middle East</a>
+      <a href="#" class="related__link">ATR Captain</a>
+      <a href="#" class="related__link">All Jobs</a>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta__inner">
+      <div class="cta__label">Job Alerts</div>
+      <h2>Never miss a pilot job again</h2>
+      <p>Instant alerts for new positions matching your qualifications, aircraft type, and location preferences.</p>
+      <div class="cta__actions">
+        <a href="#" class="btn-primary">Create free account</a>
+        <a href="#" class="btn-secondary">Browse all jobs &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2026 AeroScout<span class="footer__dot">&middot;</span><a href="#">Terms</a><span class="footer__dot">&middot;</span><a href="#">Privacy</a><span class="footer__dot">&middot;</span><a href="#">About</a></p>
+  </footer>
+
+  <script>
+    function toggleFaq(i) {
+      var el = document.getElementById('faq-' + i);
+      var t = el.querySelector('.faq-trigger');
+      var isOpen = el.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function(e) {
+        e.classList.remove('open');
+        e.querySelector('.faq-trigger').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        el.classList.add('open');
+        t.setAttribute('aria-expanded', 'true');
+      }
+    }
+    if (document.getElementById('faq-0')) toggleFaq(0);
+  </script>
+
+</body>
+</html>

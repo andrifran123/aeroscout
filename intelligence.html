@@ -40,7 +40,7 @@ nav{position:sticky;top:0;z-index:100;padding:.8rem 2.5rem;display:flex;justify-
 .tc{display:none}.tc.on{display:block}
 .g{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem}.g3{grid-template-columns:1fr 1fr 1fr}
 .c{background:var(--wh);border:1px solid var(--bd);border-radius:11px;padding:1.4rem;box-shadow:var(--sh);overflow:hidden}.cw{grid-column:1/-1}
-.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.4rem}.ct{font-family:'Newsreader',serif;font-weight:400;font-size:1rem;color:var(--text)}.cb{font-size:.6rem;color:var(--dim);letter-spacing:.05em;text-transform:uppercase;font-weight:500;padding:.2rem .5rem;background:var(--bg);border-radius:4px}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.4rem}.ct{font-family:'Newsreader',serif;font-weight:400;font-size:1rem;color:var(--text)}.cb{font-size:.6rem;color:var(--dim);letter-spacing:.05em;text-transform:uppercase;font-weight:500;padding:.2rem .5rem;background:var(--bg);border-radius:4px}.ch-right{display:flex;align-items:center;gap:.5rem;margin-left:auto}.brand{font-family:'Barlow',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:.04em;line-height:1;white-space:nowrap}.brand-aero{color:#111827}.brand-scout{color:#2563EB}[data-theme=dark] .brand-aero{color:#e2e8f0}
 .cc{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.8rem}.cc label{font-size:.7rem;color:var(--dim);font-weight:500;text-transform:uppercase;letter-spacing:.05em}.cc select,.cc input{font-family:'Barlow';font-size:.8rem;padding:.35rem .7rem;border:1px solid var(--bd);border-radius:5px;background:var(--wh);color:var(--text);outline:none}.cc select:focus,.cc input:focus{border-color:var(--pr)}.cc input[type=number]{width:80px}
 .dt{width:100%;border-collapse:collapse}.dt thead th{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:500;text-align:left;padding:0 0 .6rem;border-bottom:1px solid var(--bd)}.dt thead th:nth-child(n+2){text-align:right}.dt tbody td{font-size:.78rem;padding:.55rem 0;border-bottom:1px solid var(--bd)}.dt tbody td:nth-child(n+2){text-align:right}.dt tbody tr:last-child td{border-bottom:none}.an{font-weight:500;color:var(--text)}
 .ml{display:flex;flex-direction:column;gap:.5rem}.mr{display:flex;justify-content:space-between;align-items:center;padding-bottom:.5rem;border-bottom:1px solid var(--bd)}.mr:last-child{border-bottom:none;padding-bottom:0}.mn{font-size:.78rem;color:var(--sec)}.mv{font-size:.82rem;font-weight:600;color:var(--text)}.ms{font-size:.65rem;color:var(--dim);font-weight:400;margin-left:.2rem}
@@ -263,6 +263,7 @@ function TTBG(){return isDark()?'#1e293b':'#fff'}
 function TTBD(){return isDark()?'rgba(255,255,255,.1)':'rgba(26,39,68,.1)'}
 function chart(id,o){if(EC[id]){EC[id].dispose();delete EC[id]}const el=document.getElementById(id);if(!el)return null;const c=echarts.init(el,isDark()?'dark':null);if(isDark()){o.backgroundColor='transparent'}c.setOption(o);EC[id]=c;return c}
 function bo(){return{textStyle:{fontFamily:'Barlow',color:DIMH()},grid:{left:10,right:20,top:25,bottom:20,containLabel:true},tooltip:{trigger:'axis',backgroundColor:TTBG(),borderColor:TTBD(),borderWidth:1,textStyle:{color:TH(),fontFamily:'Barlow',fontSize:11}},backgroundColor:'transparent'}}
+function stampBrand(){document.querySelectorAll('.ch').forEach(ch=>{if(ch.querySelector('.brand'))return;const cb=ch.querySelector('.cb');const wrap=document.createElement('span');wrap.className='ch-right';wrap.innerHTML='<span class="brand"><span class="brand-aero">AERO</span><span class="brand-scout">SCOUT</span></span>';if(cb){cb.parentNode.removeChild(cb);wrap.appendChild(cb)}ch.appendChild(wrap)})}
 function grp(arr,vk='active_jobs'){const m={};const ds=new Set();(arr||[]).filter(r=>r.snapshot_date>=MIN_DATE).forEach(r=>{if(!m[r.dimension_value])m[r.dimension_value]={};m[r.dimension_value][r.snapshot_date]=r[vk];ds.add(r.snapshot_date)});const sd=[...ds].sort();const s={};Object.entries(m).forEach(([n,dm])=>{s[n]=sd.map(d=>dm[d]!=null?dm[d]:null)});return{dates:sd,series:s}}
 
 // ===== THEME TOGGLE =====
@@ -272,7 +273,7 @@ function applyTheme(dark){
   document.getElementById('moonIcon').style.display=dark?'none':'block';
   localStorage.setItem('aeroscout-theme',dark?'dark':'light');
   // Re-render all charts with new colors
-  if(D){Object.keys(EC).forEach(id=>{EC[id].dispose();delete EC[id]});renderPulse();renderVelocity();renderTypeROI();renderSalary();renderLifespan();renderCalendar();renderVisa();renderCompare();renderOverview();wrapTables();}
+  if(D){Object.keys(EC).forEach(id=>{EC[id].dispose();delete EC[id]});renderPulse();renderVelocity();renderTypeROI();renderSalary();renderLifespan();renderCalendar();renderVisa();renderCompare();renderOverview();wrapTables();stampBrand();}
 }
 // Init theme from localStorage or system preference
 (function(){
@@ -349,7 +350,7 @@ const tot=(g?.active_jobs||0)+(cc?.active_jobs||0);
 document.getElementById('kpi').innerHTML=`<div class="k"><div class="kl">Active Positions</div><div class="kv">${fmt(tot)}</div><div class="kc nu">Pilot + Cabin Crew</div></div><div class="k"><div class="kl">Pilot Jobs</div><div class="kv">${fmt(g?.active_jobs)}</div><div class="kc nu">${fmt(g?.new_jobs)} new today</div></div><div class="k"><div class="kl">Cabin Crew</div><div class="kv">${fmt(cc?.active_jobs)}</div><div class="kc nu">${fmt(cc?.new_jobs)} new today</div></div><div class="k"><div class="kl">Airlines Hiring</div><div class="kv">${fmt(g?.unique_airlines)}</div><div class="kc nu">${fmt(g?.unique_locations)} locations</div></div><div class="k"><div class="kl">Avg Pilot Salary</div><div class="kv">${$(g?.avg_salary_usd)}</div><div class="kc nu">${g?.jobs_with_salary} with data</div></div>`;
 
 renderPulse();renderVelocity();renderTypeROI();renderSalary();renderLifespan();renderCalendar();renderVisa();renderCompare();renderOverview();
-wrapTables();
+wrapTables();stampBrand();
 }
 
 // ===== 1. HIRING PULSE =====

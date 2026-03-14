@@ -197,6 +197,7 @@ footer a{font-size:.65rem}
 const API='https://ziboktbmbyjbhifsdypa.supabase.co/functions/v1/dashboard-data';
 const C=['#2563EB','#60A5FA','#a78bfa','#f59e0b','#10b981','#f43f5e','#8b5cf6','#06b6d4','#ec4899','#14b8a6','#84cc16','#f97316','#6366f1','#0ea5e9','#e11d48'];
 const B='#2563EB',BL='#60A5FA';
+const MIN_DATE='2026-02-13';
 let D=null;const EC={};
 const fmt=n=>n!=null?n.toLocaleString():'—';
 const $=n=>n?'$'+Math.round(Number(n)).toLocaleString():'—';
@@ -208,7 +209,7 @@ function TTBG(){return isDark()?'#1e293b':'#fff'}
 function TTBD(){return isDark()?'rgba(255,255,255,.1)':'rgba(26,39,68,.1)'}
 function chart(id,o){if(EC[id]){EC[id].dispose();delete EC[id]}const el=document.getElementById(id);if(!el)return null;const c=echarts.init(el,isDark()?'dark':null);if(isDark()){o.backgroundColor='transparent'}c.setOption(o);EC[id]=c;return c}
 function bo(){return{textStyle:{fontFamily:'Barlow',color:DIMH()},grid:{left:10,right:20,top:25,bottom:20,containLabel:true},tooltip:{trigger:'axis',backgroundColor:TTBG(),borderColor:TTBD(),borderWidth:1,textStyle:{color:TH(),fontFamily:'Barlow',fontSize:11}},backgroundColor:'transparent'}}
-function grp(arr,vk='active_jobs'){const m={};const ds=new Set();(arr||[]).forEach(r=>{if(!m[r.dimension_value])m[r.dimension_value]={};m[r.dimension_value][r.snapshot_date]=r[vk];ds.add(r.snapshot_date)});const sd=[...ds].sort();const s={};Object.entries(m).forEach(([n,dm])=>{s[n]=sd.map(d=>dm[d]!=null?dm[d]:null)});return{dates:sd,series:s}}
+function grp(arr,vk='active_jobs'){const m={};const ds=new Set();(arr||[]).filter(r=>r.snapshot_date>=MIN_DATE).forEach(r=>{if(!m[r.dimension_value])m[r.dimension_value]={};m[r.dimension_value][r.snapshot_date]=r[vk];ds.add(r.snapshot_date)});const sd=[...ds].sort();const s={};Object.entries(m).forEach(([n,dm])=>{s[n]=sd.map(d=>dm[d]!=null?dm[d]:null)});return{dates:sd,series:s}}
 
 // ===== THEME TOGGLE =====
 function applyTheme(dark){
@@ -287,8 +288,10 @@ function wrapTables(){document.querySelectorAll('.dt:not(.wrapped)').forEach(t=>
 
 async function load(){
 const r=await fetch(API);D=await r.json();if(D.error)throw new Error(D.error);
+D.flow=(D.flow||[]).filter(r=>r.date>=MIN_DATE);
+if(D.trends){if(D.trends.global)D.trends.global=D.trends.global.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.airlines)D.trends.airlines=D.trends.airlines.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.aircraft)D.trends.aircraft=D.trends.aircraft.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.ranks)D.trends.ranks=D.trends.ranks.filter(r=>r.snapshot_date>=MIN_DATE);if(D.trends.all_aircraft)D.trends.all_aircraft=D.trends.all_aircraft.filter(r=>r.snapshot_date>=MIN_DATE);}
 const g=D.global.current,cc=D.global.cabin_crew;
-document.getElementById('upd').textContent=`Updated ${D.updated_at} · ${D.total_days} days of data`;
+document.getElementById('upd').textContent=`Updated ${D.updated_at}`;
 const tot=(g?.active_jobs||0)+(cc?.active_jobs||0);
 document.getElementById('kpi').innerHTML=`<div class="k"><div class="kl">Active Positions</div><div class="kv">${fmt(tot)}</div><div class="kc nu">Pilot + Cabin Crew</div></div><div class="k"><div class="kl">Pilot Jobs</div><div class="kv">${fmt(g?.active_jobs)}</div><div class="kc nu">${fmt(g?.new_jobs)} new today</div></div><div class="k"><div class="kl">Cabin Crew</div><div class="kv">${fmt(cc?.active_jobs)}</div><div class="kc nu">${fmt(cc?.new_jobs)} new today</div></div><div class="k"><div class="kl">Airlines Hiring</div><div class="kv">${fmt(g?.unique_airlines)}</div><div class="kc nu">${fmt(g?.unique_locations)} locations</div></div><div class="k"><div class="kl">Avg Pilot Salary</div><div class="kv">${$(g?.avg_salary_usd)}</div><div class="kc nu">${g?.jobs_with_salary} with data</div></div>`;
 

@@ -69,9 +69,7 @@ function renderJobCard(job, isCabinCrew, idx) {
   const visaClass = job.visa_sponsor ? ' visa-sponsor' : '';
 
   // Logo – matches Jobs.html
-  const fciLogo = job.source === 'fci' ? 'https://ziboktbmbyjbhifsdypa.supabase.co/storage/v1/object/public/logos/Recrutement.png' : null;
-  const logoSrc = fciLogo || job.logo_url;
-  const logoHtml = logoSrc
+  const logoHtml = job.logo_url
     ? `<img src="${escapeHtml(logoSrc)}" alt="${escapeHtml(job.airline)}" loading="${idx < 6 ? 'eager' : 'lazy'}" onerror="this.parentElement.textContent='${fl}'">`
     : `<span style="font-size:24px;font-weight:700;color:var(--navy);">${fl}</span>`;
 

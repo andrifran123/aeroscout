@@ -4515,7 +4515,7 @@
             requiredType: job.type_rated ? (job.aircraft || '') : '',  // Only set required type for type-rated jobs
             minTypeTime: 0,
             workRegion: job.location || 'International',
-            logo: job.source === 'fci' ? 'https://ziboktbmbyjbhifsdypa.supabase.co/storage/v1/object/public/logos/Recrutement.png' : (job.logo_url || logoMap[job.company_id] || ''),
+            logo: job.logo_url || logoMap[job.company_id] || '',
             applyUrl: job.apply_url || job.url || '#',
             applyEmail: job.apply_email || null,
             description: job.description_summary || '',
@@ -4590,7 +4590,7 @@
             salary: job.salary_usd || '',
             contractType: job.contract_type || '',
             workRegion: job.location || 'International',
-            logo: job.source === 'fci' ? 'https://ziboktbmbyjbhifsdypa.supabase.co/storage/v1/object/public/logos/Recrutement.png' : (job.logo_url || logoMap[job.company_id] || ''),
+            logo: job.logo_url || logoMap[job.company_id] || '',
             applyUrl: job.apply_url || job.url || '#',
             applyEmail: job.apply_email || null,
             description: job.description_summary || '',

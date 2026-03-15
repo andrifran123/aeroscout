@@ -259,6 +259,7 @@ const API='https://ziboktbmbyjbhifsdypa.supabase.co/functions/v1/dashboard-data'
 const C=['#2563EB','#60A5FA','#a78bfa','#f59e0b','#10b981','#f43f5e','#8b5cf6','#06b6d4','#ec4899','#14b8a6','#84cc16','#f97316','#6366f1','#0ea5e9','#e11d48'];
 const B='#2563EB',BL='#60A5FA';
 const MIN_DATE='2026-02-13';
+const CLASS_RATED=['PC12','CARAVAN','KING_AIR','KING_AIR_90','KING_AIR_200','DHC2_BEAVER','DHC3_OTTER','BN2','TURBOPROP','UNKNOWN'];
 let D=null;const EC={};
 const fmt=n=>n!=null?n.toLocaleString():'—';
 const $=n=>n?'$'+Math.round(Number(n)).toLocaleString():'—';
@@ -417,7 +418,7 @@ chart('av1',{...bo(),legend:{data:topAl.map(a=>a.dimension_value),bottom:0,textS
 // ===== 3. TYPE RATING ROI =====
 function renderTypeROI(){
 const ac=D.aircraft||[];const acMA=D.aircraft_month_ago||[];const{dates,series}=grp(D.trends.aircraft||[]);
-const top=ac.slice(0,12);const maxJ=top[0]?.active_jobs||1;
+const trAc=ac.filter(a=>!CLASS_RATED.includes(a.dimension_value));const top=trAc.slice(0,12);const maxJ=top[0]?.active_jobs||1;
 document.getElementById('p-typeROI').innerHTML=`<div class="g"><div class="c"><div class="ch"><div class="ct">Type Rating Demand</div><div class="cb">Active positions</div></div><div id="tr1" style="height:420px"></div></div><div class="c"><div class="ch"><div class="ct">Demand Trends Over Time</div><div class="cb">${D.total_days}d</div></div><div id="tr2" style="height:420px"></div></div><div class="c cw"><div class="ch"><div class="ct">Type Rating ROI — Salary vs Demand</div><div class="cb">Bubble size = positions</div></div><div id="tr3" style="height:360px"></div></div><div class="c cw"><div class="ch"><div class="ct">Market Share by Type Rating</div><div class="cb">Treemap</div></div><div id="tr4" style="height:280px"></div></div></div>`;
 
 const acN=top.map(a=>a.dimension_value.replace(/_/g,' ')).reverse();
@@ -427,7 +428,7 @@ const t5=top.slice(0,6);
 chart('tr2',{...bo(),legend:{data:t5.map(a=>a.dimension_value.replace(/_/g,' ')),bottom:0,textStyle:{fontSize:9,color:DIMH()}},grid:{...bo().grid,bottom:35},xAxis:{type:'category',data:dates,axisLabel:{fontSize:9,color:DIMH(),formatter:v=>v.slice(5)},boundaryGap:false},yAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH()},splitLine:{lineStyle:{color:GRD()}}},series:t5.map((a,i)=>({name:a.dimension_value.replace(/_/g,' '),type:'line',data:series[a.dimension_value]||[],smooth:.3,symbol:'none',lineStyle:{color:C[i],width:2}}))});
 
 // Bubble: salary vs demand
-const bubble=ac.filter(a=>a.avg_salary_usd&&a.active_jobs>3).slice(0,20);
+const bubble=trAc.filter(a=>a.avg_salary_usd&&a.active_jobs>3).slice(0,20);
 chart('tr3',{...bo(),tooltip:{trigger:'item',formatter:p=>`<b>${p.data[3]}</b><br>Salary: ${$(p.data[0])}<br>Positions: ${p.data[1]}<br>Type Rated: ${p.data[2]}%`},xAxis:{type:'value',name:'Avg Salary (USD)',nameLocation:'middle',nameGap:30,nameTextStyle:{fontSize:11,color:DIMH()},axisLabel:{fontSize:10,color:DIMH(),formatter:v=>'$'+(v/1000)+'k'},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'value',name:'Active Positions',nameLocation:'middle',nameGap:35,nameTextStyle:{fontSize:11,color:DIMH()},axisLabel:{fontSize:10,color:DIMH()},splitLine:{lineStyle:{color:GRD()}}},series:[{type:'scatter',data:bubble.map((a,i)=>[Math.round(Number(a.avg_salary_usd)),a.active_jobs,a.active_jobs?Math.round(a.type_rated_count/a.active_jobs*100):0,a.dimension_value.replace(/_/g,' ')]),symbolSize:d=>Math.max(8,Math.sqrt(d[1])*4),itemStyle:{color:B,opacity:.7},label:{show:true,position:'top',fontSize:9,color:TH(),formatter:p=>p.data[3]}}]});
 
 chart('tr4',{tooltip:{formatter:p=>p.name+': <b>'+p.value+'</b> positions'},series:[{type:'treemap',data:top.map((a,i)=>({name:a.dimension_value.replace(/_/g,' '),value:a.active_jobs,itemStyle:{color:C[i%C.length],borderColor:'#fff',borderWidth:2}})),label:{fontSize:11,fontWeight:600,color:'#fff'},breadcrumb:{show:false},levels:[{itemStyle:{borderWidth:0,gapWidth:3}}]}]});
@@ -505,7 +506,7 @@ chart('vi1',{...bo(),grid:{left:10,right:30,top:10,bottom:10,containLabel:true},
 
 chart('vi2',{...bo(),grid:{left:10,right:30,top:10,bottom:10,containLabel:true},xAxis:{type:'value',max:100,axisLabel:{fontSize:10,color:DIMH(),formatter:v=>v+'%'},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'category',data:deAc.map(a=>a.dimension_value.replace(/_/g,' ')).reverse(),axisLabel:{fontSize:10,color:TH(),fontWeight:500},axisLine:{show:false},axisTick:{show:false}},series:[{type:'bar',data:deAc.map(a=>Math.round(a.direct_entry_count/a.active_jobs*100)).reverse(),barWidth:13,itemStyle:{borderRadius:[0,4,4,0],color:'#f59e0b'},label:{show:true,position:'right',fontSize:10,fontWeight:600,color:TH(),formatter:p=>p.value+'%'}}]});
 
-const trAc=ac.filter(a=>a.type_rated_count>0&&a.active_jobs>5).sort((a,b)=>(b.type_rated_count/b.active_jobs)-(a.type_rated_count/a.active_jobs)).slice(0,15);
+const trAc=ac.filter(a=>!CLASS_RATED.includes(a.dimension_value)&&a.type_rated_count>0&&a.active_jobs>5).sort((a,b)=>(b.type_rated_count/b.active_jobs)-(a.type_rated_count/a.active_jobs)).slice(0,15);
 chart('vi3',{...bo(),grid:{left:10,right:30,top:10,bottom:10,containLabel:true},xAxis:{type:'value',max:100,axisLabel:{fontSize:10,color:DIMH(),formatter:v=>v+'%'},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'category',data:trAc.map(a=>a.dimension_value.replace(/_/g,' ')).reverse(),axisLabel:{fontSize:10,color:TH(),fontWeight:500},axisLine:{show:false},axisTick:{show:false}},series:[{type:'bar',data:trAc.map(a=>Math.round(a.type_rated_count/a.active_jobs*100)).reverse(),barWidth:12,itemStyle:{borderRadius:[0,4,4,0],color:new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:B},{offset:1,color:BL}])},label:{show:true,position:'right',fontSize:9,fontWeight:600,color:TH(),formatter:p=>p.value+'%'}}]});
 }
 

@@ -1139,7 +1139,7 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
   <nav class="nav">
     <a href="/" class="nav__brand">AEROSCOUT</a>
     <div class="nav__links">
-      <a href="/Jobs.html">Browse Jobs</a>
+      <a href="/jobs">Browse Jobs</a>
       <a href="/blog">Blog</a>
       <a href="/about.html">About</a>
       <a href="/pricing.html">Pricing</a>
@@ -1156,7 +1156,7 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
       <div class="hero__left">
         <h1>${escapeHtml(pageData.h1 || pageData.page_title)}</h1>
         <p class="hero__sub">Updated daily from 850+ airlines and operators worldwide. Find your next ${isCabinCrew ? 'cabin crew' : 'cockpit'} role in minutes.</p>
-        <a href="/Jobs.html" class="hero__btn">
+        <a href="/jobs" class="hero__btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           Browse ${jobCount} Jobs
         </a>
@@ -1247,13 +1247,13 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
     <div class="cards-list">
       ${jobs.length > 0
         ? jobs.map((j, i) => renderJobCard(j, isCabinCrew, i)).join('\n')
-        : `<div class="empty"><p>No positions currently available in this category.</p><p><a href="/Jobs.html">Browse all jobs</a> or check back soon &mdash; we update daily.</p></div>`
+        : `<div class="empty"><p>No positions currently available in this category.</p><p><a href="/jobs">Browse all jobs</a> or check back soon &mdash; we update daily.</p></div>`
       }
     </div>
 
     ${jobs.length > 0 && jobCount > jobs.length ? `
     <div class="browse-all-wrap">
-      <a href="/Jobs.html" class="browse-all-btn">
+      <a href="/jobs" class="browse-all-btn">
         View All ${jobCount} ${escapeHtml(pageData.h1 || 'Jobs')}
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
@@ -1287,7 +1287,7 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
       <div class="related__label">Explore More</div>
       <div class="related__grid">
         ${relatedPages.map(p => `<a href="/${p.slug}" class="related__link">${escapeHtml(p.h1 || p.slug)}</a>`).join('')}
-        <a href="/Jobs.html" class="related__link">Browse All Jobs</a>
+        <a href="/jobs" class="related__link">Browse All Jobs</a>
       </div>
     </section>
 
@@ -1298,7 +1298,7 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
         <p>Get instant alerts for new positions matching your qualifications, aircraft type and location preferences.</p>
         <div class="cta__actions">
           <a href="/signup.html" class="cta__primary">Create Free Account</a>
-          <a href="/Jobs.html" class="cta__secondary">Browse All ${jobCount} ${escapeHtml(pageData.h1 || 'Jobs')}</a>
+          <a href="/jobs" class="cta__secondary">Browse All ${jobCount} ${escapeHtml(pageData.h1 || 'Jobs')}</a>
         </div>
       </div>
     </div>
@@ -1377,7 +1377,7 @@ function build404() {
   <div class="code">404</div>
   <h1>Page Not Found</h1>
   <p>The page you're looking for doesn't exist or has been moved.</p>
-  <a href="/Jobs.html">Browse All Jobs</a>
+  <a href="/jobs">Browse All Jobs</a>
 </body></html>`;
 }
 

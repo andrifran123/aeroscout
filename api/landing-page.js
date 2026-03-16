@@ -259,9 +259,9 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
     :root {
       --navy: #1a2744;
       --navy-deep: #111c35;
-      --gold: #b8944f;
-      --gold-light: #c8a44e;
-      --gold-pale: #f5eed9;
+      --gold: #2563EB;
+      --gold-light: #3b82f6;
+      --gold-pale: #EFF6FF;
       --cream: #faf9f6;
       --cream-dark: #f2efe8;
       --white: #ffffff;
@@ -292,20 +292,22 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
       position: sticky;
       top: 0;
       z-index: 200;
-      background: rgba(11, 28, 62, 0.95);
-      backdrop-filter: blur(15px);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       height: 62px;
       padding: 0 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(26, 39, 68, 0.07);
+      box-shadow: 0 1px 8px rgba(26, 39, 68, 0.04);
     }
     .nav__brand {
       font-family: 'Outfit', 'Inter', sans-serif;
       font-weight: 800;
       font-size: 1.5rem;
-      color: #ffffff;
+      color: var(--navy);
       letter-spacing: -0.5px;
       text-decoration: none;
       display: flex;
@@ -319,27 +321,28 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
     .nav__links a {
       font-size: 14px;
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--text-mid);
       padding: 8px 14px;
       border-radius: 6px;
       transition: color 0.15s, background 0.15s;
     }
-    .nav__links a:hover { color: #ffffff; background: rgba(255, 255, 255, 0.1); }
+    .nav__links a:hover { color: var(--navy); background: rgba(37, 99, 235, 0.06); }
     .nav__signup {
       border: 1.5px solid var(--gold) !important;
-      color: #ffffff !important;
+      background: var(--gold) !important;
+      color: var(--white) !important;
       font-weight: 600 !important;
       border-radius: 7px !important;
       margin-left: 4px !important;
     }
-    .nav__signup:hover { background: var(--gold) !important; color: var(--navy) !important; }
+    .nav__signup:hover { background: #1d56d0 !important; border-color: #1d56d0 !important; color: var(--white) !important; }
     .nav__login {
-      border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
-      color: #ffffff !important;
+      border: 1.5px solid rgba(26, 39, 68, 0.15) !important;
+      color: var(--navy) !important;
       font-weight: 600 !important;
       border-radius: 7px !important;
     }
-    .nav__login:hover { border-color: #ffffff !important; background: rgba(255, 255, 255, 0.1) !important; }
+    .nav__login:hover { border-color: var(--gold) !important; background: rgba(37, 99, 235, 0.06) !important; color: var(--gold) !important; }
 
     /* ── Hero ──────────────────────────────────────────────────────────────── */
     .hero {
@@ -399,18 +402,18 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
       gap: 10px;
       font-size: 15px;
       font-weight: 700;
-      color: var(--navy);
+      color: var(--white);
       background: var(--gold-light);
       padding: 13px 30px;
       border-radius: 8px;
       letter-spacing: 0.01em;
       transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
-      box-shadow: 0 4px 16px rgba(184,148,79,0.35);
+      box-shadow: 0 4px 16px rgba(37,99,235,0.3);
     }
     .hero__btn:hover {
-      background: #d4a94a;
+      background: #1d56d0;
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(184,148,79,0.4);
+      box-shadow: 0 8px 24px rgba(37,99,235,0.35);
     }
     .hero__btn svg { flex-shrink: 0; }
 
@@ -894,7 +897,7 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
       right: -40px;
       width: 200px;
       height: 200px;
-      background: radial-gradient(circle, rgba(184,148,79,0.15), transparent 70%);
+      background: radial-gradient(circle, rgba(37,99,235,0.15), transparent 70%);
       pointer-events: none;
     }
     .cta__inner { position: relative; z-index: 1; }
@@ -931,14 +934,14 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
     .cta__primary {
       font-size: 14px;
       font-weight: 700;
-      color: var(--navy);
+      color: var(--white);
       background: var(--gold-light);
       padding: 13px 32px;
       border-radius: 8px;
       letter-spacing: 0.01em;
       transition: background 0.15s, transform 0.12s;
     }
-    .cta__primary:hover { background: #d4a94a; transform: translateY(-1px); }
+    .cta__primary:hover { background: #1d56d0; transform: translateY(-1px); }
     .cta__secondary {
       font-size: 14px;
       font-weight: 600;
@@ -990,7 +993,8 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
     /* ── Responsive: Large mobile (600px) ─────────────────────────────────── */
     /* Matches Jobs.html 768px: switches from grid to block + float layout */
     @media (max-width: 600px) {
-      .nav__signup, .nav__login { font-size: 12px !important; padding: 6px 10px !important; color: #ffffff !important; }
+      .nav__signup { font-size: 12px !important; padding: 6px 10px !important; }
+      .nav__login { font-size: 12px !important; padding: 6px 10px !important; }
       .hero h1 { font-size: 1.7rem; }
       .hero__sub { font-size: 14.5px; max-width: 320px; }
       .hero__btn { padding: 11px 22px; font-size: 14px; }

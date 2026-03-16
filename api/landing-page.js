@@ -1395,33 +1395,25 @@ module.exports = async (req, res) => {
 
     const isCabinCrew = pageData.filter_table === 'verified_cabin_crew_jobs';
     const table = isCabinCrew ? 'public_verified_cabin_crew_jobs' : 'public_verified_jobs';
+    // Helper: apply a filter using prefix match for location_bucket, exact match otherwise
+    function applyFilter(q, col, val) {
+      if (!col || !val || col === '_all') return q;
+      if (val === 'true') return q.eq(col, true);
+      if (val === 'false') return q.eq(col, false);
+      if (col === 'location_bucket') return q.like(col, val + '%');
+      return q.eq(col, val);
+    }
+
     // Get total count for stats/SEO
     let countQuery = getSupabase().from(table).select('*', { count: 'exact', head: true });
-    if (pageData.filter_column && pageData.filter_value && pageData.filter_column !== '_all') {
-      if (pageData.filter_value === 'true') countQuery = countQuery.eq(pageData.filter_column, true);
-      else if (pageData.filter_value === 'false') countQuery = countQuery.eq(pageData.filter_column, false);
-      else countQuery = countQuery.eq(pageData.filter_column, pageData.filter_value);
-    }
-    if (pageData.filter_column2 && pageData.filter_value2) {
-      if (pageData.filter_value2 === 'true') countQuery = countQuery.eq(pageData.filter_column2, true);
-      else if (pageData.filter_value2 === 'false') countQuery = countQuery.eq(pageData.filter_column2, false);
-      else countQuery = countQuery.eq(pageData.filter_column2, pageData.filter_value2);
-    }
+    countQuery = applyFilter(countQuery, pageData.filter_column, pageData.filter_value);
+    countQuery = applyFilter(countQuery, pageData.filter_column2, pageData.filter_value2);
     const { count: totalJobCount } = await countQuery;
 
     // Get preview jobs (20 most recent) for card display
     let query = getSupabase().from(table).select('*').order('verified_at', { ascending: false }).limit(20);
-
-    if (pageData.filter_column && pageData.filter_value && pageData.filter_column !== '_all') {
-      if (pageData.filter_value === 'true') query = query.eq(pageData.filter_column, true);
-      else if (pageData.filter_value === 'false') query = query.eq(pageData.filter_column, false);
-      else query = query.eq(pageData.filter_column, pageData.filter_value);
-    }
-    if (pageData.filter_column2 && pageData.filter_value2) {
-      if (pageData.filter_value2 === 'true') query = query.eq(pageData.filter_column2, true);
-      else if (pageData.filter_value2 === 'false') query = query.eq(pageData.filter_column2, false);
-      else query = query.eq(pageData.filter_column2, pageData.filter_value2);
-    }
+    query = applyFilter(query, pageData.filter_column, pageData.filter_value);
+    query = applyFilter(query, pageData.filter_column2, pageData.filter_value2);
 
     const { data: jobs, error: jobsError } = await query;
     if (jobsError) throw jobsError;

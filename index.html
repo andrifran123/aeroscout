@@ -1702,22 +1702,67 @@
 
   .about-cta { margin-top: 2rem; }
 
-  /* ========== FOOTER ========== */
+  /* ========== BROWSE JOBS FOOTER ========== */
+  .browse-footer {
+    background: #1A2744;
+    color: rgba(255,255,255,0.85);
+    padding: 3.5rem 3rem 2rem;
+  }
+  .browse-footer__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .browse-footer__title {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  .browse-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2rem 2.5rem;
+  }
+  .browse-footer__col h4 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 0.75rem;
+  }
+  .browse-footer__col a {
+    display: block;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.72);
+    text-decoration: none;
+    padding: 3px 0;
+    transition: color 0.15s;
+    line-height: 1.6;
+  }
+  .browse-footer__col a:hover {
+    color: #60A5FA;
+  }
+
+  /* Bottom bar */
   footer {
-    padding: 2.5rem 3rem;
-    border-top: 1px solid var(--border);
+    padding: 1.5rem 3rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
-    background: var(--bg);
+    background: #1A2744;
   }
 
-  footer span { font-size: 0.75rem; color: var(--text-dim); }
+  footer span { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
   footer .footer-links { display: flex; gap: 2rem; }
-  footer a { font-size: 0.75rem; color: var(--text-dim); text-decoration: none; transition: color 0.3s; }
-  footer a:hover { color: var(--primary); }
+  footer a { font-size: 0.75rem; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.3s; }
+  footer a:hover { color: #60A5FA; }
 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(25px); }
@@ -1791,8 +1836,12 @@
     .about { padding: 4rem 0; }
     .about-container { padding: 0 1.5rem; }
 
+    /* Browse footer */
+    .browse-footer { padding: 2.5rem 1.5rem 1.5rem; }
+    .browse-footer__grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 1.5rem; }
+    .browse-footer__col:last-child { grid-column: span 2; }
     /* Footer */
-    footer { padding: 2rem 1.5rem; flex-direction: column; text-align: center; }
+    footer { padding: 1.5rem 1.5rem; flex-direction: column; text-align: center; }
   }
 
   /* ========== MOBILE (480px) ========== */
@@ -2510,8 +2559,97 @@
   </div>
 </section>
 
+<div class="browse-footer">
+  <div class="browse-footer__inner">
+    <h3 class="browse-footer__title">Browse Pilot & Cabin Crew Jobs</h3>
+    <div class="browse-footer__grid">
+
+      <div class="browse-footer__col">
+        <h4>By Aircraft Type</h4>
+        <a href="/a320-pilot-jobs">A320 Pilot Jobs</a>
+        <a href="/b737-pilot-jobs">B737 Pilot Jobs</a>
+        <a href="/a330-pilot-jobs">A330 Pilot Jobs</a>
+        <a href="/atr-pilot-jobs">ATR Pilot Jobs</a>
+        <a href="/embraer-pilot-jobs">Embraer Pilot Jobs</a>
+        <a href="/dash-8-pilot-jobs">Dash 8 Pilot Jobs</a>
+        <a href="/learjet-pilot-jobs">Learjet Pilot Jobs</a>
+        <a href="/gulfstream-pilot-jobs">Gulfstream Pilot Jobs</a>
+        <a href="/challenger-650-pilot-jobs">Challenger 650 Pilot Jobs</a>
+        <a href="/citation-pilot-jobs">Citation Pilot Jobs</a>
+        <a href="/pc12-pilot-jobs">PC-12 Pilot Jobs</a>
+        <a href="/king-air-pilot-jobs">King Air Pilot Jobs</a>
+      </div>
+
+      <div class="browse-footer__col">
+        <h4>By Location</h4>
+        <a href="/pilot-jobs-europe">Pilot Jobs Europe</a>
+        <a href="/pilot-jobs-middle-east">Pilot Jobs Middle East</a>
+        <a href="/pilot-jobs-uk">Pilot Jobs UK</a>
+        <a href="/pilot-jobs-london">Pilot Jobs London</a>
+        <a href="/pilot-jobs-canada">Pilot Jobs Canada</a>
+        <a href="/pilot-jobs-worldwide">Pilot Jobs Worldwide</a>
+        <a href="/pilot-jobs-hong-kong">Pilot Jobs Hong Kong</a>
+        <a href="/pilot-jobs-alaska">Pilot Jobs Alaska</a>
+        <a href="/pilot-jobs-california">Pilot Jobs California</a>
+        <a href="/pilot-jobs-florida">Pilot Jobs Florida</a>
+        <a href="/pilot-jobs-texas">Pilot Jobs Texas</a>
+        <a href="/pilot-jobs-new-york">Pilot Jobs New York</a>
+        <a href="/pilot-jobs-ohio">Pilot Jobs Ohio</a>
+        <a href="/pilot-jobs-arizona">Pilot Jobs Arizona</a>
+        <a href="/pilot-jobs-colorado">Pilot Jobs Colorado</a>
+      </div>
+
+      <div class="browse-footer__col">
+        <h4>By Airline</h4>
+        <a href="/emirates-pilot-jobs">Emirates Pilot Jobs</a>
+        <a href="/ryanair-pilot-jobs">Ryanair Pilot Jobs</a>
+        <a href="/wizz-air-pilot-jobs">Wizz Air Pilot Jobs</a>
+        <a href="/etihad-pilot-jobs">Etihad Pilot Jobs</a>
+        <a href="/sas-pilot-jobs">SAS Pilot Jobs</a>
+        <a href="/vistajet-pilot-jobs">VistaJet Pilot Jobs</a>
+        <a href="/jet2-pilot-jobs">Jet2 Pilot Jobs</a>
+        <a href="/netjets-pilot-jobs">NetJets Pilot Jobs</a>
+        <a href="/vietnam-airlines-pilot-jobs">Vietnam Airlines Pilot Jobs</a>
+        <a href="/air-astana-pilot-jobs">Air Astana Pilot Jobs</a>
+      </div>
+
+      <div class="browse-footer__col">
+        <h4>By Role</h4>
+        <a href="/captain-jobs">Captain Jobs</a>
+        <a href="/first-officer-jobs">First Officer Jobs</a>
+        <a href="/flight-instructor-jobs">Flight Instructor Jobs</a>
+        <a href="/flight-instructor-positions">Flight Instructor Positions</a>
+        <a href="/cadet-pilot-jobs">Cadet Pilot Jobs</a>
+        <a href="/airline-pilot-jobs">Airline Pilot Jobs</a>
+        <a href="/business-aviation-jobs">Business Aviation Jobs</a>
+        <a href="/air-ambulance-pilot-jobs">Air Ambulance Pilot Jobs</a>
+        <a href="/government-pilot-jobs">Government Pilot Jobs</a>
+        <a href="/a320-captain-jobs">A320 Captain Jobs</a>
+        <a href="/a320-first-officer-jobs">A320 First Officer Jobs</a>
+        <a href="/b737-captain-jobs">B737 Captain Jobs</a>
+        <a href="/b737-first-officer-jobs">B737 First Officer Jobs</a>
+        <a href="/atr-captain-jobs">ATR Captain Jobs</a>
+        <a href="/atr-first-officer-jobs">ATR First Officer Jobs</a>
+        <a href="/visa-sponsorship-pilot-jobs">Visa Sponsorship Pilot Jobs</a>
+        <a href="/direct-entry-pilot-jobs">Direct Entry Pilot Jobs</a>
+        <a href="/type-rated-pilot-jobs">Type Rated Pilot Jobs</a>
+      </div>
+
+      <div class="browse-footer__col">
+        <h4>Cabin Crew</h4>
+        <a href="/cabin-crew-jobs">Cabin Crew Jobs</a>
+        <a href="/flight-attendant-jobs">Flight Attendant Jobs</a>
+        <a href="/cabin-manager-jobs">Cabin Manager Jobs</a>
+        <a href="/cabin-crew-jobs-europe">Cabin Crew Jobs Europe</a>
+        <a href="/cabin-crew-jobs-middle-east">Cabin Crew Jobs Middle East</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <footer>
-  <span>© 2026 AeroScout</span>
+  <span>&copy; 2026 AeroScout</span>
   <div class="footer-links">
     <a href="/privacy">Privacy</a>
     <a href="/terms">Terms</a>

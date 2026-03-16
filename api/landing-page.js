@@ -128,6 +128,64 @@ function renderJobCard(job, isCabinCrew, idx) {
 </a>`;
 }
 
+// ── Browse Jobs footer ───────────────────────────────────────────────────────
+
+function browseFooterCss() {
+  return `
+    .browse-footer{background:#1a2744;color:rgba(255,255,255,.85);padding:2.5rem 2rem 0}
+    .browse-footer__inner{max-width:1100px;margin:0 auto}
+    .browse-footer__title{font-family:'Playfair Display',Georgia,serif;font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid rgba(255,255,255,.12)}
+    .browse-footer__grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1.5rem 2rem}
+    .browse-footer__col h4{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.45);margin-bottom:.6rem}
+    .browse-footer__col a{display:block;font-size:.78rem;color:rgba(255,255,255,.65);text-decoration:none;padding:2.5px 0;line-height:1.55;transition:color .15s}
+    .browse-footer__col a:hover{color:#60a5fa}
+    .browse-footer__bottom{padding:1.2rem 0;margin-top:1.5rem;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+    .browse-footer__bottom span{font-size:.7rem;color:rgba(255,255,255,.35)}
+    .browse-footer__bottom a{font-size:.7rem;color:rgba(255,255,255,.35);text-decoration:none}
+    .browse-footer__bottom a:hover{color:#60a5fa}
+    .browse-footer__bottom-links{display:flex;gap:1.5rem}
+    @media(max-width:768px){.browse-footer{padding:2rem 1.2rem 0}.browse-footer__grid{grid-template-columns:repeat(2,1fr);gap:1.2rem}.browse-footer__col:last-child{grid-column:span 2}.browse-footer__bottom{flex-direction:column;text-align:center}}
+  `;
+}
+
+function browseFooterHtml() {
+  const yr = new Date().getFullYear();
+  return `
+  <div class="browse-footer">
+    <div class="browse-footer__inner">
+      <h3 class="browse-footer__title">Browse Pilot &amp; Cabin Crew Jobs</h3>
+      <div class="browse-footer__grid">
+        <div class="browse-footer__col">
+          <h4>By Aircraft Type</h4>
+          <a href="/a320-pilot-jobs">A320 Pilot Jobs</a><a href="/b737-pilot-jobs">B737 Pilot Jobs</a><a href="/a330-pilot-jobs">A330 Pilot Jobs</a><a href="/atr-pilot-jobs">ATR Pilot Jobs</a><a href="/embraer-pilot-jobs">Embraer Pilot Jobs</a><a href="/dash-8-pilot-jobs">Dash 8 Pilot Jobs</a><a href="/learjet-pilot-jobs">Learjet Pilot Jobs</a><a href="/gulfstream-pilot-jobs">Gulfstream Pilot Jobs</a><a href="/challenger-650-pilot-jobs">Challenger 650 Pilot Jobs</a><a href="/citation-pilot-jobs">Citation Pilot Jobs</a><a href="/pc12-pilot-jobs">PC-12 Pilot Jobs</a><a href="/king-air-pilot-jobs">King Air Pilot Jobs</a>
+        </div>
+        <div class="browse-footer__col">
+          <h4>By Location</h4>
+          <a href="/pilot-jobs-europe">Pilot Jobs Europe</a><a href="/pilot-jobs-middle-east">Pilot Jobs Middle East</a><a href="/pilot-jobs-uk">Pilot Jobs UK</a><a href="/pilot-jobs-london">Pilot Jobs London</a><a href="/pilot-jobs-canada">Pilot Jobs Canada</a><a href="/pilot-jobs-worldwide">Pilot Jobs Worldwide</a><a href="/pilot-jobs-hong-kong">Pilot Jobs Hong Kong</a><a href="/pilot-jobs-alaska">Pilot Jobs Alaska</a><a href="/pilot-jobs-california">Pilot Jobs California</a><a href="/pilot-jobs-florida">Pilot Jobs Florida</a><a href="/pilot-jobs-texas">Pilot Jobs Texas</a><a href="/pilot-jobs-new-york">Pilot Jobs New York</a><a href="/pilot-jobs-ohio">Pilot Jobs Ohio</a><a href="/pilot-jobs-arizona">Pilot Jobs Arizona</a><a href="/pilot-jobs-colorado">Pilot Jobs Colorado</a>
+        </div>
+        <div class="browse-footer__col">
+          <h4>By Airline</h4>
+          <a href="/emirates-pilot-jobs">Emirates Pilot Jobs</a><a href="/ryanair-pilot-jobs">Ryanair Pilot Jobs</a><a href="/wizz-air-pilot-jobs">Wizz Air Pilot Jobs</a><a href="/etihad-pilot-jobs">Etihad Pilot Jobs</a><a href="/sas-pilot-jobs">SAS Pilot Jobs</a><a href="/vistajet-pilot-jobs">VistaJet Pilot Jobs</a><a href="/jet2-pilot-jobs">Jet2 Pilot Jobs</a><a href="/netjets-pilot-jobs">NetJets Pilot Jobs</a><a href="/vietnam-airlines-pilot-jobs">Vietnam Airlines Pilot Jobs</a><a href="/air-astana-pilot-jobs">Air Astana Pilot Jobs</a>
+        </div>
+        <div class="browse-footer__col">
+          <h4>By Role</h4>
+          <a href="/captain-jobs">Captain Jobs</a><a href="/first-officer-jobs">First Officer Jobs</a><a href="/flight-instructor-jobs">Flight Instructor Jobs</a><a href="/flight-instructor-positions">Flight Instructor Positions</a><a href="/cadet-pilot-jobs">Cadet Pilot Jobs</a><a href="/airline-pilot-jobs">Airline Pilot Jobs</a><a href="/business-aviation-jobs">Business Aviation Jobs</a><a href="/air-ambulance-pilot-jobs">Air Ambulance Pilot Jobs</a><a href="/government-pilot-jobs">Government Pilot Jobs</a><a href="/a320-captain-jobs">A320 Captain Jobs</a><a href="/a320-first-officer-jobs">A320 First Officer Jobs</a><a href="/b737-captain-jobs">B737 Captain Jobs</a><a href="/b737-first-officer-jobs">B737 First Officer Jobs</a><a href="/atr-captain-jobs">ATR Captain Jobs</a><a href="/atr-first-officer-jobs">ATR First Officer Jobs</a><a href="/visa-sponsorship-pilot-jobs">Visa Sponsorship Pilot Jobs</a><a href="/direct-entry-pilot-jobs">Direct Entry Pilot Jobs</a><a href="/type-rated-pilot-jobs">Type Rated Pilot Jobs</a>
+        </div>
+        <div class="browse-footer__col">
+          <h4>Cabin Crew</h4>
+          <a href="/cabin-crew-jobs">Cabin Crew Jobs</a><a href="/flight-attendant-jobs">Flight Attendant Jobs</a><a href="/cabin-manager-jobs">Cabin Manager Jobs</a><a href="/cabin-crew-jobs-europe">Cabin Crew Jobs Europe</a><a href="/cabin-crew-jobs-middle-east">Cabin Crew Jobs Middle East</a>
+        </div>
+      </div>
+      <div class="browse-footer__bottom">
+        <span>&copy; ${yr} AeroScout</span>
+        <div class="browse-footer__bottom-links">
+          <a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="mailto:contact@aeroscout.net">Contact</a>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
 // ── Schema.org ───────────────────────────────────────────────────────────────
 
 function buildFaqSchema(faqs) {
@@ -893,20 +951,7 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
     .cta__secondary:hover { color: var(--white); border-color: rgba(255,255,255,0.45); }
 
     /* ── Footer ───────────────────────────────────────────────────────────── */
-    .footer {
-      text-align: center;
-      padding: 28px 40px;
-      border-top: 1px solid var(--border);
-      background: var(--white);
-    }
-    .footer p {
-      font-size: 12.5px;
-      color: var(--text-light);
-      letter-spacing: 0.02em;
-    }
-    .footer a { color: var(--text-mid); transition: color 0.15s; }
-    .footer a:hover { color: var(--navy); }
-    .footer__dot { margin: 0 10px; opacity: 0.35; }
+    ${browseFooterCss()}
 
     /* ── Responsive: Tablet landscape (1024px) ──────────────────────────── */
     @media (max-width: 1024px) {
@@ -940,7 +985,6 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
       .company-logo { width: 80px; height: 80px; font-size: 20px; }
       .job-title { font-size: 15px; }
       .cta { padding: 36px 24px; }
-      .footer { padding: 24px 20px; }
     }
 
     /* ── Responsive: Large mobile (600px) ─────────────────────────────────── */
@@ -1086,8 +1130,6 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
       .browse-all-btn { font-size: 13px; padding: 10px 22px; }
       .cta__primary { padding: 11px 24px; font-size: 13px; }
       .cta__secondary { padding: 10px 20px; font-size: 13px; }
-      .footer p { font-size: 11px; }
-      .footer__dot { margin: 0 6px; }
     }
   </style>
 </head>
@@ -1263,9 +1305,7 @@ function buildLandingPage(pageData, jobs, relatedPages, totalJobCount) {
 
   </div>
 
-  <footer class="footer">
-    <p>&copy; ${new Date().getFullYear()} AeroScout<span class="footer__dot">&middot;</span><a href="/terms.html">Terms</a><span class="footer__dot">&middot;</span><a href="/privacy.html">Privacy</a><span class="footer__dot">&middot;</span><a href="/about.html">About</a></p>
-  </footer>
+  ${browseFooterHtml()}
 
   <script>
     function toggleFaq(i) {

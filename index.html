@@ -7,15 +7,25 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'AW-17913572733');
+  gtag('config', 'AW-17913572733', { 'allow_enhanced_conversions': true });
 </script>
-<!-- Event snippet for Page view conversion page -->
+<!-- Event snippet for Page view conversion page with enhanced conversions -->
 <script>
-  gtag('event', 'conversion', {
+  (async function() {
+    try {
+      const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+      const sb = createClient('https://ziboktbmbyjbhifsdypa.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppYm9rdGJtYnlqYmhpZnNkeXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM4NTIxNjgsImV4cCI6MjA0OTQyODE2OH0.gFHMiaDqLYJqbKzXP5jITkxLHMRugFe3IOEV_fNsZKA');
+      const { data: { session } } = await sb.auth.getSession();
+      if (session && session.user && session.user.email) {
+        gtag('set', 'user_data', { 'email': session.user.email });
+      }
+    } catch (e) {}
+    gtag('event', 'conversion', {
       'send_to': 'AW-17913572733/7BQUCO6Mye4bEP3a7d1C',
       'value': 1.0,
       'currency': 'USD'
-  });
+    });
+  })();
 </script>
 <!-- Microsoft Clarity -->
 <script type="text/javascript">

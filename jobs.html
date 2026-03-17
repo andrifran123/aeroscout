@@ -7,9 +7,9 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'AW-17913572733');
+    gtag('config', 'AW-17913572733', { 'allow_enhanced_conversions': true });
   </script>
-  <!-- Event snippet for Page view conversion page -->
+  <!-- Event snippet for Page view conversion page with enhanced conversions -->
   <script>
     function gtag_report_conversion(url) {
       var callback = function () {
@@ -3229,6 +3229,7 @@
     .map-job-preview .card-top-actions {
       display: none;
     }
+
   </style>
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -4953,6 +4954,10 @@
       isLoggedIn = !!session;
 
       if (session) {
+        // Send enhanced conversion data to Google Ads
+        if (session.user && session.user.email && typeof gtag === 'function') {
+          gtag('set', 'user_data', { 'email': session.user.email });
+        }
         // Check if user has premium status
         const { data: profile } = await supabaseClient
           .from('profiles')

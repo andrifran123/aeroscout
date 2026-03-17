@@ -14,15 +14,15 @@ function getSupabase() {
 // Static pages
 const STATIC_PAGES = [
   { loc: '/', changefreq: 'daily', priority: '1.0' },
-  { loc: '/Jobs.html', changefreq: 'daily', priority: '0.9' },
+  { loc: '/jobs', changefreq: 'daily', priority: '0.9' },
   { loc: '/blog', changefreq: 'daily', priority: '0.8' },
-  { loc: '/about.html', changefreq: 'monthly', priority: '0.7' },
-  { loc: '/pricing.html', changefreq: 'monthly', priority: '0.7' },
-  { loc: '/signup.html', changefreq: 'monthly', priority: '0.6' },
-  { loc: '/login.html', changefreq: 'monthly', priority: '0.5' },
-  { loc: '/terms.html', changefreq: 'yearly', priority: '0.3' },
-  { loc: '/privacy.html', changefreq: 'yearly', priority: '0.3' },
-  { loc: '/refund.html', changefreq: 'yearly', priority: '0.3' },
+  { loc: '/about', changefreq: 'monthly', priority: '0.7' },
+  { loc: '/pricing', changefreq: 'monthly', priority: '0.7' },
+  { loc: '/signup', changefreq: 'monthly', priority: '0.6' },
+  { loc: '/login', changefreq: 'monthly', priority: '0.5' },
+  { loc: '/terms', changefreq: 'yearly', priority: '0.3' },
+  { loc: '/privacy', changefreq: 'yearly', priority: '0.3' },
+  { loc: '/refund', changefreq: 'yearly', priority: '0.3' },
 ];
 
 function slugify(str) {

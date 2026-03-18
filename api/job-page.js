@@ -173,6 +173,8 @@ function mapCabinCrewJob(row) {
     swimmingAbility: row.swimming_ability || false,
     minAge: row.min_age || null,
     benefits: row.benefits || [],
+    tattooPolicy: row.tattoo_policy || null,
+    operatorType: row.operator_type || null,
     jobType: 'cabin_crew',
     verifiedAt: row.verified_at || '',
   };
@@ -188,6 +190,14 @@ function renderAttributes(j) {
     if (j.contractType) html += `<span class="attr-pill">${escapeHtml(j.contractType)}</span>`;
     if (j.visa) html += '<span class="attr-pill green"><b>Visa Sponsor</b></span>';
     if (j.swimmingAbility) html += '<span class="attr-pill" style="background:#e0f2fe;color:#0369a1;">Swimming Required</span>';
+    if (j.tattooPolicy === 'no_visible') html += '<span class="attr-pill" style="background:#fef2f2;color:#991b1b;">No Visible Tattoos</span>';
+    else if (j.tattooPolicy === 'hidden_allowed') html += '<span class="attr-pill" style="background:#fffbeb;color:#92400e;">Hidden Tattoos OK</span>';
+    else if (j.tattooPolicy === 'none') html += '<span class="attr-pill" style="background:#fef2f2;color:#991b1b;">No Tattoos Allowed</span>';
+    if (j.operatorType && j.operatorType !== 'airline') {
+      const opLabels = { bizav: 'Business Aviation', charter: 'Charter', government: 'Government', private: 'Private' };
+      const opLabel = opLabels[j.operatorType] || j.operatorType;
+      html += `<span class="attr-pill" style="background:#f3e8ff;color:#6b21a8;">${escapeHtml(opLabel)}</span>`;
+    }
     return html;
   } else {
     let html = '';
@@ -207,6 +217,9 @@ function renderStatsRow(j) {
     let stats = '';
     if (j.minHeightCm) {
       stats += `<div class="stat-box"><span class="stat-label">Min Height</span><span class="stat-value">${j.minHeightCm} cm</span></div>`;
+    }
+    if (j.armReachCm) {
+      stats += `<div class="stat-box"><span class="stat-label">Arm Reach</span><span class="stat-value">${j.armReachCm} cm</span></div>`;
     }
     if (j.minAge) {
       stats += `<div class="stat-box"><span class="stat-label">Min Age</span><span class="stat-value">${j.minAge}+ years</span></div>`;
@@ -267,6 +280,17 @@ function renderRequirements(requirementsJson) {
   } catch (e) {
     return '';
   }
+}
+
+function renderBenefits(benefits) {
+  if (!benefits) return '';
+  let items = benefits;
+  if (typeof benefits === 'string') {
+    try { items = JSON.parse(benefits); } catch (e) { return ''; }
+  }
+  if (!Array.isArray(items) || items.length === 0) return '';
+  const tags = items.map(b => `<span class="benefit-tag">${escapeHtml(b)}</span>`).join('');
+  return `<div class="benefits-row"><span class="benefits-label">Benefits</span>${tags}</div>`;
 }
 
 // ── JSON-LD schema (server-rendered, identical to injectSingleJobSchema) ─────
@@ -375,6 +399,8 @@ function buildPage(j, jobType) {
   const requirementsHtml = j.requirements
     ? `<div class="requirements-title">Requirements</div>${renderRequirements(j.requirements)}`
     : '';
+
+  const benefitsHtml = j.jobType === 'cabin_crew' ? renderBenefits(j.benefits) : '';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -632,6 +658,34 @@ ${schemaJson}
       margin-bottom: 4px;
     }
 
+    /* ── Benefits Row ─────────────────────────────────── */
+    .benefits-row {
+      grid-column: 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin-top: 6px;
+      padding-top: 8px;
+      border-top: 1px dashed #e2e8f0;
+    }
+    .benefits-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: #94a3b8;
+      font-weight: 700;
+      margin-right: 4px;
+    }
+    .benefit-tag {
+      background: #ecfdf5;
+      color: #065f46;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid #a7f3d0;
+    }
+
     /* ── CTA Banner ────────────────────────────────────── */
     .cta-banner {
       background: #0b1426;
@@ -750,6 +804,8 @@ ${schemaJson}
       .stat-label { font-size: 9px; }
       .stat-value { font-size: 13px; }
       .job-description { padding: 12px 14px; }
+      .benefits-row { margin-top: 8px; padding-top: 8px; }
+      .benefit-tag { font-size: 10px; padding: 2px 6px; }
     }
   </style>
 </head>
@@ -784,6 +840,8 @@ ${schemaJson}
       <div class="stats-row">
         ${renderStatsRow(j)}
       </div>
+
+      ${benefitsHtml}
 
       <div class="job-description">
         ${descriptionHtml}

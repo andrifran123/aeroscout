@@ -2127,6 +2127,47 @@
       color: #0f172a;
     }
 
+    .benefits-row {
+      grid-column: 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin-top: 6px;
+      padding-top: 8px;
+      border-top: 1px dashed #e2e8f0;
+    }
+    .benefits-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: #94a3b8;
+      font-weight: 700;
+      margin-right: 4px;
+    }
+    .benefit-tag {
+      background: #ecfdf5;
+      color: #065f46;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid #a7f3d0;
+    }
+    .benefit-more {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid #cbd5e1;
+    }
+    .benefit-more:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+
     .card-footer-actions {
       grid-column: 3;
       grid-row: 3;
@@ -2757,6 +2798,8 @@
 
       .stat-label { font-size: 9px; }
       .stat-value { font-size: 13px; }
+      .benefits-row { margin-top: 8px; padding-top: 8px; }
+      .benefit-tag { font-size: 10px; padding: 2px 6px; }
 
       .expand-link {
         display: flex;
@@ -4606,6 +4649,7 @@
             swimmingAbility: job.swimming_ability || false,
             minAge: job.min_age || null,
             benefits: job.benefits || [],
+            tattooPolicy: job.tattoo_policy || null,
             latitude: job.latitude || null,
             longitude: job.longitude || null,
             locationBucket: job.location_bucket || '',
@@ -5453,6 +5497,8 @@
           ${j.contractType ? `<span class="attr-pill">${j.contractType}</span>` : ''}
           ${j.visa ? '<span class="attr-pill green"><b>Visa Sponsor</b></span>' : ''}
           ${j.swimmingAbility ? '<span class="attr-pill" style="background:#e0f2fe;color:#0369a1;">Swimming Required</span>' : ''}
+          ${j.tattooPolicy === 'no_visible' ? '<span class="attr-pill" style="background:#fef2f2;color:#991b1b;">No Visible Tattoos</span>' : j.tattooPolicy === 'hidden_allowed' ? '<span class="attr-pill" style="background:#fffbeb;color:#92400e;">Hidden Tattoos OK</span>' : j.tattooPolicy === 'none' ? '<span class="attr-pill" style="background:#fef2f2;color:#991b1b;">No Tattoos Allowed</span>' : ''}
+          ${j.operator_type && j.operator_type !== 'airline' ? `<span class="attr-pill" style="background:#f3e8ff;color:#6b21a8;">${{bizav:'Business Aviation',charter:'Charter',government:'Government','private':'Private'}[j.operator_type] || j.operator_type}</span>` : ''}
         `;
       } else {
         return `
@@ -5477,6 +5523,14 @@
           stats += `<div class="stat-box">
             <span class="stat-label">Min Height</span>
             <span class="stat-value">${j.minHeightCm} cm</span>
+          </div>`;
+        }
+
+        // Physical requirements - Arm Reach
+        if (j.armReachCm) {
+          stats += `<div class="stat-box">
+            <span class="stat-label">Arm Reach</span>
+            <span class="stat-value">${j.armReachCm} cm</span>
           </div>`;
         }
 
@@ -5613,6 +5667,13 @@
           <div class="stats-row">
             ${renderStatsRow(j)}
           </div>
+
+          ${j.jobType === 'cabin_crew' && j.benefits && Array.isArray(j.benefits) && j.benefits.length > 0 ? `
+          <div class="benefits-row">
+            <span class="benefits-label">Benefits</span>
+            ${j.benefits.slice(0, 3).map(b => `<span class="benefit-tag">${b}</span>`).join('')}
+            ${j.benefits.length > 3 ? `<span class="benefit-more" onclick="this.style.display='none';this.nextElementSibling.style.display='contents'">+${j.benefits.length - 3} more</span><span class="benefit-extra" style="display:none">${j.benefits.slice(3).map(b => `<span class="benefit-tag">${b}</span>`).join('')}</span>` : ''}
+          </div>` : ''}
 
           <div class="card-footer-actions">
             <button class="share-btn" onclick="shareJob(${j.id}, event)" title="Share job">

@@ -146,6 +146,9 @@ function mapPilotJob(row) {
     applyEmail: row.apply_email || null,
     description: row.description_summary || '',
     requirements: row.requirements || '',
+    duties: row.duties || [],
+    benefits: row.benefits || [],
+    companyDescription: row.company_description || null,
     jobType: 'pilot',
     verifiedAt: row.verified_at || '',
   };
@@ -175,6 +178,8 @@ function mapCabinCrewJob(row) {
     benefits: row.benefits || [],
     tattooPolicy: row.tattoo_policy || null,
     operatorType: row.operator_type || null,
+    duties: row.duties || [],
+    companyDescription: row.company_description || null,
     jobType: 'cabin_crew',
     verifiedAt: row.verified_at || '',
   };
@@ -293,6 +298,32 @@ function renderBenefits(benefits) {
   return `<div class="benefits-row"><span class="benefits-label">Benefits</span>${tags}</div>`;
 }
 
+function renderDuties(dutiesJson) {
+  if (!dutiesJson) return '';
+  try {
+    let duties = dutiesJson;
+    if (typeof dutiesJson === 'string') {
+      duties = JSON.parse(dutiesJson);
+    }
+    if (!Array.isArray(duties) || duties.length === 0) return '';
+    const items = duties.map(d => `<li>${escapeHtml(d)}</li>`).join('');
+    return `<ul class="requirements-list">${items}</ul>`;
+  } catch (e) {
+    return '';
+  }
+}
+
+function renderDetailBenefits(benefits) {
+  if (!benefits) return '';
+  let items = benefits;
+  if (typeof benefits === 'string') {
+    try { items = JSON.parse(benefits); } catch (e) { return ''; }
+  }
+  if (!Array.isArray(items) || items.length === 0) return '';
+  const tags = items.map(b => `<span class="benefit-tag">${escapeHtml(b)}</span>`).join('');
+  return `<div class="detail-benefits">${tags}</div>`;
+}
+
 // ── JSON-LD schema (server-rendered, identical to injectSingleJobSchema) ─────
 
 function buildJobPostingSchema(j, canonicalUrl) {
@@ -393,11 +424,25 @@ function buildPage(j, jobType) {
     : iconLetter(j.org);
 
   const descriptionHtml = j.description
-    ? `<div class="job-description-content">${sanitizeHtml(j.description)}</div>`
+    ? `<div class="section-title">About This Role</div><div class="job-description-content">${sanitizeHtml(j.description)}</div>`
     : '<div class="job-description-content"></div>';
 
+  const dutiesHtml = renderDuties(j.duties);
+  const dutiesSectionHtml = dutiesHtml
+    ? `<div class="section-title">Duties & Responsibilities</div>${dutiesHtml}`
+    : '';
+
+  const detailBenefitsHtml = renderDetailBenefits(j.benefits);
+  const benefitsSectionHtml = detailBenefitsHtml
+    ? `<div class="section-title">What We Offer</div>${detailBenefitsHtml}`
+    : '';
+
   const requirementsHtml = j.requirements
-    ? `<div class="requirements-title">Requirements</div>${renderRequirements(j.requirements)}`
+    ? `<div class="section-title">Requirements</div>${renderRequirements(j.requirements)}`
+    : '';
+
+  const companySectionHtml = j.companyDescription
+    ? `<div class="section-title">About ${escapeHtml(j.org)}</div><div class="company-description">${escapeHtml(j.companyDescription)}</div>`
     : '';
 
   const benefitsHtml = j.jobType === 'cabin_crew' ? renderBenefits(j.benefits) : '';
@@ -648,14 +693,30 @@ ${schemaJson}
       color: #0b2a6f;
       font-weight: bold;
     }
-    .requirements-title {
+    .requirements-title,
+    .section-title {
       font-weight: 600;
       color: #475569;
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-top: 12px;
-      margin-bottom: 4px;
+      margin-top: 16px;
+      margin-bottom: 6px;
+    }
+    .section-title:first-child {
+      margin-top: 0;
+    }
+    .company-description {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #475569;
+      font-style: italic;
+    }
+    .detail-benefits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
     }
 
     /* ── Benefits Row ─────────────────────────────────── */
@@ -845,7 +906,10 @@ ${schemaJson}
 
       <div class="job-description">
         ${descriptionHtml}
+        ${dutiesSectionHtml}
+        ${benefitsSectionHtml}
         ${requirementsHtml}
+        ${companySectionHtml}
       </div>
     </article>
 

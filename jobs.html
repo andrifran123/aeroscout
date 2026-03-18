@@ -2014,6 +2014,8 @@
       color: #1e293b;
       align-self: center;
     }
+    .job-title-link { color: inherit; text-decoration: none; }
+    .job-title-link:hover { text-decoration: underline; }
 
     .airline-name {
       margin-left: 12px;
@@ -5654,7 +5656,7 @@
             <img src="${j.logo}" alt="${j.org}" onerror="this.parentElement.textContent='${iconLetter(j.org)}'">
           </div>
 
-          <h2 class="job-title">${j.title}<span class="airline-name">${j.org}</span></h2>
+          <h2 class="job-title"><a href="${getJobPageLink(j.id)}" class="job-title-link">${j.title}</a><span class="airline-name">${j.org}</span></h2>
 
           <div class="apply-container">
             <a href="${j.applyEmail ? 'mailto:' + j.applyEmail : j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
@@ -7196,8 +7198,23 @@
         .replace(/^-+|-+$/g, '');
     }
 
+    function getJobPageLink(jobId) {
+      // Relative URL for internal navigation (works on localhost and production)
+      const job = JOBS.find(j => j.id === jobId);
+      let slug = String(jobId);
+      if (job) {
+        const parts = [job.title, job.org].filter(Boolean).map(slugifyStr).filter(Boolean);
+        if (parts.length > 0) slug = `${parts.join('-')}-${jobId}`;
+      }
+      const base = `/jobs/${slug}`;
+      if (job && job.jobType === 'cabin_crew') {
+        return base + '?type=cabin_crew';
+      }
+      return base;
+    }
+
     function getShareableJobLink(jobId) {
-      // Use SSR URL with SEO slug for shared links
+      // Absolute URL with SEO slug for shared links (clipboard, social media)
       const job = JOBS.find(j => j.id === jobId);
       let slug = String(jobId);
       if (job) {
@@ -7528,7 +7545,7 @@
             <img src="${job.logo}" alt="${job.org}" onerror="this.parentElement.textContent='${iconLetter(job.org)}'">
           </div>
 
-          <h2 class="job-title">${job.title}<span class="airline-name">${job.org}</span></h2>
+          <h2 class="job-title"><a href="${getJobPageLink(job.id)}" class="job-title-link">${job.title}</a><span class="airline-name">${job.org}</span></h2>
 
           <div class="apply-container">
             <a href="${job.applyEmail ? 'mailto:' + job.applyEmail : job.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>
@@ -8039,7 +8056,7 @@
             <img src="${j.logo || ''}" alt="${j.org}" onerror="this.parentElement.textContent='${iconLetter(j.org)}'">
           </div>
 
-          <h2 class="job-title">${j.title}<span class="airline-name">${j.org}</span></h2>
+          <h2 class="job-title"><a href="${getJobPageLink(j.id)}" class="job-title-link">${j.title}</a><span class="airline-name">${j.org}</span></h2>
 
           <div class="apply-container">
             <a href="${j.applyEmail ? 'mailto:' + j.applyEmail : j.applyUrl}" class="apply-btn" target="_blank" rel="noopener noreferrer" onclick="gtag_report_conversion();">Apply Now</a>

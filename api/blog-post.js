@@ -363,7 +363,7 @@ function buildPage(post) {
   <nav class="nav">
     <a href="/" class="nav__brand">AEROSCOUT</a>
     <div class="nav__links">
-      <a href="/Jobs.html">Browse Jobs</a>
+      <a href="/jobs">Browse Jobs</a>
       <a href="/blog">Blog</a>
       <a href="/about.html">About</a>
       <a href="/pricing.html">Pricing</a>
@@ -422,7 +422,7 @@ function buildPage(post) {
     <div class="cta-banner">
       <h2>Find Your Next Aviation Role</h2>
       <p>Browse the largest pilot and cabin crew job database with real-time listings from 850+ airlines worldwide.</p>
-      <a href="/Jobs.html" class="cta-btn">
+      <a href="/jobs" class="cta-btn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         Browse All Jobs
       </a>

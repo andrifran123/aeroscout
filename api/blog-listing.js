@@ -204,7 +204,7 @@ function buildPage(posts) {
   <nav class="nav">
     <a href="/" class="nav__brand">AEROSCOUT</a>
     <div class="nav__links">
-      <a href="/Jobs.html">Browse Jobs</a>
+      <a href="/jobs">Browse Jobs</a>
       <a href="/blog">Blog</a>
       <a href="/about.html">About</a>
       <a href="/pricing.html">Pricing</a>

@@ -35,6 +35,16 @@
   ],
   "redirects": [
     {
+      "source": "/Jobs.html",
+      "destination": "/jobs",
+      "permanent": true
+    },
+    {
+      "source": "/Jobs",
+      "destination": "/jobs",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {

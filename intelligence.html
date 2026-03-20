@@ -278,7 +278,7 @@ function bo(){return{textStyle:{fontFamily:'Barlow',color:DIMH()},grid:{left:10,
 function stampBrand(){document.querySelectorAll('.ch').forEach(ch=>{if(ch.querySelector('.brand'))return;const cb=ch.querySelector('.cb');const wrap=document.createElement('span');wrap.className='ch-right';wrap.innerHTML='<span class="brand"><span class="brand-aero">AERO</span><span class="brand-scout">SCOUT</span><span class="brand-net">.NET</span></span>';if(cb){cb.parentNode.removeChild(cb);wrap.appendChild(cb)}ch.appendChild(wrap)})}
 function stampShare(){document.querySelectorAll('.c').forEach(card=>{if(card.querySelector('.share-btn'))return;const chartEl=Array.from(card.querySelectorAll('[id]')).find(el=>EC[el.id]);if(!chartEl)return;const wrap=document.createElement('div');wrap.className='share-wrap';wrap.innerHTML='<button class="share-btn" data-chart="'+chartEl.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Share</button>';wrap.querySelector('.share-btn').addEventListener('click',function(){shareChart(this.dataset.chart)});card.appendChild(wrap)})}
 function shareChart(chartId){const url=window.location.origin+'/intelligence?chart='+chartId;if(navigator.share){navigator.share({title:'AeroScout Chart',url:url}).catch(()=>{})}else{navigator.clipboard.writeText(url).then(()=>{const t=document.createElement('div');t.className='share-toast show';t.textContent='Link copied!';document.body.appendChild(t);setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300)},2000)}).catch(()=>{prompt('Copy this link:',url)})}}
-const CHART_TAB={hp:'pulse',av:'velocity',tr:'typeROI',si:'salary',ls:'lifespan',hc:'calendar',vi:'visa',cx:'compare',ov:'overview'};
+const CHART_TAB={av:'velocity',tr:'typeROI',si:'salary',ls:'lifespan',hc:'calendar',vi:'visa',cx:'compare',ov:'overview'};
 function chartTab(id){return CHART_TAB[id.replace(/[0-9]/g,'')]||null}
 let shareModal=null;let shareModalChart=null;
 function openChartModal(chartId){
@@ -345,7 +345,7 @@ function applyTheme(dark){
   document.getElementById('moonIcon').style.display=dark?'none':'block';
   localStorage.setItem('aeroscout-theme',dark?'dark':'light');
   // Re-render all charts with new colors
-  if(D){Object.keys(EC).forEach(id=>{EC[id].dispose();delete EC[id]});renderPulse();renderVelocity();renderTypeROI();renderSalary();renderLifespan();renderCalendar();renderVisa();renderCompare();renderOverview();wrapTables();stampBrand();stampShare();}
+  if(D){Object.keys(EC).forEach(id=>{EC[id].dispose();delete EC[id]});renderVelocity();renderTypeROI();renderSalary();renderLifespan();renderCalendar();renderVisa();renderCompare();renderOverview();wrapTables();stampBrand();stampShare();}
 }
 // Init theme from localStorage or system preference
 (function(){
@@ -355,8 +355,7 @@ function applyTheme(dark){
 document.getElementById('themeToggle').addEventListener('click',()=>applyTheme(!isDark()));
 
 const TABS=[
-{id:'pulse',l:'Hiring Pulse',sec:'Analysis',icon:'<path d="M2 12L5.5 7L8.5 9.5L14 3"/>'},
-{id:'velocity',l:'Airline Velocity',icon:'<path d="M14 8A6 6 0 112 8a6 6 0 0112 0z"/><path d="M8 4v4l2 2"/>'},
+{id:'velocity',l:'Airline Velocity',sec:'Analysis',icon:'<path d="M14 8A6 6 0 112 8a6 6 0 0112 0z"/><path d="M8 4v4l2 2"/>'},
 {id:'typeROI',l:'Type Ratings',icon:'<rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/>'},
 {id:'salary',l:'Salary Intel',icon:'<path d="M8 2v12M4 6l4-4 4 4"/>'},
 {id:'lifespan',l:'Job Lifespan',sec:'Tools',icon:'<path d="M3 4h10M3 8h10M3 12h6"/>'},
@@ -421,27 +420,11 @@ document.getElementById('upd').textContent=`Updated ${D.updated_at}`;
 const tot=(g?.active_jobs||0)+(cc?.active_jobs||0);
 document.getElementById('kpi').innerHTML=`<div class="k"><div class="kl">Active Positions</div><div class="kv">${fmt(tot)}</div><div class="kc nu">Pilot + Cabin Crew</div></div><div class="k"><div class="kl">Pilot Jobs</div><div class="kv">${fmt(g?.active_jobs)}</div><div class="kc nu">${fmt(g?.new_jobs)} new today</div></div><div class="k"><div class="kl">Cabin Crew</div><div class="kv">${fmt(cc?.active_jobs)}</div><div class="kc nu">${fmt(cc?.new_jobs)} new today</div></div><div class="k"><div class="kl">Airlines Hiring</div><div class="kv">${fmt(g?.unique_airlines)}</div><div class="kc nu">${fmt(g?.unique_locations)} locations</div></div><div class="k"><div class="kl">Avg Pilot Salary</div><div class="kv">${$(g?.avg_salary_usd)}</div><div class="kc nu">${g?.jobs_with_salary} with data</div></div>`;
 
-renderPulse();renderVelocity();renderTypeROI();renderSalary();renderLifespan();renderCalendar();renderVisa();renderCompare();renderOverview();
+renderVelocity();renderTypeROI();renderSalary();renderLifespan();renderCalendar();renderVisa();renderCompare();renderOverview();
 wrapTables();stampBrand();stampShare();
 }
 
-// ===== 1. HIRING PULSE =====
-function renderPulse(){
-const fl=D.flow||[];const gt=D.trends.global||[];
-document.getElementById('p-pulse').innerHTML=`<div class="g"><div class="c cw"><div class="ch"><div class="ct">Hiring Pulse — Net Market Movement</div><div class="cb">Daily</div></div><div id="hp1" style="height:320px"></div></div><div class="c"><div class="ch"><div class="ct">Cumulative New vs Closed</div><div class="cb">${D.total_days}d</div></div><div id="hp2" style="height:280px"></div></div><div class="c"><div class="ch"><div class="ct">Net Change Waterfall</div><div class="cb">Last 30 days</div></div><div id="hp3" style="height:280px"></div></div><div class="c cw"><div class="ch"><div class="ct">Active Jobs + Airlines Tracked Over Time</div></div><div id="hp4" style="height:280px"></div></div></div>`;
-
-chart('hp1',{...bo(),legend:{data:['New Jobs','Closed','Net Change'],bottom:0,textStyle:{fontSize:10,color:DIMH()}},grid:{...bo().grid,bottom:35},xAxis:{type:'category',data:fl.map(r=>r.date),axisLabel:{fontSize:9,color:DIMH(),formatter:v=>v.slice(5)},boundaryGap:true},yAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH()},splitLine:{lineStyle:{color:GRD()}}},series:[{name:'New Jobs',type:'bar',stack:'flow',data:fl.map(r=>r.new_jobs),itemStyle:{color:B,borderRadius:[3,3,0,0]},barWidth:7},{name:'Closed',type:'bar',stack:'flow',data:fl.map(r=>-r.closed),itemStyle:{color:'#f87171',borderRadius:[0,0,3,3]},barWidth:7},{name:'Net Change',type:'line',data:fl.map(r=>r.new_jobs-r.closed),smooth:.3,symbol:'none',lineStyle:{color:'#f59e0b',width:2}}]});
-
-let cumNew=0,cumClosed=0;const cumD=fl.map(r=>{cumNew+=r.new_jobs;cumClosed+=r.closed;return{date:r.date,cn:cumNew,cc:cumClosed}});
-chart('hp2',{...bo(),legend:{data:['Cumulative New','Cumulative Closed'],bottom:0,textStyle:{fontSize:10,color:DIMH()}},grid:{...bo().grid,bottom:30},xAxis:{type:'category',data:cumD.map(r=>r.date),axisLabel:{fontSize:9,color:DIMH(),formatter:v=>v.slice(5)},boundaryGap:false},yAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH()},splitLine:{lineStyle:{color:GRD()}}},series:[{name:'Cumulative New',type:'line',data:cumD.map(r=>r.cn),smooth:.3,symbol:'none',lineStyle:{color:B,width:2},areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(37,99,235,.1)'},{offset:1,color:'rgba(37,99,235,.01)'}])}},{name:'Cumulative Closed',type:'line',data:cumD.map(r=>r.cc),smooth:.3,symbol:'none',lineStyle:{color:'#f87171',width:2},areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(248,113,113,.1)'},{offset:1,color:'rgba(248,113,113,.01)'}])}}]});
-
-const last30=fl.slice(-30);
-chart('hp3',{...bo(),xAxis:{type:'category',data:last30.map(r=>r.date.slice(5)),axisLabel:{fontSize:8,color:DIMH(),rotate:45}},yAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH()},splitLine:{lineStyle:{color:GRD()}}},series:[{type:'bar',data:last30.map(r=>{const n=r.new_jobs-r.closed;return{value:n,itemStyle:{color:n>=0?B:'#f87171',borderRadius:n>=0?[3,3,0,0]:[0,0,3,3]}}}),barWidth:8}]});
-
-chart('hp4',{...bo(),legend:{data:['Active Jobs','Airlines'],bottom:0,textStyle:{fontSize:10,color:DIMH()}},grid:{...bo().grid,bottom:30},xAxis:{type:'category',data:gt.map(r=>r.snapshot_date),axisLabel:{fontSize:9,color:DIMH(),formatter:v=>v.slice(5)},boundaryGap:false},yAxis:[{type:'value',axisLabel:{fontSize:10,color:DIMH()},splitLine:{lineStyle:{color:GRD()}}},{type:'value',axisLabel:{fontSize:10,color:DIMH()},splitLine:{show:false}}],series:[{name:'Active Jobs',type:'line',data:gt.map(r=>r.active_jobs),smooth:.3,symbol:'none',lineStyle:{color:B,width:2.5},areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(37,99,235,.12)'},{offset:1,color:'rgba(37,99,235,.01)'}])}},{name:'Airlines',type:'line',yAxisIndex:1,data:gt.map(r=>r.unique_airlines),smooth:.3,symbol:'none',lineStyle:{color:'#10b981',width:2}}]});
-}
-
-// ===== 2. AIRLINE VELOCITY =====
+// ===== 1. AIRLINE VELOCITY =====
 function renderVelocity(){
 const al=D.airlines||[];const{dates:alD,series:alS}=grp(D.trends.airlines||[]);
 const rows=al.slice(0,15).map((a,i)=>{const pts=alS[a.dimension_value]||[];const first=pts.find(p=>p!=null)||a.active_jobs;const pct=first?Math.round(((a.active_jobs-first)/first)*100):0;return`<tr><td>${i+1}</td><td class="an">${a.dimension_value}</td><td>${a.active_jobs}</td><td>${a.new_jobs}</td><td>${a.avg_salary_usd?$(a.avg_salary_usd):'—'}</td><td class="${pct>=0?'up':'dn'}">${pct>=0?'↑':'↓'}${Math.abs(pct)}%</td></tr>`}).join('');

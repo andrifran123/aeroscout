@@ -45,6 +45,7 @@ nav{position:sticky;top:0;z-index:100;padding:.8rem 2.5rem;display:flex;justify-
 .chart-modal-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}.chart-modal{background:var(--wh);border:1px solid var(--bd);border-radius:14px;width:90vw;max-width:900px;max-height:85vh;overflow:auto;box-shadow:0 25px 50px rgba(0,0,0,.15);position:relative;padding:1.4rem}.chart-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.4rem}.chart-modal-close{width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--wh);color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s;flex-shrink:0}.chart-modal-close:hover{border-color:var(--pr);color:var(--pr)}
 #dashContent.blurred{filter:blur(12px);will-change:filter;pointer-events:none}#sidebar.blurred{filter:blur(12px);will-change:filter;pointer-events:none}.share-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 20px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.8rem;font-weight:500;z-index:1100;opacity:0;transition:opacity .3s}.share-toast.show{opacity:1}
 .cc{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.8rem}.cc label{font-size:.7rem;color:var(--dim);font-weight:500;text-transform:uppercase;letter-spacing:.05em}.cc select,.cc input{font-family:'Barlow';font-size:.8rem;padding:.35rem .7rem;border:1px solid var(--bd);border-radius:5px;background:var(--wh);color:var(--text);outline:none}.cc select:focus,.cc input:focus{border-color:var(--pr)}.cc input[type=number]{width:80px}
+.salary-filters{display:flex;align-items:center;gap:.6rem;padding:.65rem 1rem;background:var(--wh);border:1px solid var(--bd);border-radius:10px;box-shadow:var(--sh);margin-bottom:1rem;flex-wrap:wrap}.sf-group{display:flex;align-items:center;gap:.3rem}.sf-label{font-size:.58rem;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-right:.1rem}.sf-btn{padding:.3rem .65rem;font-size:.7rem;font-weight:500;font-family:'Barlow',sans-serif;border:1px solid var(--bd);border-radius:5px;background:var(--wh);color:var(--sec);cursor:pointer;transition:all .15s}.sf-btn:hover{border-color:var(--pr);color:var(--pr)}.sf-btn.on{background:var(--pr);color:#fff;border-color:var(--pr)}.sf-sep{width:1px;height:22px;background:var(--bd);margin:0 .2rem}.sf-count{font-size:.62rem;color:var(--dim);margin-left:auto}.sf-count b{color:var(--text);font-weight:600}.sf-unfilt{font-size:.55rem;color:var(--dim);font-style:italic;display:block;margin-top:.3rem}
 .dt{width:100%;border-collapse:collapse}.dt thead th{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:500;text-align:left;padding:0 0 .6rem;border-bottom:1px solid var(--bd)}.dt thead th:nth-child(n+2){text-align:right}.dt tbody td{font-size:.78rem;padding:.55rem 0;border-bottom:1px solid var(--bd)}.dt tbody td:nth-child(n+2){text-align:right}.dt tbody tr:last-child td{border-bottom:none}.an{font-weight:500;color:var(--text)}
 .ml{display:flex;flex-direction:column;gap:.5rem}.mr{display:flex;justify-content:space-between;align-items:center;padding-bottom:.5rem;border-bottom:1px solid var(--bd)}.mr:last-child{border-bottom:none;padding-bottom:0}.mn{font-size:.78rem;color:var(--sec)}.mv{font-size:.82rem;font-weight:600;color:var(--text)}.ms{font-size:.65rem;color:var(--dim);font-weight:400;margin-left:.2rem}
 .match-result{padding:1rem;border-radius:8px;margin-top:.8rem}.match-hi{background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.15)}[data-theme="dark"] .match-hi{background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.25)}.match-num{font-size:2rem;font-weight:700;color:var(--gn)}.match-lbl{font-size:.8rem;color:var(--sec)}
@@ -70,6 +71,7 @@ body,.c,.k,nav,footer,.sidebar{transition:background .3s,color .3s,border-color 
 .cc select,.cc input{padding:.5rem .8rem;font-size:.85rem;min-height:44px}
 .bbtn{padding:.8rem 1.8rem;min-height:44px;display:inline-flex;align-items:center}
 .nv .cta{padding:.55rem 1.3rem;min-height:44px;display:inline-flex;align-items:center}
+.sf-btn{padding:.4rem .7rem;min-height:36px}
 }
 
 /* iPad Pro landscape / large tablets (1024-1366) */
@@ -135,6 +137,7 @@ footer .fl{justify-content:center}
 .ban{margin:1.2rem 0}
 .match-num{font-size:1.7rem}
 .chart-modal{width:95vw;padding:1rem}
+.salary-filters{padding:.5rem .7rem;gap:.4rem}.sf-group{flex-wrap:wrap}.sf-btn{padding:.35rem .55rem;font-size:.68rem;min-height:32px}.sf-sep{display:none}.sf-count{width:100%;text-align:center;margin-top:.3rem}
 }
 
 /* Phones (< 480) */
@@ -183,6 +186,7 @@ footer span{font-size:.65rem}
 footer a{font-size:.65rem}
 .theme-toggle{width:38px;height:38px}
 .share-btn{padding:4px 10px;font-size:.6rem}.share-btn svg{width:10px;height:10px}
+.salary-filters{padding:.4rem .5rem;gap:.3rem}.sf-btn{padding:.3rem .45rem;font-size:.62rem}.sf-label{font-size:.5rem}
 }
 /* ===== AURORA LOGIN WALL (exact copy from homepage) ===== */
 .auth-wall{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#f5f8fc;z-index:200}
@@ -302,6 +306,37 @@ if(shareModal){shareModal.remove();shareModal=null}
 const url=new URL(window.location);url.searchParams.delete('chart');history.replaceState(null,'',url.pathname+url.search);
 }
 function grp(arr,vk='active_jobs'){const m={};const ds=new Set();(arr||[]).filter(r=>r.snapshot_date>=MIN_DATE).forEach(r=>{if(!m[r.dimension_value])m[r.dimension_value]={};m[r.dimension_value][r.snapshot_date]=r[vk];ds.add(r.snapshot_date)});const sd=[...ds].sort();const s={};Object.entries(m).forEach(([n,dm])=>{s[n]=sd.map(d=>dm[d]!=null?dm[d]:null)});return{dates:sd,series:s}}
+
+// ===== SALARY FILTERING HELPERS =====
+function parseSalary(raw){
+  if(!raw)return null;
+  const c=raw.replace(/[$,\s]/g,'');
+  if(c.includes('-')){
+    const [a,b]=c.split('-').map(Number);
+    if(a>0&&b>0){if(b>a*3)return null;return{mid:(a+b)/2,min:a,max:b}}
+  }
+  const n=parseFloat(c);return n>0?{mid:n,min:n,max:n}:null;
+}
+function toRegion(loc){
+  if(!loc||loc==='UNKNOWN'||loc==='WORLDWIDE'||loc==='REMOTE')return 'Other';
+  const EU=['EU','GB','DE','FR','NL','CH','ES','PL','BG','AT','GR','MT','IT','SE','NO','DK','FI','IE','PT','CZ','RO','HU'];
+  const ME=['ME','AE','SA','QA','KW','BH','OM','JO','IL','LB','TR'];
+  const APAC=['APAC','AP','ASIA','AU','SG','HK','JP','KR','CN','IN','TH','ID','PG','NZ','MY','PH','TW','VN'];
+  const p=loc.split('_')[0];
+  if(['US','PR','AS','GU','VI'].includes(p))return 'US';
+  if(p==='CA')return 'Canada';
+  if(EU.includes(p))return 'Europe';
+  if(ME.includes(p))return 'Middle East';
+  if(APAC.includes(p))return 'Asia Pacific';
+  if(p==='AF'||p==='AFRICA'||loc.startsWith('AF_'))return 'Africa';
+  return 'Other';
+}
+function toOperator(op){
+  if(!op)return 'Other';
+  const m={'bizav':'BizAv','corporate':'BizAv','airline':'Airline','instructor':'Instructor','medical':'Medical','government':'Gov'};
+  return m[op.toLowerCase()]||'Other';
+}
+let salRank='ALL',salOp='ALL',salRegion='ALL';
 
 // ===== THEME TOGGLE =====
 function applyTheme(dark){
@@ -439,21 +474,209 @@ chart('tr4',{...bo(),legend:{data:['TR Required','Training Provided'],bottom:0,t
 
 // ===== 4. SALARY INTEL =====
 function renderSalary(){
-const rk=D.ranks||[];const cap=rk.find(r=>r.dimension_value==='CAPTAIN'),fo=rk.find(r=>r.dimension_value==='FO'),ins=rk.find(r=>r.dimension_value==='INSTRUCTOR'),cad=rk.find(r=>r.dimension_value==='CADET');
-const sc=D.scatter||[];const ac=D.aircraft||[];const{dates:rkD,series:rkS}=grp(D.trends.ranks||[]);
-const byRk={};sc.forEach(s=>{const r=s.rank||'Other';if(!byRk[r])byRk[r]=[];byRk[r].push([s.hours,s.salary,s.aircraft])});
-const acS=ac.filter(a=>a.avg_salary_usd).sort((a,b)=>Number(b.avg_salary_usd)-Number(a.avg_salary_usd)).slice(0,12);
-document.getElementById('p-salary').innerHTML=`<div class="g"><div class="c cw"><div class="ch"><div class="ct">Salary vs Hours — Every Job Plotted</div><div class="cb">Colored by rank</div></div><div id="si1" style="height:380px"></div></div><div class="c"><div class="ch"><div class="ct">Avg Salary by Aircraft Type</div><div class="cb">USD/yr</div></div><div id="si2" style="height:380px"></div></div><div class="c"><div class="ch"><div class="ct">Salary by Rank</div><div class="cb">USD/yr</div></div><div id="si3" style="height:280px"></div></div><div class="c cw"><div class="ch"><div class="ct">Salary Trend by Rank Over Time</div><div class="cb">${D.total_days}d</div></div><div id="si4" style="height:280px"></div></div></div>`;
+// Build filterable dataset from salary_detail
+const SD=(D.salary_detail||[]).map(row=>{
+  const p=parseSalary(row.salary_usd);
+  if(!p)return null;
+  return{
+    aircraft_family:row.aircraft_family||'Unknown',
+    rank_bucket:row.rank_bucket||'Other',
+    isCap:row.rank_bucket==='CAPTAIN',
+    isFO:row.rank_bucket==='FO',
+    mid:p.mid,min:p.min,max:p.max,
+    region:toRegion(row.location_bucket||''),
+    opGroup:toOperator(row.operator_type||'')
+  };
+}).filter(Boolean);
 
-chart('si1',{...bo(),legend:{data:Object.keys(byRk),bottom:0,textStyle:{fontSize:10,color:DIMH()}},grid:{...bo().grid,bottom:30},tooltip:{trigger:'item',formatter:p=>`${p.seriesName}<br>Hours: ${fmt(p.value[0])}<br>Salary: ${$(p.value[1])}<br>Aircraft: ${p.value[2]}`},xAxis:{type:'value',name:'Total Hours',nameLocation:'middle',nameGap:25,nameTextStyle:{fontSize:11,color:DIMH()},axisLabel:{fontSize:10,color:DIMH()},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'value',name:'Salary (USD)',nameLocation:'middle',nameGap:45,nameTextStyle:{fontSize:11,color:DIMH()},axisLabel:{fontSize:10,color:DIMH(),formatter:v=>'$'+(v/1000)+'k'},splitLine:{lineStyle:{color:GRD()}}},series:Object.entries(byRk).map(([r,pts],i)=>({name:r,type:'scatter',data:pts,symbolSize:6,itemStyle:{color:C[i%C.length],opacity:.65}}))});
+// Build filter bar HTML
+const rankOpts=['ALL','CAPTAIN','FO','INSTRUCTOR','CADET'];
+const opOpts=['ALL','Airline','BizAv','Instructor','Gov','Medical'];
+const regionOpts=['ALL','US','Europe','Middle East','Asia Pacific','Canada','Africa'];
 
-chart('si2',{...bo(),grid:{left:10,right:35,top:10,bottom:10,containLabel:true},xAxis:{type:'value',axisLabel:{fontSize:9,color:DIMH(),formatter:v=>'$'+(v/1000)+'k'},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'category',data:acS.map(a=>a.dimension_value.replace(/_/g,' ')).reverse(),axisLabel:{fontSize:10,color:TH(),fontWeight:500},axisLine:{show:false},axisTick:{show:false}},series:[{type:'bar',data:acS.map(a=>Math.round(Number(a.avg_salary_usd))).reverse(),barWidth:13,itemStyle:{borderRadius:[0,4,4,0],color:new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:B},{offset:1,color:BL}])},label:{show:true,position:'right',fontSize:9,fontWeight:600,color:TH(),formatter:p=>$(p.value)}}]});
+const mkBtns=(opts,stateKey)=>opts.map(o=>`<button class="sf-btn${(stateKey==='rank'?salRank:stateKey==='op'?salOp:salRegion)===o?' on':''}" data-key="${stateKey}" data-val="${o}">${o}</button>`).join('');
 
-chart('si3',{...bo(),grid:{left:10,right:35,top:10,bottom:10,containLabel:true},xAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH(),formatter:v=>'$'+(v/1000)+'k'},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'category',data:['Cadet','Instructor','First Officer','Captain'],axisLabel:{fontSize:11,color:TH(),fontWeight:500},axisLine:{show:false},axisTick:{show:false}},series:[{type:'bar',data:[cad,ins,fo,cap].map(r=>r?.avg_salary_usd?Math.round(Number(r.avg_salary_usd)):0),barWidth:20,itemStyle:{borderRadius:[0,6,6,0],color:p=>['#bfdbfe','#93c5fd',BL,B][p.dataIndex]||B},label:{show:true,position:'right',fontSize:11,fontWeight:600,color:TH(),formatter:p=>$(p.value)}}]});
+document.getElementById('p-salary').innerHTML=`
+<div class="salary-filters" id="salFilters">
+  <div class="sf-group"><span class="sf-label">Rank</span>${mkBtns(rankOpts,'rank')}</div>
+  <div class="sf-sep"></div>
+  <div class="sf-group"><span class="sf-label">Operator</span>${mkBtns(opOpts,'op')}</div>
+  <div class="sf-sep"></div>
+  <div class="sf-group"><span class="sf-label">Region</span>${mkBtns(regionOpts,'region')}</div>
+  <span class="sf-count" id="salCount"><b>—</b> salary data points</span>
+</div>
+<div class="g">
+  <div class="c cw"><div class="ch"><div class="ct">Salary vs Hours — Every Job Plotted</div><div class="cb">Colored by rank</div></div><div id="si1" style="height:360px"></div></div>
+  <div class="c cw"><div class="ch"><div class="ct">Avg Salary by Aircraft Type</div><div class="cb">Captain vs FO · USD/yr</div></div><div id="si2" style="height:400px"></div><div style="font-size:.58rem;color:var(--dim);margin-top:.3rem">* = fewer than 3 data points — treat as indicative</div></div>
+  <div class="c"><div class="ch"><div class="ct">Salary by Rank</div><div class="cb">USD/yr</div></div><div id="si3" style="height:240px"></div></div>
+  <div class="c"><div class="ch"><div class="ct">Salary by Operator Type</div><div class="cb">Captain vs FO</div></div><div id="si5" style="height:240px"></div></div>
+  <div class="c"><div class="ch"><div class="ct">Salary by Region</div><div class="cb">Captain vs FO</div></div><div id="si6" style="height:260px"></div></div>
+  <div class="c"><div class="ch"><div class="ct">Salary Distribution</div><div class="cb">Histogram · USD/yr</div></div><div id="si7" style="height:260px"></div></div>
+  <div class="c cw"><div class="ch"><div class="ct">Salary Trend by Rank Over Time</div><div class="cb">${D.total_days}d · unfiltered</div></div><div id="si4" style="height:280px"></div></div>
+</div>`;
 
-// Salary trend by rank
-const salGrp=grp(D.trends.ranks||[],'avg_salary_usd');
-chart('si4',{...bo(),legend:{data:Object.keys(salGrp.series),bottom:0,textStyle:{fontSize:10,color:DIMH()}},grid:{...bo().grid,bottom:30},xAxis:{type:'category',data:salGrp.dates,axisLabel:{fontSize:9,color:DIMH(),formatter:v=>v.slice(5)},boundaryGap:false},yAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH(),formatter:v=>v?'$'+(v/1000)+'k':''},splitLine:{lineStyle:{color:GRD()}}},series:Object.entries(salGrp.series).map(([n,d],i)=>({name:n,type:'line',data:d.map(v=>v?Math.round(Number(v)):null),smooth:.3,symbol:'none',lineStyle:{color:C[i],width:2},connectNulls:true}))});
+// Wire filter buttons
+document.getElementById('salFilters').addEventListener('click',e=>{
+  const btn=e.target.closest('.sf-btn');
+  if(!btn)return;
+  const key=btn.dataset.key,val=btn.dataset.val;
+  if(key==='rank')salRank=val;
+  else if(key==='op')salOp=val;
+  else if(key==='region')salRegion=val;
+  // Update active class
+  document.querySelectorAll(`#salFilters .sf-btn[data-key="${key}"]`).forEach(b=>b.classList.toggle('on',b.dataset.val===val));
+  updateSalaryCharts(SD);
+  stampBrand();stampShare();
+});
+
+updateSalaryCharts(SD);
+}
+
+function updateSalaryCharts(SD){
+// Apply filters
+let fd=SD;
+if(salRank!=='ALL')fd=fd.filter(r=>r.rank_bucket===salRank);
+if(salOp!=='ALL')fd=fd.filter(r=>r.opGroup===salOp);
+if(salRegion!=='ALL')fd=fd.filter(r=>r.region===salRegion);
+
+// Update counter
+const cEl=document.getElementById('salCount');
+if(cEl)cEl.innerHTML=`<b>${fmt(fd.length)}</b> salary data points`;
+
+// Group helper: returns per-group stats for Captain and FO sub-groups
+function grpSal(arr,keyFn){
+  const m={};
+  arr.forEach(r=>{
+    const k=keyFn(r);
+    if(!m[k])m[k]={capVals:[],foVals:[],allVals:[]};
+    if(r.isCap){m[k].capVals.push(r);m[k].allVals.push(r);}
+    else if(r.isFO){m[k].foVals.push(r);m[k].allVals.push(r);}
+    else{m[k].allVals.push(r);}
+  });
+  const out={};
+  Object.entries(m).forEach(([k,v])=>{
+    const cMids=v.capVals.map(x=>x.mid),fMids=v.foVals.map(x=>x.mid),aMids=v.allVals.map(x=>x.mid);
+    const avg=a=>a.length?Math.round(a.reduce((s,x)=>s+x,0)/a.length):null;
+    out[k]={
+      capAvg:avg(cMids),capMin:v.capVals.length?Math.min(...v.capVals.map(x=>x.min)):null,capMax:v.capVals.length?Math.max(...v.capVals.map(x=>x.max)):null,capN:v.capVals.length,
+      foAvg:avg(fMids),foMin:v.foVals.length?Math.min(...v.foVals.map(x=>x.min)):null,foMax:v.foVals.length?Math.max(...v.foVals.map(x=>x.max)):null,foN:v.foVals.length,
+      allAvg:avg(aMids),allN:v.allVals.length
+    };
+  });
+  return out;
+}
+
+// ---- si1: Scatter — rank filter only ----
+if(document.getElementById('si1')){
+  const sc=D.scatter||[];
+  const scf=salRank==='ALL'?sc:sc.filter(r=>r.rank===salRank);
+  const rkCol={CAPTAIN:B,FO:BL,INSTRUCTOR:'#a78bfa',CADET:'#f59e0b'};
+  const byRk={};scf.forEach(s=>{const r=s.rank||'Other';if(!byRk[r])byRk[r]=[];byRk[r].push([s.hours,s.salary,s.aircraft])});
+  const rkOrder2=['CAPTAIN','FO','INSTRUCTOR','CADET'];
+  const orderedRk=rkOrder2.filter(r=>byRk[r]).concat(Object.keys(byRk).filter(r=>!rkOrder2.includes(r)));
+  chart('si1',{...bo(),color:orderedRk.map(r=>rkCol[r]||'#8b5cf6'),legend:{data:orderedRk,bottom:0,textStyle:{fontSize:10,color:DIMH()}},grid:{...bo().grid,bottom:30},tooltip:{trigger:'item',formatter:p=>`${p.seriesName}<br>Hours: ${fmt(p.value[0])}<br>Salary: ${$(p.value[1])}<br>Aircraft: ${p.value[2]}`},xAxis:{type:'value',name:'Total Hours',nameLocation:'middle',nameGap:25,nameTextStyle:{fontSize:11,color:DIMH()},axisLabel:{fontSize:10,color:DIMH()},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'value',name:'Salary (USD)',nameLocation:'middle',nameGap:45,nameTextStyle:{fontSize:11,color:DIMH()},axisLabel:{fontSize:10,color:DIMH(),formatter:v=>'$'+(v/1000)+'k'},splitLine:{lineStyle:{color:GRD()}}},series:orderedRk.map(r=>({name:r,type:'scatter',data:byRk[r]||[],symbolSize:6,itemStyle:{color:rkCol[r]||'#8b5cf6',opacity:.65}}))});
+}
+
+// ---- si2: Aircraft top 12 leaderboard ----
+if(document.getElementById('si2')){
+  const acGrp=grpSal(fd,r=>r.aircraft_family);
+  const sorted=Object.entries(acGrp).filter(([,v])=>v.allN>0).sort(([,a],[,b])=>{const aV=a.capAvg||a.foAvg||0,bV=b.capAvg||b.foAvg||0;return bV-aV}).slice(0,12);
+  const names=sorted.map(([k])=>k.replace(/_/g,' ')).reverse();
+  const capData=sorted.map(([,v])=>v.capAvg!=null?{value:v.capAvg,itemStyle:{color:B,borderRadius:[0,4,4,0]}}:{value:null,itemStyle:{color:B,opacity:0,borderRadius:[0,4,4,0]}}).reverse();
+  const foData=sorted.map(([,v])=>{
+    const dim=v.foN<3;
+    return v.foAvg!=null?{value:v.foAvg,itemStyle:{color:BL,opacity:dim?0.4:1,borderRadius:[0,4,4,0]}}:{value:null,itemStyle:{color:BL,opacity:0,borderRadius:[0,4,4,0]}};
+  }).reverse();
+  // Whisker series using custom render
+  const capWhiskers=sorted.map(([,v],i)=>({
+    value:i,capMin:v.capMin,capMax:v.capMax,capAvg:v.capAvg,hasData:v.capAvg!=null&&v.capMin!=null&&v.capMax!=null&&v.capMin!==v.capMax
+  })).reverse();
+  const foWhiskers=sorted.map(([,v],i)=>({
+    value:i,foMin:v.foMin,foMax:v.foMax,foAvg:v.foAvg,hasData:v.foAvg!=null&&v.foMin!=null&&v.foMax!=null&&v.foMin!==v.foMax
+  })).reverse();
+  chart('si2',{...bo(),color:[B,BL,B,BL],grid:{left:10,right:90,top:10,bottom:10,containLabel:true},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:params=>{
+      const i=params[0]?.dataIndex;if(i==null)return '';
+      const [k,v]=sorted[sorted.length-1-i];
+      let s=`<b>${k.replace(/_/g,' ')}</b>`;
+      if(v.capAvg)s+=`<br>Capt: ${$(v.capAvg)}${v.capMin!==v.capMax?` (${$(v.capMin)}–${$(v.capMax)})`:''}`;
+      if(v.foAvg)s+=`<br>FO: ${$(v.foAvg)}${v.foN<3?' *':''}${v.foMin!==v.foMax?` (${$(v.foMin)}–${$(v.foMax)})`:''}`;
+      return s;
+    }},
+    legend:{data:['Captain','First Officer'],top:0,right:0,textStyle:{fontSize:10,color:DIMH()}},
+    xAxis:{type:'value',axisLabel:{fontSize:9,color:DIMH(),formatter:v=>'$'+(v/1000)+'k'},splitLine:{lineStyle:{color:GRD()}}},
+    yAxis:{type:'category',data:names,axisLabel:{fontSize:10,color:TH(),fontWeight:500},axisLine:{show:false},axisTick:{show:false}},
+    series:[
+      {name:'Captain',type:'bar',data:capData,barGap:'20%',barCategoryGap:'35%',barWidth:10,label:{show:true,position:'right',fontSize:9,fontWeight:600,color:TH(),formatter:p=>p.value!=null?$(p.value):''}},
+      {name:'First Officer',type:'bar',data:foData,barWidth:10,label:{show:true,position:'right',fontSize:9,color:DIMH(),formatter:(p,i2)=>{
+        const idx=p.dataIndex;const dim=sorted[sorted.length-1-idx]?.[1]?.foN<3;
+        return p.value!=null?($(p.value)+(dim?' *':'')):'';
+      }}},
+      // Captain whiskers
+      {type:'custom',name:'Cap Range',silent:true,encode:{x:[0,1],y:2},renderItem:(params,api)=>{
+        const d=capWhiskers[params.dataIndex];if(!d||!d.hasData)return{type:'group',children:[]};
+        const yPx=api.coord([d.capAvg,params.dataIndex])[1]-5;
+        const x0=api.coord([d.capMin,0])[0],x1=api.coord([d.capMax,0])[0];
+        return{type:'group',children:[{type:'line',shape:{x1:x0,y1:yPx,x2:x1,y2:yPx},style:{stroke:B,lineWidth:1.5,opacity:.5}},{type:'line',shape:{x1:x0,y1:yPx-4,x2:x0,y2:yPx+4},style:{stroke:B,lineWidth:1.5,opacity:.5}},{type:'line',shape:{x1:x1,y1:yPx-4,x2:x1,y2:yPx+4},style:{stroke:B,lineWidth:1.5,opacity:.5}}]};
+      },data:capWhiskers.map((w,i)=>[w.capMin||0,w.capMax||0,i])},
+      // FO whiskers
+      {type:'custom',name:'FO Range',silent:true,encode:{x:[0,1],y:2},renderItem:(params,api)=>{
+        const d=foWhiskers[params.dataIndex];if(!d||!d.hasData)return{type:'group',children:[]};
+        const yPx=api.coord([d.foAvg,params.dataIndex])[1]+5;
+        const x0=api.coord([d.foMin,0])[0],x1=api.coord([d.foMax,0])[0];
+        return{type:'group',children:[{type:'line',shape:{x1:x0,y1:yPx,x2:x1,y2:yPx},style:{stroke:BL,lineWidth:1.5,opacity:.5}},{type:'line',shape:{x1:x0,y1:yPx-4,x2:x0,y2:yPx+4},style:{stroke:BL,lineWidth:1.5,opacity:.5}},{type:'line',shape:{x1:x1,y1:yPx-4,x2:x1,y2:yPx+4},style:{stroke:BL,lineWidth:1.5,opacity:.5}}]};
+      },data:foWhiskers.map((w,i)=>[w.foMin||0,w.foMax||0,i])}
+    ]
+  });
+}
+
+// ---- si3: Salary by Rank ----
+if(document.getElementById('si3')){
+  const rkGrp=grpSal(fd,r=>r.rank_bucket);
+  const rkOrder=['CADET','INSTRUCTOR','FO','CAPTAIN'];
+  const rkLabels=['Cadet','Instructor','First Officer','Captain'];
+  const rkColors=['#bfdbfe','#93c5fd',BL,B];
+  const rkVals=rkOrder.map(k=>rkGrp[k]?.allAvg||0);
+  chart('si3',{...bo(),grid:{left:10,right:35,top:10,bottom:10,containLabel:true},xAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH(),formatter:v=>'$'+(v/1000)+'k'},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'category',data:rkLabels,axisLabel:{fontSize:11,color:TH(),fontWeight:500},axisLine:{show:false},axisTick:{show:false}},series:[{type:'bar',data:rkVals.map((v,i)=>({value:v,itemStyle:{color:rkColors[i],borderRadius:[0,6,6,0]}})),barWidth:20,label:{show:true,position:'right',fontSize:11,fontWeight:600,color:TH(),formatter:p=>$(p.value)}}]});
+}
+
+// ---- si5: Salary by Operator Type ----
+if(document.getElementById('si5')){
+  const opGrp=grpSal(fd,r=>r.opGroup);
+  const sorted5=Object.entries(opGrp).filter(([,v])=>v.allN>0).sort(([,a],[,b])=>(b.capAvg||b.foAvg||0)-(a.capAvg||a.foAvg||0));
+  const names5=sorted5.map(([k])=>k).reverse();
+  chart('si5',{...bo(),color:[B,BL],grid:{left:10,right:70,top:25,bottom:10,containLabel:true},legend:{data:['Captain','FO'],top:0,right:0,textStyle:{fontSize:10,color:DIMH()}},xAxis:{type:'value',axisLabel:{fontSize:9,color:DIMH(),formatter:v=>'$'+(v/1000)+'k'},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'category',data:names5,axisLabel:{fontSize:10,color:TH(),fontWeight:500},axisLine:{show:false},axisTick:{show:false}},series:[{name:'Captain',type:'bar',data:sorted5.map(([,v])=>({value:v.capAvg,itemStyle:{color:B,borderRadius:[0,4,4,0]}})).reverse(),barWidth:9,label:{show:true,position:'right',fontSize:9,color:TH(),formatter:p=>p.value!=null?$(p.value):''}},{name:'FO',type:'bar',data:sorted5.map(([,v])=>({value:v.foAvg,itemStyle:{color:BL,borderRadius:[0,4,4,0]}})).reverse(),barWidth:9,label:{show:true,position:'right',fontSize:9,color:DIMH(),formatter:p=>p.value!=null?$(p.value):''}}]});
+}
+
+// ---- si6: Salary by Region ----
+if(document.getElementById('si6')){
+  const rgGrp=grpSal(fd.filter(r=>r.region!=='Other'),r=>r.region);
+  const sorted6=Object.entries(rgGrp).filter(([,v])=>v.allN>0).sort(([,a],[,b])=>(b.capAvg||b.foAvg||0)-(a.capAvg||a.foAvg||0));
+  const names6=sorted6.map(([k])=>k).reverse();
+  chart('si6',{...bo(),color:[B,BL],grid:{left:10,right:70,top:25,bottom:10,containLabel:true},legend:{data:['Captain','FO'],top:0,right:0,textStyle:{fontSize:10,color:DIMH()}},xAxis:{type:'value',axisLabel:{fontSize:9,color:DIMH(),formatter:v=>'$'+(v/1000)+'k'},splitLine:{lineStyle:{color:GRD()}}},yAxis:{type:'category',data:names6,axisLabel:{fontSize:10,color:TH(),fontWeight:500},axisLine:{show:false},axisTick:{show:false}},series:[{name:'Captain',type:'bar',data:sorted6.map(([,v])=>({value:v.capAvg,itemStyle:{color:B,borderRadius:[0,4,4,0]}})).reverse(),barWidth:9,label:{show:true,position:'right',fontSize:9,color:TH(),formatter:p=>p.value!=null?$(p.value):''}},{name:'FO',type:'bar',data:sorted6.map(([,v])=>({value:v.foAvg,itemStyle:{color:BL,borderRadius:[0,4,4,0]}})).reverse(),barWidth:9,label:{show:true,position:'right',fontSize:9,color:DIMH(),formatter:p=>p.value!=null?$(p.value):''}}]});
+}
+
+// ---- si7: Salary Distribution Histogram ----
+if(document.getElementById('si7')){
+  const BINS=[[0,50000],[50000,75000],[75000,100000],[100000,125000],[125000,150000],[150000,200000],[200000,250000],[250000,300000],[300000,350000],[350000,Infinity]];
+  const LABELS=['<50k','50-75k','75-100k','100-125k','125-150k','150-200k','200-250k','250-300k','300-350k','350k+'];
+  const capBins=BINS.map(([lo,hi])=>fd.filter(r=>r.isCap&&r.mid>=lo&&r.mid<hi).length);
+  const foBins=BINS.map(([lo,hi])=>fd.filter(r=>r.isFO&&r.mid>=lo&&r.mid<hi).length);
+  chart('si7',{...bo(),color:[B,BL],legend:{data:['Captain','First Officer'],bottom:0,textStyle:{fontSize:10,color:DIMH()}},grid:{...bo().grid,bottom:30},xAxis:{type:'category',data:LABELS,axisLabel:{fontSize:9,color:TH(),rotate:30}},yAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH()},splitLine:{lineStyle:{color:GRD()}}},series:[{name:'Captain',type:'bar',data:capBins,barWidth:15,itemStyle:{color:B,borderRadius:[3,3,0,0]}},{name:'First Officer',type:'bar',data:foBins,barWidth:15,itemStyle:{color:BL,borderRadius:[3,3,0,0]}}]});
+}
+
+// ---- si4: Trend — UNFILTERED ----
+if(document.getElementById('si4')){
+  const salAvg=grp(D.trends.ranks||[],'avg_salary_usd');
+  const salMed=grp(D.trends.ranks||[],'median_salary_usd');
+  const allRanks=[...new Set([...Object.keys(salAvg.series),...Object.keys(salMed.series)])];
+  const series4=[];
+  allRanks.forEach((n,i)=>{
+    if(salAvg.series[n])series4.push({name:n+' avg',type:'line',data:(salAvg.series[n]||[]).map(v=>v?Math.round(Number(v)):null),smooth:.3,symbol:'none',lineStyle:{color:C[i%C.length],width:2},connectNulls:true});
+    if(salMed.series[n])series4.push({name:n+' med',type:'line',data:(salMed.series[n]||[]).map(v=>v?Math.round(Number(v)):null),smooth:.3,symbol:'none',lineStyle:{color:C[i%C.length],width:1.5,type:'dashed'},connectNulls:true});
+  });
+  chart('si4',{...bo(),legend:{data:series4.map(s=>s.name),bottom:0,textStyle:{fontSize:10,color:DIMH()},type:'scroll'},grid:{...bo().grid,bottom:35},xAxis:{type:'category',data:salAvg.dates,axisLabel:{fontSize:9,color:DIMH(),formatter:v=>v.slice(5)},boundaryGap:false},yAxis:{type:'value',axisLabel:{fontSize:10,color:DIMH(),formatter:v=>v?'$'+(v/1000)+'k':''},splitLine:{lineStyle:{color:GRD()}}},series:series4});
+}
 }
 
 // ===== 5. JOB LIFESPAN =====
